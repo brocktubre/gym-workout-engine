@@ -79,3 +79,14 @@ export function useCompleteWorkout() {
     },
   });
 }
+
+export function useDeleteWorkout() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ date, id }: { date: string; id: string }) =>
+      api.deleteWorkout(date, id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: workoutKeys.all });
+    },
+  });
+}

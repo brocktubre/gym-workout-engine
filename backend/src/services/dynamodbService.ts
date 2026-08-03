@@ -1,5 +1,5 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { Workout, UserSettings, WorkoutStats, MuscleGroup } from '../types';
 
 const TABLE_NAME = process.env.TABLE_NAME || 'gym-workout-engine-prod';
@@ -167,4 +167,11 @@ export async function getStats(): Promise<WorkoutStats> {
     favoriteExercise,
     muscleGroupFrequency: muscleFreq,
   };
+}
+
+export async function deleteWorkout(date: string, id: string): Promise<void> {
+  await client.send(new DeleteCommand({
+    TableName: TABLE_NAME,
+    Key: { PK: `WORKOUT#${date}`, SK: `WORKOUT#${id}` },
+  }));
 }

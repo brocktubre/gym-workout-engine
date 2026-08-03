@@ -95,6 +95,12 @@ export const api = {
     return res.workout;
   },
 
+  async deleteWorkout(date: string, id: string): Promise<void> {
+    await request<{ success: boolean }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+    });
+  },
+
   async completeWorkout(date: string, id: string): Promise<Workout> {
     const res = await request<{ workout: Workout }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}/complete`, {
       method: 'POST',

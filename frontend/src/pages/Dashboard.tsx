@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Play, Dumbbell, Flame, BarChart2 } from 'lucide-react';
@@ -8,13 +9,15 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StreakDisplay } from '@/components/dashboard/StreakDisplay';
 import { RecentWorkout } from '@/components/dashboard/RecentWorkout';
-import { useWorkoutHistory, useWorkoutStats } from '@/hooks/useWorkouts';
+import { useWorkoutHistory, useWorkoutStats, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { formatDuration, getGreeting, getTodayDate } from '@/lib/utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { activeWorkout, hasActiveWorkout } = useActiveWorkout();
+  const { activeWorkout, hasActiveWorkout, isPaused, pauseWorkout, clearActiveWorkout } = useActiveWorkout();
+  const deleteWorkoutMutation = useDeleteWorkout();
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const { data: history, isLoading: historyLoading } = useWorkoutHistory(30);
   const { data: stats, isLoading: statsLoading } = useWorkoutStats();
 
@@ -56,24 +59,74 @@ export default function Dashboard() {
             animate={{ opacity: 1, scale: 1 }}
             className="bg-gradient-to-r from-[#FF375F]/20 to-[#FF9F0A]/20 rounded-2xl border border-[#FF375F]/30 p-4"
           >
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-[#FF375F] flex items-center justify-center">
+            <div className="flex items-center gap-3 mb-3">
+              <div className={`h-10 w-10 rounded-xl flex items-center justify-center ${isPaused ? 'bg-[#FF9F0A]' : 'bg-[#FF375F]'}`}>
                 <Play className="h-5 w-5 text-white fill-white" />
               </div>
               <div className="flex-1">
-                <p className="font-semibold text-white text-sm">Workout in progress</p>
+                <p className="font-semibold text-white text-sm">
+                  {isPaused ? 'Workout Paused' : 'Workout In Progress'}
+                </p>
                 <p className="text-xs text-[#8E8E93] capitalize">
                   {activeWorkout.goal?.replace('-', ' ') ?? ''} · {activeWorkout.exercises.length} exercises
                 </p>
               </div>
+            </div>
+            {/* Action buttons */}
+            <div className="flex gap-2">
               <Button
                 size="sm"
+                className="flex-[2] bg-[#FF375F] text-white text-xs"
                 onClick={() => navigate('/active')}
-                className="bg-[#FF375F] text-white text-xs"
               >
-                Resume
+                {isPaused ? 'Resume Workout' : 'Continue'}
+              </Button>
+              {!isPaused && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="flex-1 text-xs"
+                  onClick={() => { pauseWorkout(0); }}
+                >
+                  Pause
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="ghost"
+                className="flex-1 text-xs text-[#FF375F] hover:text-[#FF375F]"
+                onClick={() => setShowCancelConfirm(true)}
+              >
+                Cancel
               </Button>
             </div>
+            {/* Cancel confirmation */}
+            {showCancelConfirm && (
+              <div className="mt-3 p-3 bg-[#2c2c2e] rounded-xl border border-[#FF375F]/30">
+                <p className="text-xs text-white mb-2 font-medium">Delete this workout?</p>
+                <p className="text-xs text-[#8E8E93] mb-3">This cannot be undone.</p>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" className="flex-1 text-xs" onClick={() => setShowCancelConfirm(false)}>
+                    Keep It
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="flex-1 text-xs"
+                    disabled={deleteWorkoutMutation.isPending}
+                    onClick={async () => {
+                      try {
+                        await deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id });
+                      } catch { /* ignore */ }
+                      clearActiveWorkout();
+                      setShowCancelConfirm(false);
+                    }}
+                  >
+                    {deleteWorkoutMutation.isPending ? '...' : 'Delete'}
+                  </Button>
+                </div>
+              </div>
+            )}
           </motion.div>
         )}
 

@@ -5,6 +5,10 @@ import type { GenerateWorkoutRequest, Workout } from '@/types';
 
 const ACTIVE_WORKOUT_KEY = 'gym_active_workout';
 const TIMER_START_KEY = 'gym_timer_start';
+const PAUSED_AT_KEY = 'gym_paused_at';
+const TURN_INDEX_KEY = 'gym_turn_index';
+
+export const WORKOUT_EXPIRE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // ── Generate mutation ────────────────────────────────────────────────────────
 
@@ -66,13 +70,33 @@ export function useActiveWorkout() {
     saveActiveWorkout(workout);
     if (!workout) {
       saveTimerStart(null);
+      localStorage.removeItem(PAUSED_AT_KEY);
+      localStorage.removeItem(TURN_INDEX_KEY);
     }
   }, []);
 
   const startWorkout = useCallback((workout: Workout) => {
     saveTimerStart(Date.now());
+    localStorage.removeItem(PAUSED_AT_KEY);
+    localStorage.removeItem(TURN_INDEX_KEY);
     setActiveWorkout({ ...workout, status: 'in-progress' });
   }, [setActiveWorkout]);
+
+  /** Pause and save current turn index so user can resume later */
+  const pauseWorkout = useCallback((turnIndex: number) => {
+    localStorage.setItem(PAUSED_AT_KEY, String(Date.now()));
+    localStorage.setItem(TURN_INDEX_KEY, String(turnIndex));
+  }, []);
+
+  /** Return the saved turn index (0 if none) */
+  const getSavedTurnIndex = useCallback((): number => {
+    const raw = localStorage.getItem(TURN_INDEX_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return isNaN(n) ? 0 : n;
+  }, []);
+
+  /** Whether the workout is currently paused (saved, not actively running) */
+  const isPaused = localStorage.getItem(PAUSED_AT_KEY) !== null;
 
   const updateActiveWorkout = useCallback((updates: Partial<Workout>) => {
     setActiveWorkoutState((prev) => {
@@ -90,9 +114,12 @@ export function useActiveWorkout() {
   return {
     activeWorkout,
     startWorkout,
+    pauseWorkout,
+    getSavedTurnIndex,
     updateActiveWorkout,
     clearActiveWorkout,
     hasActiveWorkout: activeWorkout !== null,
+    isPaused,
   };
 }
 

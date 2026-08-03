@@ -6,6 +6,7 @@ import {
   getWorkoutsInRange,
   getStats,
   getRecentWorkouts,
+  deleteWorkout,
 } from '../services/dynamodbService';
 import { Workout } from '../types';
 import { v4 as uuidv4 } from 'uuid';
@@ -140,6 +141,17 @@ router.post('/:date/:id/complete', async (req: Request, res: Response) => {
     res.json({ workout: updated });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to complete workout', details: err.message });
+  }
+});
+
+// DELETE /api/workouts/:date/:id — hard-delete a workout (used when user cancels)
+router.delete('/:date/:id', async (req: Request, res: Response) => {
+  try {
+    const { date, id } = req.params;
+    await deleteWorkout(date, id);
+    res.json({ success: true, message: 'Workout deleted' });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to delete workout', details: err.message });
   }
 });
 

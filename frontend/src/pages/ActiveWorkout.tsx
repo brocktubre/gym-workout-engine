@@ -17,7 +17,7 @@ import { SetRow } from '@/components/workout/SetRow';
 import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
-import { useCompleteWorkout, useUpdateWorkout } from '@/hooks/useWorkouts';
+import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { calculateVolume } from '@/lib/utils';
 import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout } from '@/types';
@@ -93,8 +93,8 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
-  const { activeWorkout, updateActiveWorkout, clearActiveWorkout } = useActiveWorkout();
-  const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
+  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, getSavedTurnIndex } = useActiveWorkout();
+  const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
 
   const { elapsed } = useWorkoutTimer(activeWorkout !== null);
@@ -103,6 +103,7 @@ export default function ActiveWorkout() {
 
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
+  const deleteWorkoutMutation = useDeleteWorkout();
 
   // ── No active workout ──────────────────────────────────────────────────────
 
@@ -378,9 +379,22 @@ export default function ActiveWorkout() {
     navigate('/history');
   }
 
-  function handleExit() {
-    clearActiveWorkout();
+  function handlePauseLater() {
+    // Save current position and return to dashboard — workout stays in DB
+    pauseWorkout(currentTurnIndex);
     setShowExitDialog(false);
+    navigate('/');
+  }
+
+  async function handleCancelWorkout() {
+    setShowExitDialog(false);
+    if (!activeWorkout) { navigate('/'); return; }
+    try {
+      await deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id });
+    } catch {
+      // Delete best-effort — clear locally regardless
+    }
+    clearActiveWorkout();
     navigate('/');
   }
 
@@ -570,21 +584,34 @@ export default function ActiveWorkout() {
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>End Workout?</DialogTitle>
+            <DialogTitle>Pause or End Workout?</DialogTitle>
             <DialogDescription>
-              Your progress will be lost. Are you sure you want to exit?
+              What would you like to do with your current workout?
             </DialogDescription>
           </DialogHeader>
-          <div className="flex gap-3 mt-4">
+          <div className="flex flex-col gap-2 mt-4">
             <Button
-              variant="outline"
-              className="flex-1"
+              className="w-full"
               onClick={() => setShowExitDialog(false)}
             >
               Keep Going
             </Button>
-            <Button variant="destructive" className="flex-1" onClick={handleExit}>
-              End Workout
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={handlePauseLater}
+            >
+              Resume Later
+              <span className="ml-2 text-xs text-[#8E8E93]">(saves progress)</span>
+            </Button>
+            <Button
+              variant="destructive"
+              className="w-full"
+              onClick={handleCancelWorkout}
+              disabled={deleteWorkoutMutation.isPending}
+            >
+              {deleteWorkoutMutation.isPending ? 'Cancelling...' : 'Cancel & Delete Workout'}
+              <span className="ml-2 text-xs opacity-70">(cannot undo)</span>
             </Button>
           </div>
         </DialogContent>

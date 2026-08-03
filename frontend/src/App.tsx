@@ -1,4 +1,7 @@
 import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { WORKOUT_EXPIRE_MS } from '@/hooks/useWorkoutEngine';
+import { api } from '@/lib/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { AppLayout } from '@/components/layout/AppLayout';
@@ -18,9 +21,35 @@ const queryClient = new QueryClient({
   },
 });
 
+function WorkoutExpiryCheck() {
+  useEffect(() => {
+    const pausedAt = localStorage.getItem('gym_paused_at');
+    const workoutRaw = localStorage.getItem('gym_active_workout');
+    if (!pausedAt || !workoutRaw) return;
+
+    const age = Date.now() - parseInt(pausedAt, 10);
+    if (age > WORKOUT_EXPIRE_MS) {
+      try {
+        const workout = JSON.parse(workoutRaw);
+        if (workout?.id && workout?.date) {
+          // Auto-complete the expired workout
+          api.completeWorkout(workout.date, workout.id).catch(() => {});
+        }
+      } catch { /* ignore */ }
+      // Clear local state regardless
+      localStorage.removeItem('gym_active_workout');
+      localStorage.removeItem('gym_timer_start');
+      localStorage.removeItem('gym_paused_at');
+      localStorage.removeItem('gym_turn_index');
+    }
+  }, []);
+  return null;
+}
+
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
+      <WorkoutExpiryCheck />
       <HashRouter>
         <Routes>
           <Route element={<AppLayout />}>

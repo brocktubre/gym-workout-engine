@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -60,7 +60,7 @@ export default function Generate() {
 
   const generateMutation = useGenerateWorkout();
   const createWorkoutMutation = useCreateWorkout();
-  const { startWorkout } = useActiveWorkout();
+  const { startWorkout, hasActiveWorkout, isPaused } = useActiveWorkout();
 
   const toggleMuscle = (muscle: MuscleGroup) => {
     setTargetMuscles((prev) =>
@@ -127,6 +127,28 @@ export default function Generate() {
         title="Generate Workout"
         subtitle="Build your perfect session"
       />
+
+      {/* Block generation when workout is active */}
+      {hasActiveWorkout && (
+        <div className="mx-4 mb-4 p-4 bg-[#FF9F0A]/10 border border-[#FF9F0A]/30 rounded-2xl flex items-start gap-3">
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-[#FF9F0A]">
+              {isPaused ? 'Workout Paused' : 'Workout In Progress'}
+            </p>
+            <p className="text-xs text-[#8E8E93] mt-0.5">
+              {isPaused
+                ? 'You have a paused workout. Resume or cancel it before generating a new one.'
+                : 'Finish or pause your current workout before generating a new one.'}
+            </p>
+          </div>
+          <Link
+            to="/active"
+            className="flex-shrink-0 text-xs font-semibold text-[#FF9F0A] underline"
+          >
+            {isPaused ? 'Resume' : 'Go to Workout'}
+          </Link>
+        </div>
+      )}
 
       <div className="px-4 space-y-5 pb-6">
         {/* Duration */}
@@ -238,7 +260,7 @@ export default function Generate() {
           size="lg"
           className="w-full"
           onClick={() => handleGenerate()}
-          disabled={generateMutation.isPending}
+          disabled={generateMutation.isPending || hasActiveWorkout}
         >
           {generateMutation.isPending ? (
             <>
@@ -331,7 +353,7 @@ export default function Generate() {
                   variant="outline"
                   className="flex-1"
                   onClick={() => handleGenerate(generatedWorkout?.exercises.map(e => e.exerciseId))}
-                  disabled={generateMutation.isPending}
+                  disabled={generateMutation.isPending || hasActiveWorkout}
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
                   Regenerate
