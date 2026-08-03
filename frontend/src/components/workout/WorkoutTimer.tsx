@@ -1,5 +1,29 @@
 import { motion } from 'framer-motion';
+import { useEffect } from 'react';
 import { formatElapsedTime } from '@/lib/utils';
+
+// ---------------------------------------------------------------------------
+// Web Audio beep — no external files, no deps
+// ---------------------------------------------------------------------------
+function playBeep(frequency: number, durationSec: number, volume = 0.35) {
+  try {
+    const ctx = new AudioContext();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = 'sine';
+    osc.frequency.value = frequency;
+    gain.gain.setValueAtTime(volume, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + durationSec);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + durationSec);
+    // Close context after sound finishes to avoid resource leak
+    osc.onended = () => { ctx.close(); };
+  } catch {
+    // Silently ignore — AudioContext may be blocked in some environments
+  }
+}
 
 interface WorkoutTimerProps {
   elapsed: number;
@@ -35,6 +59,15 @@ interface RestTimerProps {
 }
 
 export function RestTimer({ seconds, totalSeconds, onSkip }: RestTimerProps) {
+  // Countdown beeps: 3 short beeps at 3/2/1s, one longer "go" beep at 0
+  useEffect(() => {
+    if (seconds === 3 || seconds === 2 || seconds === 1) {
+      playBeep(880, 0.12);          // short high beep
+    } else if (seconds === 0) {
+      playBeep(1100, 0.35);         // longer higher "go!" tone
+    }
+  }, [seconds]);
+
   const radius = 40;
   const circumference = 2 * Math.PI * radius;
   const progress = seconds / totalSeconds;
