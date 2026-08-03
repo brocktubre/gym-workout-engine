@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Save, Dumbbell, Target, BarChart2, Clock, RefreshCw } from 'lucide-react';
+import { Save, Target, BarChart2, Clock, RefreshCw } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
+  faDumbbell, faPersonWalking, faCog, faLink, faRing,
+  faBell, faMinus, faSeedling, faBolt, faRocket,
+} from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
@@ -12,28 +18,28 @@ import { toast } from '@/components/ui/use-toast';
 import { cn, formatElapsedTime } from '@/lib/utils';
 import type { Equipment, WorkoutGoal, Difficulty, UserSettings } from '@/types';
 
-const EQUIPMENT_OPTIONS: { value: Equipment; label: string; emoji: string }[] = [
-  { value: 'barbell', label: 'Barbell', emoji: '🏋️' },
-  { value: 'dumbbell', label: 'Dumbbell', emoji: '💪' },
-  { value: 'bodyweight', label: 'Bodyweight', emoji: '🤸' },
-  { value: 'machine', label: 'Machine', emoji: '⚙️' },
-  { value: 'cable', label: 'Cable', emoji: '🔗' },
-  { value: 'resistance-band', label: 'Resistance Band', emoji: '🪢' },
-  { value: 'kettlebell', label: 'Kettlebell', emoji: '🔔' },
-  { value: 'ez-bar', label: 'EZ Bar', emoji: '〰️' },
+const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNode }[] = [
+  { value: 'barbell', label: 'Barbell', icon: <FontAwesomeIcon icon={faWeightHanging} /> },
+  { value: 'dumbbell', label: 'Dumbbell', icon: <FontAwesomeIcon icon={faDumbbell} /> },
+  { value: 'bodyweight', label: 'Bodyweight', icon: <FontAwesomeIcon icon={faPersonWalking} /> },
+  { value: 'machine', label: 'Machine', icon: <FontAwesomeIcon icon={faCog} /> },
+  { value: 'cable', label: 'Cable', icon: <FontAwesomeIcon icon={faLink} /> },
+  { value: 'resistance-band', label: 'Resistance Band', icon: <FontAwesomeIcon icon={faRing} /> },
+  { value: 'kettlebell', label: 'Kettlebell', icon: <FontAwesomeIcon icon={faBell} /> },
+  { value: 'ez-bar', label: 'EZ Bar', icon: <FontAwesomeIcon icon={faMinus} /> },
 ];
 
-const GOAL_OPTIONS: { value: WorkoutGoal; label: string; emoji: string }[] = [
-  { value: 'strength', label: 'Strength', emoji: '💪' },
-  { value: 'hypertrophy', label: 'Hypertrophy', emoji: '📈' },
-  { value: 'endurance', label: 'Endurance', emoji: '🏃' },
-  { value: 'fat-loss', label: 'Fat Loss', emoji: '🔥' },
+const GOAL_OPTIONS: { value: WorkoutGoal; label: string; icon: React.ReactNode }[] = [
+  { value: 'strength', label: 'Strength', icon: <FontAwesomeIcon icon={faWeightHanging} /> },
+  { value: 'hypertrophy', label: 'Hypertrophy', icon: <FontAwesomeIcon icon={faArrowTrendUp} /> },
+  { value: 'endurance', label: 'Endurance', icon: <FontAwesomeIcon icon={faPersonRunning} /> },
+  { value: 'fat-loss', label: 'Fat Loss', icon: <FontAwesomeIcon icon={faFire} /> },
 ];
 
-const LEVEL_OPTIONS: { value: Difficulty; label: string; emoji: string }[] = [
-  { value: 'beginner', label: 'Beginner', emoji: '🌱' },
-  { value: 'intermediate', label: 'Intermediate', emoji: '⚡' },
-  { value: 'advanced', label: 'Advanced', emoji: '🔥' },
+const LEVEL_OPTIONS: { value: Difficulty; label: string; icon: React.ReactNode }[] = [
+  { value: 'beginner', label: 'Beginner', icon: <FontAwesomeIcon icon={faSeedling} /> },
+  { value: 'intermediate', label: 'Intermediate', icon: <FontAwesomeIcon icon={faBolt} /> },
+  { value: 'advanced', label: 'Advanced', icon: <FontAwesomeIcon icon={faRocket} /> },
 ];
 
 const DURATION_OPTIONS = [30, 45, 60, 90];
@@ -138,7 +144,7 @@ export default function Settings() {
           transition={{ delay: 0.05 }}
           className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
         >
-          <SectionHeader icon={<Dumbbell className="h-full w-full" />} title="Available Equipment" />
+          <SectionHeader icon={<FontAwesomeIcon icon={faDumbbell} />} title="Available Equipment" />
           <div className="grid grid-cols-2 gap-2">
             {EQUIPMENT_OPTIONS.map((eq) => {
               const selected = form.availableEquipment.includes(eq.value);
@@ -153,7 +159,7 @@ export default function Settings() {
                       : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A]',
                   )}
                 >
-                  <span className="text-base">{eq.emoji}</span>
+                  <span className="w-4 text-center flex-shrink-0">{eq.icon}</span>
                   {eq.label}
                 </button>
               );
@@ -183,7 +189,7 @@ export default function Settings() {
                     : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A]',
                 )}
               >
-                <span>{g.emoji}</span>
+                <span className="w-4 text-center flex-shrink-0">{g.icon}</span>
                 {g.label}
               </button>
             ))}
@@ -212,7 +218,7 @@ export default function Settings() {
                     : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A]',
                 )}
               >
-                <span className="text-base">{lv.emoji}</span>
+                <span className="text-base">{lv.icon}</span>
                 {lv.label}
               </button>
             ))}

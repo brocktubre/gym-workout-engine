@@ -1,3 +1,5 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFire } from '@fortawesome/free-solid-svg-icons';
 import { motion } from 'framer-motion';
 
 interface StreakDisplayProps {
@@ -27,7 +29,7 @@ export function StreakDisplay({ streak, longestStreak }: StreakDisplayProps) {
           </div>
         </div>
       </div>
-      <div className="text-lg mt-1">🔥</div>
+      <div className="text-lg mt-1 text-[#FF375F]"><FontAwesomeIcon icon={faFire} /></div>
       <p className="text-xs text-[#8E8E93] mt-0.5">
         {streak === 1 ? '1 day streak' : `${streak} day streak`}
       </p>

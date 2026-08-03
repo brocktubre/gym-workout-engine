@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Zap, Play, Dumbbell, Flame, BarChart2 } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatsCard } from '@/components/dashboard/StatsCard';
@@ -111,7 +113,7 @@ export default function Dashboard() {
           >
             <div className="flex items-center gap-3 mb-3">
               <div className="h-10 w-10 rounded-xl bg-[#30D158]/20 flex items-center justify-center">
-                <span className="text-xl">🎉</span>
+                <FontAwesomeIcon icon={faTrophy} className="text-[#FF9F0A] text-xl" />
               </div>
               <div>
                 <p className="font-bold text-white">Workout Complete!</p>

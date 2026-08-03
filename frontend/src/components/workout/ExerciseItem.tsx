@@ -1,19 +1,25 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Info, TrendingUp } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faWeightHanging, faDumbbell, faPersonWalking, faCog,
+  faLink, faRing, faBell, faMinus,
+  type IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
 import { cn } from '@/lib/utils';
 import type { WorkoutExercise } from '@/types';
 
-const equipmentEmoji: Record<string, string> = {
-  barbell: '🏋️',
-  dumbbell: '💪',
-  bodyweight: '🤸',
-  machine: '⚙️',
-  cable: '🔗',
-  'resistance-band': '🪢',
-  kettlebell: '🔔',
-  'ez-bar': '〰️',
+const equipmentIcons: Record<string, IconDefinition> = {
+  barbell: faWeightHanging,
+  dumbbell: faDumbbell,
+  bodyweight: faPersonWalking,
+  machine: faCog,
+  cable: faLink,
+  'resistance-band': faRing,
+  kettlebell: faBell,
+  'ez-bar': faMinus,
 };
 
 interface ExerciseItemProps {
@@ -40,7 +46,7 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false }: E
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <div className="flex-shrink-0 h-8 w-8 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-base">
-              {equipmentEmoji[exercise.equipment] ?? '🏋️'}
+              <FontAwesomeIcon icon={equipmentIcons[exercise.equipment] ?? faWeightHanging} className="text-[#8E8E93]" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">

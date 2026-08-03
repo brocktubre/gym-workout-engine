@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWeightHanging, faArrowTrendUp, faPersonRunning, faFire } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExerciseItem } from '@/components/workout/ExerciseItem';
@@ -15,11 +17,11 @@ import { cn } from '@/lib/utils';
 
 const DURATION_OPTIONS = [30, 45, 60, 90];
 
-const GOAL_OPTIONS: { value: WorkoutGoal; label: string; emoji: string }[] = [
-  { value: 'strength', label: 'Strength', emoji: '💪' },
-  { value: 'hypertrophy', label: 'Hypertrophy', emoji: '📈' },
-  { value: 'endurance', label: 'Endurance', emoji: '🏃' },
-  { value: 'fat-loss', label: 'Fat Loss', emoji: '🔥' },
+const GOAL_OPTIONS: { value: WorkoutGoal; label: string; icon: React.ReactNode }[] = [
+  { value: 'strength', label: 'Strength', icon: <FontAwesomeIcon icon={faWeightHanging} /> },
+  { value: 'hypertrophy', label: 'Hypertrophy', icon: <FontAwesomeIcon icon={faArrowTrendUp} /> },
+  { value: 'endurance', label: 'Endurance', icon: <FontAwesomeIcon icon={faPersonRunning} /> },
+  { value: 'fat-loss', label: 'Fat Loss', icon: <FontAwesomeIcon icon={faFire} /> },
 ];
 
 const MUSCLE_OPTIONS: { value: MuscleGroup; label: string }[] = [
@@ -148,7 +150,7 @@ export default function Generate() {
                     : 'bg-[#1c1c1e] text-[#8E8E93] border-[#38383A] hover:bg-[#2c2c2e]',
                 )}
               >
-                <span className="text-base">{g.emoji}</span>
+                <span className="w-4 text-center">{g.icon}</span>
                 {g.label}
               </button>
             ))}

@@ -2,6 +2,8 @@ import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ChevronRight, SkipForward, CheckCircle2 } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -84,7 +86,7 @@ export default function ActiveWorkout() {
       const restSecs = set.restSeconds ?? 90;
       startRest(restSecs);
 
-      toast({ title: `Set ${setIndex + 1} done! 💪`, variant: 'success', duration: 1500 });
+      toast({ title: `Set ${setIndex + 1} complete`, variant: 'success', duration: 1500 });
     },
     [activeWorkout, currentExerciseIndex, updateActiveWorkout, startRest],
   );
@@ -141,7 +143,7 @@ export default function ActiveWorkout() {
     updateActiveWorkout(updated);
     clearActiveWorkout();
     toast({
-      title: 'Workout Complete! 🎉',
+      title: 'Workout Complete!',
       description: `${exercises.length} exercises · ${durationMinutes}min`,
       variant: 'success',
     });
@@ -223,7 +225,7 @@ export default function ActiveWorkout() {
               {currentExercise?.progressionNote && (
                 <div className="flex items-center gap-1.5 mt-2 bg-[#30D158]/10 rounded-xl px-3 py-2">
                   <span className="text-[#30D158] text-xs font-medium">
-                    📈 {currentExercise.progressionNote}
+                    <><FontAwesomeIcon icon={faArrowTrendUp} className="mr-1.5" />{currentExercise.progressionNote}</>
                   </span>
                 </div>
               )}
@@ -295,7 +297,7 @@ export default function ActiveWorkout() {
               disabled={completeWorkoutMutation.isPending || updateWorkoutMutation.isPending}
             >
               <CheckCircle2 className="h-5 w-5 mr-2" />
-              {completeWorkoutMutation.isPending ? 'Saving...' : 'Complete Workout 🎉'}
+              {completeWorkoutMutation.isPending ? 'Saving...' : 'Complete Workout'}
             </Button>
           )}
         </div>
