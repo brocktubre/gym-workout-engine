@@ -2,7 +2,7 @@ name: Deploy Infrastructure
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     paths:
       - 'infrastructure/cloudformation/**'
   workflow_dispatch:
