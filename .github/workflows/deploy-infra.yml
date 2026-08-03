@@ -73,6 +73,18 @@ jobs:
           zip -r lambda.zip node_modules
       - name: Upload Lambda zip to S3
         run: aws s3 cp backend/lambda.zip s3://gym.oc.taglineconsultants.com/lambda/lambda.zip
+      - name: Cleanup failed Backend stack if needed
+        run: |
+          STATUS=$(aws cloudformation describe-stacks \
+            --stack-name "gym-workout-engine-backend-${{ env.STAGE }}" \
+            --query "Stacks[0].StackStatus" --output text 2>/dev/null || echo "DOES_NOT_EXIST")
+          echo "Stack status: $STATUS"
+          if [ "$STATUS" = "ROLLBACK_COMPLETE" ] || [ "$STATUS" = "UPDATE_ROLLBACK_COMPLETE" ]; then
+            echo "Deleting stuck stack before re-deploy..."
+            aws cloudformation delete-stack --stack-name "gym-workout-engine-backend-${{ env.STAGE }}"
+            aws cloudformation wait stack-delete-complete --stack-name "gym-workout-engine-backend-${{ env.STAGE }}"
+            echo "Stack deleted — will re-create fresh"
+          fi
       - name: Deploy Backend Stack
         run: |
           aws cloudformation deploy \
