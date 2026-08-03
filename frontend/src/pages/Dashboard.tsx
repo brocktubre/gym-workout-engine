@@ -117,12 +117,12 @@ export default function Dashboard() {
                     variant="destructive"
                     className="flex-1 text-xs"
                     disabled={deleteWorkoutMutation.isPending}
-                    onClick={async () => {
-                      try {
-                        await deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id });
-                      } catch { /* ignore */ }
+                    onClick={() => {
+                      // Clear state immediately so dashboard re-renders correctly
                       clearActiveWorkout();
                       setShowCancelConfirm(false);
+                      // Delete in background (best-effort)
+                      deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id }).catch(() => {});
                     }}
                   >
                     {deleteWorkoutMutation.isPending ? '...' : 'Delete'}

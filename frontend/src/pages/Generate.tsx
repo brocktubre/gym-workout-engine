@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
@@ -15,6 +15,7 @@ import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { useGenerateWorkout, useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
+import { useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 import { getTodayDate, formatDuration } from '@/lib/utils';
 import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem, Exercise } from '@/types';
@@ -59,14 +60,30 @@ export default function Generate() {
   const navigate = useNavigate();
   const location = useLocation();
   const locationState = (location.state ?? {}) as GenerateLocationState;
+  const { data: settings } = useSettings();
 
   const [duration, setDuration] = useState(60);
-  const [goal, setGoal] = useState<WorkoutGoal>(locationState.suggestedGoal ?? 'hypertrophy');
+  // Goal defaults: AI suggestion > saved settings > fallback 'hypertrophy'
+  const [goal, setGoal] = useState<WorkoutGoal>(
+    locationState.suggestedGoal ?? settings?.goal ?? 'hypertrophy',
+  );
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>(locationState.suggestedMuscles ?? []);
-  const [includeWarmup, setIncludeWarmup] = useState(true);
-  const [allowSupersets, setAllowSupersets] = useState(true);
+  const [includeWarmup, setIncludeWarmup] = useState(settings?.includeWarmup ?? true);
+  const [allowSupersets, setAllowSupersets] = useState(settings?.allowSupersets ?? true);
   const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);
   const [swapTarget, setSwapTarget] = useState<WorkoutExercise | null>(null);
+
+  // Sync goal + toggles from settings once they load (only if user hasn't
+  // already changed them and no AI suggestion was provided)
+  const settingsSyncedRef = useRef(false);
+  useEffect(() => {
+    if (settingsSyncedRef.current || !settings) return;
+    settingsSyncedRef.current = true;
+    if (!locationState.suggestedGoal) setGoal(settings.goal);
+    setIncludeWarmup(settings.includeWarmup ?? true);
+    setAllowSupersets(settings.allowSupersets ?? true);
+    if (settings.defaultDurationMinutes) setDuration(settings.defaultDurationMinutes);
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleSwap = (newExercise: Exercise) => {
     if (!swapTarget || !generatedWorkout) return;
@@ -391,10 +408,10 @@ export default function Generate() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-3 pt-2 items-stretch">
+              <div className="flex gap-3 pt-2">
                 <Button
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 h-14 text-sm"
                   onClick={() => handleGenerate(generatedWorkout?.exercises.map(e => e.exerciseId))}
                   disabled={generateMutation.isPending || hasActiveWorkout}
                 >
@@ -402,7 +419,7 @@ export default function Generate() {
                   Regenerate
                 </Button>
                 <Button
-                  className="flex-2 flex-grow h-14"
+                  className="flex-[2] h-14"
                   size="lg"
                   onClick={handleStartWorkout}
                   disabled={createWorkoutMutation.isPending}

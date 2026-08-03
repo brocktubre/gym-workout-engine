@@ -446,14 +446,14 @@ export default function ActiveWorkout() {
 
   async function handleCancelWorkout() {
     setShowExitDialog(false);
-    if (!activeWorkout) { navigate('/'); return; }
-    try {
-      await deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id });
-    } catch {
-      // Delete best-effort — clear locally regardless
-    }
+    // Clear local state and navigate first — avoids black screen from
+    // AnimatePresence racing with the now-null activeWorkout render
     clearActiveWorkout();
     navigate('/');
+    // Fire delete in background (best-effort)
+    if (activeWorkout) {
+      deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id }).catch(() => {});
+    }
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────

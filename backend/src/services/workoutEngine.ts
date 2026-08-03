@@ -26,15 +26,15 @@ const SET_WORK_SECONDS = 40;
 // Starting weights in lbs by muscle group + equipment
 // ---------------------------------------------------------------------------
 const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, number>>>> = {
-  chest:      { barbell: 135, dumbbell: 45, machine: 90,  cable: 45,  rings: 0,  landmine: 45 },
-  back:       { barbell: 185, dumbbell: 55, machine: 110, cable: 65,  kettlebell: 53, landmine: 55, sled: 135 },
-  shoulders:  { barbell: 95,  dumbbell: 25, machine: 65,  cable: 30,  kettlebell: 35, landmine: 45 },
+  chest:      { barbell: 135, dumbbell: 45, machine: 90,  cable: 45,  rings: 0 },
+  back:       { barbell: 185, dumbbell: 55, machine: 110, cable: 65,  kettlebell: 53, sled: 135 },
+  shoulders:  { barbell: 95,  dumbbell: 25, machine: 65,  cable: 30,  kettlebell: 35 },
   biceps:     { barbell: 65,  dumbbell: 25, cable: 35,    'ez-bar': 55, rings: 0 },
   triceps:    { barbell: 95,  dumbbell: 25, cable: 45,    rings: 0 },
   quads:      { barbell: 185, machine: 135, sled: 185,    'plyometric-box': 0, kettlebell: 53, sandbag: 65 },
   hamstrings: { barbell: 135, machine: 90,  kettlebell: 53, sled: 135 },
   glutes:     { barbell: 185, machine: 110, sled: 185,    kettlebell: 53 },
-  core:       { 'medicine-ball': 20, sandbag: 45, landmine: 35, rings: 0 },
+  core:       { 'medicine-ball': 20, sandbag: 45, rings: 0 },
 };
 
 // ---------------------------------------------------------------------------

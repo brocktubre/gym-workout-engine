@@ -6,7 +6,7 @@ import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
   faDumbbell, faPersonWalking, faCog, faLink, faRing,
   faBell, faMinus, faSeedling, faBolt, faRocket,
-  faArrowUp, faCrosshairs, faWater, faTruckFast, faCube,
+  faArrowUp, faWater, faTruckFast, faCube,
   faShirt, faBagShopping, faCircleDot, faPersonBiking,
   faPersonSwimming, faPersonSkiing,
 } from '@fortawesome/free-solid-svg-icons';
@@ -31,7 +31,7 @@ const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNod
   { value: 'rings', label: 'Gymnastics Rings', icon: <FontAwesomeIcon icon={faRing} />, category: 'Bodyweight' },
   { value: 'pull-up-bar', label: 'Pull-Up Bar', icon: <FontAwesomeIcon icon={faArrowUp} />, category: 'Bodyweight' },
   // Functional
-  { value: 'landmine', label: 'Landmine', icon: <FontAwesomeIcon icon={faCrosshairs} />, category: 'Functional' },
+
   { value: 'battle-rope', label: 'Battle Rope', icon: <FontAwesomeIcon icon={faWater} />, category: 'Functional' },
   { value: 'sled', label: 'Sled', icon: <FontAwesomeIcon icon={faTruckFast} />, category: 'Functional' },
   { value: 'plyometric-box', label: 'Plyo Box', icon: <FontAwesomeIcon icon={faCube} />, category: 'Functional' },
@@ -68,7 +68,7 @@ const DURATION_OPTIONS = [30, 45, 60, 90];
 const DEFAULT_SETTINGS: UserSettings = {
   availableEquipment: [
     'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
-    'rings', 'pull-up-bar', 'landmine', 'resistance-band',
+    'rings', 'pull-up-bar', 'resistance-band',
     'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
     'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
   ],

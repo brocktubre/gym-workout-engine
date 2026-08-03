@@ -119,23 +119,6 @@
     ]
   },
   {
-    "id": "landmine",
-    "name": "Landmine",
-    "category": "Rack & Strength",
-    "enabled": true,
-    "tags": [
-      "functional",
-      "rotation",
-      "unilateral",
-      "landmine"
-    ],
-    "exerciseTypes": [
-      "Landmine Training",
-      "Functional",
-      "Rotational"
-    ]
-  },
-  {
     "id": "resistance-band",
     "name": "Resistance Bands",
     "category": "Resistance Equipment",

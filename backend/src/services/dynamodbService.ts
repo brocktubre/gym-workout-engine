@@ -13,7 +13,7 @@ const client = DynamoDBDocumentClient.from(
 const DEFAULT_SETTINGS: UserSettings = {
   availableEquipment: [
     'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
-    'rings', 'pull-up-bar', 'landmine', 'resistance-band',
+    'rings', 'pull-up-bar', 'resistance-band',
     'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
     'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
   ],
