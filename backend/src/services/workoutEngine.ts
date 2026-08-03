@@ -230,8 +230,8 @@ export async function generateWorkout(context: {
   // Warmup duration: 5 min default, 10 if workout ≥ 60 min
   const warmupMinutes = includeWarmup ? 12 : 0; // Always 10-12 min: ~7 min cardio + ~3 min stretching
 
-  // Time budget for exercises
-  let budget = targetMinutes - warmupMinutes;
+  // Warmup is ADDITIONAL time — 1h workout = 10min warmup + 1h of exercises
+  let budget = targetMinutes;
   if (goal === 'fat-loss') budget -= 8; // cardio finisher
 
   // Minutes per standard exercise

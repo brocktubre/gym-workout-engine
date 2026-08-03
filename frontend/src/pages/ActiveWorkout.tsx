@@ -10,7 +10,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from '@/components/ui/dialog';
 import { Progress } from '@/components/ui/progress';
 import { SetRow } from '@/components/workout/SetRow';
@@ -387,6 +386,33 @@ export default function ActiveWorkout() {
     navigate('/history');
   }
 
+  function handleAddSet() {
+    if (!activeWorkout || !currentTurn) return;
+    const exIdx = currentTurn.exerciseIndex;
+    const exercise = activeWorkout.exercises[exIdx];
+    if (!exercise) return;
+
+    // Copy last set as template for new set
+    const lastSet = exercise.sets[exercise.sets.length - 1];
+    const newSet: WorkoutSet = {
+      setNumber: exercise.sets.length + 1,
+      targetReps: lastSet?.targetReps ?? 10,
+      targetWeight: lastSet?.targetWeight,
+      completed: false,
+      restSeconds: lastSet?.restSeconds ?? 90,
+    };
+
+    const updatedExercise = {
+      ...exercise,
+      sets: [...exercise.sets, newSet],
+    };
+
+    const updatedExercises = [...activeWorkout.exercises];
+    updatedExercises[exIdx] = updatedExercise;
+
+    updateActiveWorkout({ exercises: updatedExercises });
+  }
+
   function handlePauseLater() {
     // Save current position and elapsed time — workout stays in DB
     pauseWorkout(currentTurnIndex, elapsed);
@@ -553,6 +579,14 @@ export default function ActiveWorkout() {
                 />
               );
             })}
+            {/* Add Set button */}
+            <button
+              onClick={handleAddSet}
+              className="w-full py-2.5 rounded-xl border border-dashed border-[#38383A] text-[#8E8E93] text-sm flex items-center justify-center gap-2 hover:border-[#FF375F]/50 hover:text-[#FF375F] transition-colors active:scale-98"
+            >
+              <span className="text-lg leading-none">+</span>
+              Add Set
+            </button>
           </div>
         )}
       </div>
@@ -590,36 +624,34 @@ export default function ActiveWorkout() {
 
       {/* Exit confirmation dialog */}
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
-        <DialogContent>
+        <DialogContent className="max-w-xs mx-auto">
           <DialogHeader>
-            <DialogTitle>Pause or End Workout?</DialogTitle>
-            <DialogDescription>
-              What would you like to do with your current workout?
-            </DialogDescription>
+            <DialogTitle className="text-center">Pause or End?</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-2 mt-4">
+          <div className="flex flex-col gap-2 mt-2">
             <Button
+              size="lg"
               className="w-full"
               onClick={() => setShowExitDialog(false)}
             >
-              Keep Going
+              Continue
             </Button>
             <Button
+              size="lg"
               variant="outline"
               className="w-full"
               onClick={handlePauseLater}
             >
               Resume Later
-              <span className="ml-2 text-xs text-[#8E8E93]">(saves progress)</span>
             </Button>
             <Button
+              size="lg"
               variant="destructive"
               className="w-full"
               onClick={handleCancelWorkout}
               disabled={deleteWorkoutMutation.isPending}
             >
-              {deleteWorkoutMutation.isPending ? 'Cancelling...' : 'Cancel & Delete Workout'}
-              <span className="ml-2 text-xs opacity-70">(cannot undo)</span>
+              {deleteWorkoutMutation.isPending ? 'Deleting...' : 'Delete Workout'}
             </Button>
           </div>
         </DialogContent>
