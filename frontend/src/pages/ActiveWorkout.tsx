@@ -96,6 +96,10 @@ export default function ActiveWorkout() {
   const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedElapsed, getSavedTurnIndex, isPaused } = useActiveWorkout();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
+  // Local state drives warmup visibility — immediate sync update avoids black screen on transition
+  const [showWarmup, setShowWarmup] = useState(
+    () => activeWorkout?.warmupStatus === 'pending' && (activeWorkout?.warmup?.length ?? 0) > 0
+  );
   const [showSwapSheet, setShowSwapSheet] = useState(false);
 
   const handleSwapExercise = (newExercise: Exercise) => {
@@ -144,17 +148,18 @@ export default function ActiveWorkout() {
 
   // Safe derived state — uses optional chaining so null activeWorkout is fine
   const exercises = activeWorkout?.exercises ?? [];
-  const warmupPending =
-    activeWorkout?.warmupStatus === 'pending' &&
-    (activeWorkout?.warmup?.length ?? 0) > 0;
+  // Use local showWarmup state so transition is immediate (not waiting on async setState)
+  const warmupPending = showWarmup;
 
   const handleWarmupComplete = useCallback(
     (updatedWarmup: WarmupItem[]) => {
+      setShowWarmup(false); // Immediate — no black screen between warmup and workout
       updateActiveWorkout({ warmup: updatedWarmup, warmupStatus: 'completed' });
     },
     [updateActiveWorkout],
   );
   const handleSkipAllWarmup = useCallback(() => {
+    setShowWarmup(false); // Immediate — no black screen
     updateActiveWorkout({ warmupStatus: 'skipped' });
   }, [updateActiveWorkout]);
 
@@ -234,13 +239,13 @@ export default function ActiveWorkout() {
         </div>
         {/* Bottom actions */}
         <div className="fixed bottom-[83px] left-0 right-0 px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
-          <div className="flex gap-3">
-            <Button variant="outline" size="lg" onClick={handleSkipAllWarmup} className="flex-1">
+          <div className="flex gap-3 items-stretch">
+            <Button variant="outline" size="lg" onClick={handleSkipAllWarmup} className="flex-1 h-14">
               Skip Warmup
             </Button>
             <Button
               size="lg"
-              className="flex-[2]"
+              className="flex-[2] h-14"
               onClick={() => handleWarmupComplete(warmupItems.map(item => ({ ...item, completed: true })))}
             >
               <CheckCircle2 className="h-5 w-5 mr-2" />

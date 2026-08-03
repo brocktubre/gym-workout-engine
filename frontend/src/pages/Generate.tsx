@@ -391,7 +391,7 @@ export default function Generate() {
               </div>
 
               {/* Action buttons */}
-              <div className="flex gap-3 pt-2">
+              <div className="flex gap-3 pt-2 items-stretch">
                 <Button
                   variant="outline"
                   className="flex-1"
@@ -402,7 +402,7 @@ export default function Generate() {
                   Regenerate
                 </Button>
                 <Button
-                  className="flex-2 flex-grow"
+                  className="flex-2 flex-grow h-14"
                   size="lg"
                   onClick={handleStartWorkout}
                   disabled={createWorkoutMutation.isPending}
