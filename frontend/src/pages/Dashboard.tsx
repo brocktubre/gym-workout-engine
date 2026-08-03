@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
-import { Zap, Play, Dumbbell, Flame, BarChart2 } from 'lucide-react';
+import { Zap, Play, Dumbbell, Flame, BarChart2, Sparkles } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { StreakDisplay } from '@/components/dashboard/StreakDisplay';
 import { RecentWorkout } from '@/components/dashboard/RecentWorkout';
 import { useWorkoutHistory, useWorkoutStats, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
+import { useCoachingNote } from '@/hooks/useCoachingNote';
 import { formatDuration, getGreeting, getTodayDate } from '@/lib/utils';
 
 export default function Dashboard() {
@@ -27,6 +28,8 @@ export default function Dashboard() {
     ?.filter((w) => w.status === 'completed' || w.status === 'in-progress')
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, 5) ?? [];
+
+  const { data: coachingNote, isLoading: noteLoading } = useCoachingNote();
 
   const greeting = getGreeting();
   const dateLabel = new Date().toLocaleDateString('en-US', {
@@ -136,23 +139,56 @@ export default function Dashboard() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-gradient-to-br from-[#1c1c1e] to-[#2c2c2e] rounded-2xl border border-[#38383A] p-6 text-center"
+            className="space-y-3"
           >
-            <div className="h-16 w-16 rounded-2xl bg-[#FF375F]/20 flex items-center justify-center mx-auto mb-4">
-              <Dumbbell className="h-8 w-8 text-[#FF375F]" />
+            {/* AI Coaching Note */}
+            {noteLoading ? (
+              <Skeleton className="h-28 rounded-2xl" />
+            ) : coachingNote ? (
+              <div className="bg-[#1c1c1e] rounded-2xl border border-[#BF5AF2]/30 p-4">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="h-4 w-4 text-[#BF5AF2]" />
+                  <span className="text-xs font-bold text-[#BF5AF2] uppercase tracking-wider">AI Coach</span>
+                </div>
+                <p className="text-sm text-white leading-relaxed mb-3">{coachingNote.note}</p>
+                <Button
+                  size="sm"
+                  className="w-full bg-[#BF5AF2] hover:bg-[#BF5AF2]/90 text-white"
+                  onClick={() =>
+                    navigate('/generate', {
+                      state: {
+                        suggestedMuscles: coachingNote.suggestedMuscles,
+                        suggestedGoal: coachingNote.suggestedGoal,
+                      },
+                    })
+                  }
+                >
+                  <Sparkles className="h-3.5 w-3.5 mr-2" />
+                  Train This
+                </Button>
+              </div>
+            ) : null}
+
+            {/* Standard generate card */}
+            <div className="bg-gradient-to-br from-[#1c1c1e] to-[#2c2c2e] rounded-2xl border border-[#38383A] p-5">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-10 w-10 rounded-xl bg-[#FF375F]/20 flex items-center justify-center flex-shrink-0">
+                  <Dumbbell className="h-5 w-5 text-[#FF375F]" />
+                </div>
+                <div>
+                  <h2 className="text-base font-bold text-white">Build your own</h2>
+                  <p className="text-xs text-[#8E8E93]">Choose duration, goal, and target muscles</p>
+                </div>
+              </div>
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={() => navigate('/generate')}
+              >
+                <Zap className="h-4 w-4 mr-2" />
+                Generate Workout
+              </Button>
             </div>
-            <h2 className="text-lg font-bold text-white mb-1">Ready to train?</h2>
-            <p className="text-sm text-[#8E8E93] mb-4">
-              Generate a personalized workout tailored to your goals and available equipment.
-            </p>
-            <Button
-              size="lg"
-              className="w-full"
-              onClick={() => navigate('/generate')}
-            >
-              <Zap className="h-4 w-4 mr-2" />
-              Generate Workout
-            </Button>
           </motion.div>
         )}
 

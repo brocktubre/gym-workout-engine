@@ -175,3 +175,41 @@ export async function deleteWorkout(date: string, id: string): Promise<void> {
     Key: { PK: `WORKOUT#${date}`, SK: `WORKOUT#${id}` },
   }));
 }
+
+// ---------------------------------------------------------------------------
+// Coaching note cache (one per calendar date)
+// ---------------------------------------------------------------------------
+
+export interface CachedCoachingNote {
+  note: string;
+  suggestedMuscles: string[];
+  suggestedGoal?: string;
+  date: string;
+  generatedAt: string;
+}
+
+export async function getCachedCoachingNote(date: string): Promise<CachedCoachingNote | null> {
+  try {
+    const result = await client.send(new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { PK: 'COACHING', SK: `NOTE#${date}` },
+    }));
+    if (!result.Item) return null;
+    const { PK, SK, entityType, ...note } = result.Item;
+    return note as CachedCoachingNote;
+  } catch {
+    return null;
+  }
+}
+
+export async function saveCoachingNote(note: CachedCoachingNote): Promise<void> {
+  await client.send(new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: 'COACHING',
+      SK: `NOTE#${note.date}`,
+      entityType: 'CoachingNote',
+      ...note,
+    },
+  }));
+}

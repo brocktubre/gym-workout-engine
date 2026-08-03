@@ -4,7 +4,17 @@ import type {
   Workout,
   WorkoutStats,
   UserSettings,
+  MuscleGroup,
+  WorkoutGoal,
 } from '@/types';
+
+export interface CoachingNote {
+  note: string;
+  suggestedMuscles: MuscleGroup[];
+  suggestedGoal?: WorkoutGoal;
+  date: string;
+  generatedAt: string;
+}
 
 const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
 
@@ -117,6 +127,12 @@ export const api = {
   async getStats(): Promise<WorkoutStats> {
     const res = await request<{ stats: WorkoutStats }>('/workouts/stats');
     return res.stats;
+  },
+
+  // ── Coaching ─────────────────────────────────────────────────────────────────
+  async getCoachingNote(): Promise<CoachingNote> {
+    const res = await request<{ note: CoachingNote }>('/coaching/daily-note');
+    return res.note;
   },
 
   // ── Settings ────────────────────────────────────────────────────────────────

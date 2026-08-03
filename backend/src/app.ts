@@ -5,6 +5,7 @@ import exercisesRouter from './routes/exercises';
 import workoutsRouter from './routes/workouts';
 import settingsRouter from './routes/settings';
 import engineRouter from './routes/engine';
+import coachingRouter from './routes/coaching';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/exercises', exercisesRouter);
 app.use('/api/workouts', workoutsRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/engine', engineRouter);
+app.use('/api/coaching', coachingRouter);
 
 app.use(errorHandler as express.ErrorRequestHandler);
 

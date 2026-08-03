@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -49,11 +49,19 @@ interface GeneratedWorkout {
   warmup?: WarmupItem[];
 }
 
+interface GenerateLocationState {
+  suggestedMuscles?: MuscleGroup[];
+  suggestedGoal?: WorkoutGoal;
+}
+
 export default function Generate() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const locationState = (location.state ?? {}) as GenerateLocationState;
+
   const [duration, setDuration] = useState(60);
-  const [goal, setGoal] = useState<WorkoutGoal>('hypertrophy');
-  const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>([]);
+  const [goal, setGoal] = useState<WorkoutGoal>(locationState.suggestedGoal ?? 'hypertrophy');
+  const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>(locationState.suggestedMuscles ?? []);
   const [includeWarmup, setIncludeWarmup] = useState(true);
   const [allowSupersets, setAllowSupersets] = useState(true);
   const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);

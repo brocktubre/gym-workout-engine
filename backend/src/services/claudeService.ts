@@ -1,7 +1,7 @@
 import { SecretsManagerClient, GetSecretValueCommand } from '@aws-sdk/client-secrets-manager';
 import Anthropic from '@anthropic-ai/sdk';
 import { v4 as uuidv4 } from 'uuid';
-import { WorkoutExercise, UserSettings, Workout } from '../types';
+import { WorkoutExercise, UserSettings, Workout, MuscleGroup, WorkoutGoal } from '../types';
 
 // ---------------------------------------------------------------------------
 // Secrets Manager — cache key after first cold-start fetch
@@ -31,6 +31,99 @@ interface ClaudeExerciseChoice {
 interface ClaudeResponse {
   exercises: ClaudeExerciseChoice[];
   reasoning?: string;
+}
+
+// ---------------------------------------------------------------------------
+// Daily coaching note
+// ---------------------------------------------------------------------------
+
+interface CoachingNoteResponse {
+  note: string;
+  suggestedMuscles: MuscleGroup[];
+  suggestedGoal?: WorkoutGoal;
+}
+
+export async function generateDailyCoachingNote(
+  recentWorkouts: Workout[],
+  userGoal: WorkoutGoal,
+): Promise<CoachingNoteResponse> {
+  const ALL_MUSCLES: MuscleGroup[] = [
+    'chest', 'back', 'shoulders', 'biceps', 'triceps',
+    'quads', 'hamstrings', 'glutes', 'core',
+  ];
+
+  // Build a compact history: muscle groups hit per workout, sorted recent-first
+  const now = Date.now();
+  const historyCompact = recentWorkouts
+    .filter(w => w.status === 'completed' && w.completedAt)
+    .slice(0, 10)
+    .map(w => {
+      const daysAgo = Math.round((now - new Date(w.completedAt!).getTime()) / 86_400_000);
+      const muscles = [...new Set(w.exercises.map(e => e.exercise.primaryMuscle))];
+      return { daysAgo, muscles, goal: w.goal };
+    });
+
+  // Figure out which muscles haven't been hit recently (for fallback)
+  const recentMuscles = new Set(
+    historyCompact.filter(w => w.daysAgo <= 2).flatMap(w => w.muscles),
+  );
+  const freshMuscles = ALL_MUSCLES.filter(m => !recentMuscles.has(m));
+
+  const apiKey = await getAnthropicApiKey();
+  const client = new Anthropic({ apiKey, timeout: 10_000 });
+
+  const systemPrompt = `You are a personal trainer giving a brief daily tip.
+Based on recent workout history, write ONE concise sentence (under 20 words) telling the user what to focus on today and why.
+Also return the 1–3 best muscle groups to train today and the best goal.
+
+RULES:
+- Avoid muscles trained within the last 48 hours
+- If no history exists, suggest a full-body or compound day
+- Return ONLY valid JSON, no markdown
+
+Format: {"note":"...","suggestedMuscles":["quads","hamstrings"],"suggestedGoal":"strength"}
+Valid muscles: chest,back,shoulders,biceps,triceps,quads,hamstrings,glutes,core
+Valid goals: strength,hypertrophy,endurance,fat-loss`;
+
+  const userMessage = JSON.stringify({
+    userGoal,
+    freshMuscles,
+    recentHistory: historyCompact,
+  });
+
+  try {
+    const response = await client.messages.create({
+      model: 'claude-3-5-haiku-20241022',
+      max_tokens: 150,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }],
+    });
+
+    const text = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+    const parsed = JSON.parse(text) as CoachingNoteResponse;
+
+    // Validate muscles
+    const validMuscles = (parsed.suggestedMuscles ?? []).filter(m =>
+      ALL_MUSCLES.includes(m as MuscleGroup),
+    ) as MuscleGroup[];
+
+    return {
+      note: parsed.note ?? 'Good time for a full-body session.',
+      suggestedMuscles: validMuscles.length > 0 ? validMuscles : (freshMuscles.slice(0, 2) as MuscleGroup[]),
+      suggestedGoal: parsed.suggestedGoal ?? userGoal,
+    };
+  } catch (err) {
+    console.error('[Claude] Coaching note failed:', err);
+    // Sensible fallback without Claude
+    const fallbackMuscles = freshMuscles.slice(0, 2) as MuscleGroup[];
+    return {
+      note: freshMuscles.length > 0
+        ? `Fresh muscles available — good day for ${freshMuscles.slice(0, 2).join(' and ')}.`
+        : 'Rest day recommended — most muscle groups need recovery.',
+      suggestedMuscles: fallbackMuscles,
+      suggestedGoal: userGoal,
+    };
+  }
 }
 
 // ---------------------------------------------------------------------------
