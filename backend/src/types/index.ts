@@ -66,6 +66,21 @@ export interface WorkoutExercise {
   sets: WorkoutSet[];
   notes?: string;
   progressionNote?: string;
+  /** If set, this exercise is part of a superset */
+  supersetGroupId?: string;
+  /** 1 = first in superset, 2 = second, etc. */
+  supersetOrder?: number;
+}
+
+export interface WarmupItem {
+  name: string;
+  type: 'cardio' | 'stretch' | 'mobility';
+  durationSeconds: number;
+  targetMuscles: MuscleGroup[];
+  equipment?: Equipment;
+  instructions: string[];
+  completed?: boolean;
+  skipped?: boolean;
 }
 
 export interface Workout {
@@ -80,6 +95,8 @@ export interface Workout {
   goal: WorkoutGoal;
   notes?: string;
   totalVolume?: number;
+  warmup?: WarmupItem[];
+  warmupStatus?: 'pending' | 'in-progress' | 'completed' | 'skipped';
 }
 
 export interface UserSettings {
@@ -92,6 +109,10 @@ export interface UserSettings {
   exerciseVarietyDays: number;
   preferCompound: boolean;
   targetMuscleGroups?: MuscleGroup[];
+  /** Include warmup phase at start of each workout */
+  includeWarmup?: boolean;
+  /** Allow superset pairings in generated workouts */
+  allowSupersets?: boolean;
 }
 
 export interface GenerateWorkoutRequest {
@@ -99,6 +120,8 @@ export interface GenerateWorkoutRequest {
   goal?: WorkoutGoal;
   targetMuscleGroups?: MuscleGroup[];
   excludeExerciseIds?: string[];
+  includeWarmup?: boolean;
+  allowSupersets?: boolean;
 }
 
 export interface WorkoutStats {

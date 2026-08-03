@@ -19,7 +19,7 @@ router.post('/generate', async (req: Request, res: Response) => {
       getRecentWorkouts(14),
     ]);
 
-    const exercises = await generateWorkout({ settings, recentWorkouts, request });
+    const { exercises, warmup } = await generateWorkout({ settings, recentWorkouts, request });
 
     const today = new Date().toISOString().split('T')[0];
     const workout = {
@@ -28,6 +28,8 @@ router.post('/generate', async (req: Request, res: Response) => {
       createdAt: new Date().toISOString(),
       status: 'generated' as const,
       exercises,
+      warmup,
+      warmupStatus: warmup.length > 0 ? 'pending' as const : undefined,
       targetDurationMinutes: request.durationMinutes,
       goal: request.goal || settings.goal,
     };

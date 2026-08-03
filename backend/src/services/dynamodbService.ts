@@ -24,6 +24,8 @@ const DEFAULT_SETTINGS: UserSettings = {
   fatigueWindowHours: 48,
   exerciseVarietyDays: 7,
   preferCompound: true,
+  includeWarmup: true,
+  allowSupersets: true,
 };
 
 export async function getSettings(): Promise<UserSettings> {
