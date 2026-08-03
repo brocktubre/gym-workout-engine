@@ -116,24 +116,22 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
         </button>
       </div>
 
-      {/* Done button */}
-      <motion.button
-        whileTap={{ scale: 0.85 }}
+      {/* Done button — plain button for reliable touch response */}
+      <button
+        type="button"
         onClick={handleComplete}
+        disabled={set.completed}
         className={cn(
-          'h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 transition-colors duration-200',
+          'h-12 w-12 rounded-full flex items-center justify-center flex-shrink-0',
+          'transition-colors duration-150 active:scale-90',
+          'touch-manipulation select-none',
           set.completed
-            ? 'bg-[#30D158] text-white'
-            : 'bg-[#38383A] text-[#8E8E93] hover:bg-[#FF375F] hover:text-white',
+            ? 'bg-[#30D158] text-white cursor-default'
+            : 'bg-[#38383A] text-[#8E8E93] active:bg-[#FF375F] active:text-white',
         )}
       >
-        <motion.div
-          animate={set.completed ? { scale: [0.5, 1.2, 1] } : { scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <Check className="h-4 w-4" />
-        </motion.div>
-      </motion.button>
+        <Check className="h-5 w-5" />
+      </button>
     </motion.div>
   );
 }

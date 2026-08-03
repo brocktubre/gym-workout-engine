@@ -610,7 +610,9 @@ export default function ActiveWorkout() {
                   isActive={isCurrent && !set.completed}
                   equipment={currentExercise.exercise.equipment}
                   onComplete={(weight, reps) => {
-                    if (isCurrent) handleSetComplete(weight, reps);
+                    // Allow completing any not-yet-done set, not just the
+                    // strict current — handles tap-lag and set order mismatches
+                    if (!set.completed) handleSetComplete(weight, reps);
                   }}
                   onChange={(field, value) => {
                     if (isCurrent) handleSetUpdate(field, value);

@@ -362,7 +362,8 @@ export async function generateWorkout(context: {
       if (partnerEx && !bothBarbell) {
         const groupId = uuidv4();
         // In a superset rest is shared — shorter rest per individual exercise
-        const supersetRest = Math.round(restSeconds * 0.5);
+        // Superset rest: half of normal rest, never less than 30s
+        const supersetRest = Math.max(30, Math.round(restSeconds * 0.5));
 
         const { sets: setsA, progressionNote: noteA } = buildSets(primaryEx, goal, config, supersetRest, recentWorkouts);
         const { sets: setsB, progressionNote: noteB } = buildSets(partnerEx, goal, config, supersetRest, recentWorkouts);
