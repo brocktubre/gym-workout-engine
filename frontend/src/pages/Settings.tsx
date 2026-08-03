@@ -124,13 +124,17 @@ export default function Settings() {
 
   const handleSave = async () => {
     try {
-      await updateMutation.mutateAsync(form);
+      // Strip any undefined values before sending
+      const payload = JSON.parse(JSON.stringify(form)) as UserSettings;
+      await updateMutation.mutateAsync(payload);
       setIsDirty(false);
       toast({ title: 'Settings saved!', variant: 'success' });
     } catch (err) {
+      console.error('[Settings] Save error:', err);
+      const msg = err instanceof Error ? err.message : String(err);
       toast({
         title: 'Save failed',
-        description: err instanceof Error ? err.message : 'Could not save settings',
+        description: msg.includes('fetch') ? 'Network error — check your connection and try again' : msg,
         variant: 'error',
       });
     }

@@ -155,7 +155,7 @@ export default function ActiveWorkout() {
           </div>
         </div>
         {/* Warmup list */}
-        <div className="flex-1 px-4 py-4 space-y-2 pb-40">
+        <div className="flex-1 px-4 py-4 space-y-2 pb-[160px]">
           {warmupItems.map((item, i) => {
             const typeColors: Record<string, string> = {
               cardio: 'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/30',
@@ -191,7 +191,7 @@ export default function ActiveWorkout() {
           })}
         </div>
         {/* Bottom actions */}
-        <div className="fixed bottom-0 left-0 right-0 px-4 py-4 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
+        <div className="fixed bottom-[83px] left-0 right-0 px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
           <div className="flex gap-3">
             <Button variant="outline" onClick={handleSkipAllWarmup} className="flex-1">
               Skip Warmup

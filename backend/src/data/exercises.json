@@ -4265,5 +4265,384 @@
       "Lighter than barbell \u2014 perfect for warm-up or high reps",
       "Add band around knees to cue proper knee tracking"
     ]
+  },
+  {
+    "id": "ex_power_clean",
+    "name": "Power Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes",
+      "shoulders"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "advanced",
+    "instructions": [
+      "Bar over mid-foot, hip-width stance",
+      "Hinge down and grip bar just outside legs",
+      "Drive through floor \u2014 legs, then hip extension, then shrug",
+      "Pull bar up, drop under and catch in quarter-squat rack position",
+      "Stand tall to complete the lift"
+    ],
+    "tips": [
+      "Bar stays close to body throughout",
+      "Violent hip extension drives the bar up",
+      "Catch with elbows high in rack position"
+    ]
+  },
+  {
+    "id": "ex_hang_power_clean",
+    "name": "Hang Power Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes",
+      "shoulders"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold bar at hip crease, slight knee bend",
+      "Hinge slightly at hips to load the posterior chain",
+      "Explosively extend hips and knees \u2014 triple extension",
+      "Shrug and pull, drop under to catch in rack position",
+      "Stand to finish"
+    ],
+    "tips": [
+      "Starting from hang removes the pull from floor \u2014 great for learning",
+      "Focus on aggressive hip drive not arm pull",
+      "Keep elbows high in catch"
+    ]
+  },
+  {
+    "id": "ex_power_snatch",
+    "name": "Power Snatch",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back",
+      "quads",
+      "glutes"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "advanced",
+    "instructions": [
+      "Wide snatch grip, bar over mid-foot",
+      "Hinge down, chest up, lats engaged",
+      "Drive through floor \u2014 leg drive, hip extension, shrug",
+      "Punch bar overhead, catch with arms locked out in quarter-squat",
+      "Stand tall with bar overhead"
+    ],
+    "tips": [
+      "Wide grip creates shorter pulling distance",
+      "Bar should move in straight vertical path",
+      "Lock elbows out aggressively on the catch"
+    ]
+  },
+  {
+    "id": "ex_hang_power_snatch",
+    "name": "Hang Power Snatch",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back",
+      "quads"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Wide snatch grip, bar at hip crease",
+      "Slight hinge back to load hips",
+      "Explosive hip drive \u2014 full triple extension",
+      "Punch bar overhead and catch locked out",
+      "Stand to complete"
+    ],
+    "tips": [
+      "Great snatch entry point \u2014 less technical than full snatch",
+      "Focus on catching with straight arms",
+      "Use lighter load than power clean"
+    ]
+  },
+  {
+    "id": "ex_clean_and_jerk",
+    "name": "Clean & Jerk",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "quads",
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Perform a full clean \u2014 pull from floor to rack position",
+      "Dip: slight knee bend, torso upright",
+      "Drive: explosively extend legs",
+      "Split or push jerk \u2014 punch bar overhead as you drop under",
+      "Stand through and lock out overhead"
+    ],
+    "tips": [
+      "Two movements in one \u2014 clean first, then jerk",
+      "Dip-drive must be vertical",
+      "Most weight can be lifted overhead this way"
+    ]
+  },
+  {
+    "id": "ex_push_jerk",
+    "name": "Push Jerk",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps",
+      "quads"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Bar in front rack position on shoulders",
+      "Dip: shallow knee bend, torso upright",
+      "Drive: explosive leg extension",
+      "Punch arms overhead, receive bar with feet wider",
+      "Stand to lockout"
+    ],
+    "tips": [
+      "Dip is shallow and fast \u2014 not a squat",
+      "Let the legs do the work, arms guide bar",
+      "Receive with soft knees, arms locked"
+    ]
+  },
+  {
+    "id": "ex_split_jerk",
+    "name": "Split Jerk",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps",
+      "quads"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Bar in front rack, feet hip-width",
+      "Dip: shallow, vertical torso",
+      "Drive legs explosively",
+      "Split feet front-to-back as bar is punched overhead",
+      "Lock out arms, then step feet back together"
+    ],
+    "tips": [
+      "Front foot steps forward, back foot steps back equally",
+      "Bar should be directly over base of support",
+      "Most stable overhead receiving position"
+    ]
+  },
+  {
+    "id": "ex_clean_pull",
+    "name": "Clean Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Clean grip and setup from floor",
+      "Pull bar as if performing a clean",
+      "Achieve full triple extension \u2014 ankles, knees, hips",
+      "Shrug at top, bar rises to waist/stomach height",
+      "Lower with control"
+    ],
+    "tips": [
+      "Load heavier than full clean \u2014 no catch required",
+      "Great for building clean pulling strength",
+      "Focus on staying over bar until hips extend"
+    ]
+  },
+  {
+    "id": "ex_snatch_pull",
+    "name": "Snatch Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Wide snatch grip, set up from floor",
+      "Pull with full triple extension \u2014 legs, hips, shrug",
+      "Bar should travel to lower chest height",
+      "Lower with control"
+    ],
+    "tips": [
+      "Can load heavier than full snatch",
+      "Builds pulling strength and positional awareness",
+      "Keep bar close throughout the pull"
+    ]
+  },
+  {
+    "id": "ex_muscle_snatch",
+    "name": "Muscle Snatch",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Wide snatch grip, bar at hips",
+      "Shrug and pull bar up with no rebend of knees",
+      "Rotate wrists and press bar straight overhead",
+      "Finish with arms locked out, bar directly overhead",
+      "Lower with control"
+    ],
+    "tips": [
+      "Light weight \u2014 no leg drive assistance",
+      "Great for shoulder mobility and overhead strength",
+      "Useful as a warm-up for snatch work"
+    ]
+  },
+  {
+    "id": "ex_overhead_squat",
+    "name": "Overhead Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "shoulders",
+      "core",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Take wide snatch grip, press bar overhead and lock out",
+      "Feet shoulder-width, toes slightly out",
+      "Squat to full depth keeping bar directly overhead",
+      "Drive knees out, maintain upright torso",
+      "Stand through and return"
+    ],
+    "tips": [
+      "Demands extreme shoulder mobility and overhead stability",
+      "Bar over base of support throughout",
+      "Start light \u2014 this exposes mobility restrictions quickly"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_power_clean",
+    "name": "Dumbbell Power Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes",
+      "shoulders"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold dumbbells at sides or hang position",
+      "Hinge at hips, slight knee bend",
+      "Drive hips explosively \u2014 full triple extension",
+      "Shrug and pull dumbbells up, rotate elbows forward to catch at shoulders",
+      "Stand to complete"
+    ],
+    "tips": [
+      "Great intro to Olympic lifting patterns",
+      "Each arm works independently \u2014 exposes imbalances",
+      "Can use heavier loads than barbell version due to bilateral deficit"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_hang_clean",
+    "name": "Dumbbell Hang Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "shoulders"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold dumbbells at thigh height, slight knee bend",
+      "Explosively drive hips, extend ankles",
+      "Shrug and curl dumbbells to front rack position",
+      "Catch in quarter squat, stand to finish"
+    ],
+    "tips": [
+      "Best beginner introduction to clean mechanics",
+      "Dumbbells allow natural wrist rotation",
+      "Go lighter than you think \u2014 technique first"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_snatch",
+    "name": "Dumbbell Snatch",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back",
+      "quads"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold one dumbbell between feet, squat down",
+      "Drive through floor \u2014 full triple extension",
+      "Pull dumbbell straight up close to body",
+      "Punch overhead with arm fully locked",
+      "Lower and alternate sides"
+    ],
+    "tips": [
+      "Single arm allows full rotation and natural movement",
+      "Keep dumbbell close to body on the way up",
+      "Lock elbow at top before standing"
+    ]
+  },
+  {
+    "id": "ex_clean_and_press",
+    "name": "Clean & Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back",
+      "quads",
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Clean bar to front rack position",
+      "Take a breath, brace core",
+      "Strict press bar overhead \u2014 no leg drive",
+      "Lockout arms overhead",
+      "Lower to rack, then to floor"
+    ],
+    "tips": [
+      "Strict press after clean \u2014 no jerk",
+      "Great total body strength movement",
+      "Add leg drive to convert to push press"
+    ]
   }
 ]
