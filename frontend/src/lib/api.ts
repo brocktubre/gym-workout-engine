@@ -62,17 +62,19 @@ async function request<T>(
 
 export const api = {
   // ── Exercises ──────────────────────────────────────────────────────────────
-  getExercises(params?: { muscle?: string; equipment?: string; search?: string }): Promise<Exercise[]> {
+  async getExercises(params?: { muscle?: string; equipment?: string; search?: string }): Promise<Exercise[]> {
     const qs = new URLSearchParams();
     if (params?.muscle) qs.set('muscle', params.muscle);
     if (params?.equipment) qs.set('equipment', params.equipment);
     if (params?.search) qs.set('search', params.search);
     const query = qs.toString();
-    return request<Exercise[]>(`/exercises${query ? `?${query}` : ''}`);
+    const res = await request<{ exercises: Exercise[]; total: number }>(`/exercises${query ? `?${query}` : ''}`);
+    return res.exercises;
   },
 
-  getExercise(id: string): Promise<Exercise> {
-    return request<Exercise>(`/exercises/${encodeURIComponent(id)}`);
+  async getExercise(id: string): Promise<Exercise> {
+    const res = await request<{ exercise: Exercise }>(`/exercises/${encodeURIComponent(id)}`);
+    return res.exercise;
   },
 
   // ── Engine ──────────────────────────────────────────────────────────────────

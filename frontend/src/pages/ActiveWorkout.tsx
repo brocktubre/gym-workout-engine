@@ -131,6 +131,8 @@ export default function ActiveWorkout() {
   const { elapsed } = useWorkoutTimer(activeWorkout !== null && !isPaused, isPaused ? getSavedElapsed() : undefined);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
   const wasRestingRef = useRef(false);
+  // Track the total rest seconds the current timer was started with (for the progress arc)
+  const restTotalRef = useRef(90);
 
   // If workout was paused, resume the timer on mount
   useEffect(() => {
@@ -286,7 +288,6 @@ export default function ActiveWorkout() {
   }
 
   const currentExercise = exercises[currentTurn.exerciseIndex];
-  const currentSet = currentExercise?.sets[currentTurn.setIndex];
 
   // For superset display: find the partner
   let supersetPartner: WorkoutExercise | undefined;
@@ -304,19 +305,7 @@ export default function ActiveWorkout() {
   const setNumber = currentTurn.setIndex + 1;
   const totalExerciseSets = currentExercise?.sets.length ?? 0;
 
-  // ── Auto-advance when rest ends ──────────────────────────────────────────
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  useEffect(() => {
-    if (!isResting && wasRestingRef.current) {
-      wasRestingRef.current = false;
-      // Move to next turn automatically
-      setCurrentTurnIndex((i) => {
-        const next = Math.min(i + 1, turns.length - 1);
-        return next;
-      });
-    }
-    if (isResting) wasRestingRef.current = true;
-  }, [isResting, turns.length]);
+  // Auto-advance is handled by the single useEffect above the conditional returns
 
   // ── Event handlers ─────────────────────────────────────────────────────────
 
@@ -355,6 +344,7 @@ export default function ActiveWorkout() {
     const restSecs = currentTurn.betweenExercise
       ? BETWEEN_EXERCISE_REST
       : (set.restSeconds ?? 90);
+    restTotalRef.current = restSecs;
     startRest(restSecs);
 
     toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });
@@ -592,11 +582,16 @@ export default function ActiveWorkout() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              className="flex justify-center py-2"
+              className="flex flex-col items-center gap-1 py-2"
             >
+              {currentTurn.betweenExercise && (
+                <p className="text-xs font-semibold text-[#FF9F0A] uppercase tracking-wider mb-1">
+                  Rest between exercises
+                </p>
+              )}
               <RestTimer
                 seconds={restSeconds}
-                totalSeconds={currentSet?.restSeconds ?? 90}
+                totalSeconds={restTotalRef.current}
                 onSkip={skipRest}
               />
             </motion.div>
@@ -613,6 +608,7 @@ export default function ActiveWorkout() {
                   key={`${currentTurn.exerciseIndex}-${si}`}
                   set={set}
                   isActive={isCurrent && !set.completed}
+                  equipment={currentExercise.exercise.equipment}
                   onComplete={(weight, reps) => {
                     if (isCurrent) handleSetComplete(weight, reps);
                   }}
