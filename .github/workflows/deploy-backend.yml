@@ -38,11 +38,10 @@ jobs:
       - name: Package
         working-directory: backend
         run: |
-          mkdir -p lambda-package/dist
-          cp -r dist/* lambda-package/dist/
-          cp package.json package-lock.json lambda-package/
-          cd lambda-package && npm ci --omit=dev
-          zip -r ../lambda.zip .
+          # Zip dist contents to root (handler = lambda.handler)
+          cd dist && zip -r ../lambda.zip . && cd ..
+          # Add production node_modules to zip root
+          zip -r lambda.zip node_modules
       - name: Upload to S3
         run: aws s3 cp backend/lambda.zip s3://gym.oc.taglineconsultants.com/lambda/lambda.zip
       - name: Update Lambda Function

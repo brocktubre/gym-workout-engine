@@ -67,11 +67,10 @@ jobs:
         run: |
           npm ci
           npm run build
-          mkdir -p lambda-package/dist
-          cp -r dist/* lambda-package/dist/
-          cp package.json package-lock.json lambda-package/
-          cd lambda-package && npm ci --omit=dev && cd ..
-          zip -r lambda.zip lambda-package/
+          # Zip dist contents to zip root (handler = lambda.handler)
+          cd dist && zip -r ../lambda.zip . && cd ..
+          # Add production node_modules to zip root
+          zip -r lambda.zip node_modules
       - name: Upload Lambda zip to S3
         run: aws s3 cp backend/lambda.zip s3://gym.oc.taglineconsultants.com/lambda/lambda.zip
       - name: Deploy Backend Stack
@@ -81,7 +80,14 @@ jobs:
             --stack-name "gym-workout-engine-backend-${{ env.STAGE }}" \
             --parameter-overrides Stage=${{ env.STAGE }} \
             --capabilities CAPABILITY_NAMED_IAM \
-            --no-fail-on-empty-changeset
+            --no-fail-on-empty-changeset || (
+              echo "=== CloudFormation Stack Events ==="
+              aws cloudformation describe-stack-events \
+                --stack-name "gym-workout-engine-backend-${{ env.STAGE }}" \
+                --query 'StackEvents[?contains(`["CREATE_FAILED","UPDATE_FAILED","ROLLBACK_IN_PROGRESS"]`, ResourceStatus)].{Resource:LogicalResourceId,Status:ResourceStatus,Reason:ResourceStatusReason}' \
+                --output table
+              exit 1
+            )
       - name: Get API Endpoint
         id: get-api
         run: |
