@@ -93,13 +93,21 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
-  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, getSavedTurnIndex } = useActiveWorkout();
+  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedElapsed, getSavedTurnIndex, isPaused } = useActiveWorkout();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
 
-  const { elapsed } = useWorkoutTimer(activeWorkout !== null);
+  const { elapsed } = useWorkoutTimer(activeWorkout !== null && !isPaused, isPaused ? getSavedElapsed() : undefined);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
   const wasRestingRef = useRef(false);
+
+  // If workout was paused, resume the timer on mount
+  useEffect(() => {
+    if (isPaused) {
+      resumeFromPause();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
 
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
@@ -194,7 +202,7 @@ export default function ActiveWorkout() {
         {/* Bottom actions */}
         <div className="fixed bottom-[83px] left-0 right-0 px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
           <div className="flex gap-3">
-            <Button variant="outline" onClick={handleSkipAllWarmup} className="flex-1">
+            <Button variant="outline" size="lg" onClick={handleSkipAllWarmup} className="flex-1">
               Skip Warmup
             </Button>
             <Button
@@ -380,8 +388,8 @@ export default function ActiveWorkout() {
   }
 
   function handlePauseLater() {
-    // Save current position and return to dashboard — workout stays in DB
-    pauseWorkout(currentTurnIndex);
+    // Save current position and elapsed time — workout stays in DB
+    pauseWorkout(currentTurnIndex, elapsed);
     setShowExitDialog(false);
     navigate('/');
   }

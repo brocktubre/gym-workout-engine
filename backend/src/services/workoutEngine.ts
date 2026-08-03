@@ -123,8 +123,8 @@ function buildWarmup(
   const warmup: WarmupItem[] = [];
   let budgetSeconds = durationMinutes * 60;
 
-  // 1. Cardio machine (5-7 min)
-  const cardioDuration = Math.min(420, Math.floor(budgetSeconds * 0.6));
+  // 1. Cardio machine (7 min minimum, up to 8 min)
+  const cardioDuration = Math.min(480, Math.max(420, Math.floor(budgetSeconds * 0.65)));
   const cardioOption = CARDIO_WARMUP_OPTIONS.find(o => availableEquipment.includes(o.equipment))
     ?? CARDIO_WARMUP_OPTIONS[CARDIO_WARMUP_OPTIONS.length - 1];
 
@@ -141,7 +141,7 @@ function buildWarmup(
   // 2. Mobility/stretches for target muscles (remaining time, max 3 items)
   const stretched = new Set<MuscleGroup>();
   for (const muscle of targetMuscles) {
-    if (budgetSeconds < 20 || stretched.size >= 3) break;
+    if (budgetSeconds < 20 || stretched.size >= 4) break;
     const options = WARMUP_STRETCHES[muscle];
     if (!options?.length) continue;
     const item = options[0];
@@ -228,7 +228,7 @@ export async function generateWorkout(context: {
   const allowSupersets = request.allowSupersets ?? settings.allowSupersets ?? true;
 
   // Warmup duration: 5 min default, 10 if workout ≥ 60 min
-  const warmupMinutes = includeWarmup ? (targetMinutes >= 60 ? 10 : 5) : 0;
+  const warmupMinutes = includeWarmup ? 12 : 0; // Always 10-12 min: ~7 min cardio + ~3 min stretching
 
   // Time budget for exercises
   let budget = targetMinutes - warmupMinutes;
