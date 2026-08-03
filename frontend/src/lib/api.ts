@@ -2,8 +2,6 @@ import type {
   Exercise,
   GenerateWorkoutRequest,
   Workout,
-  WorkoutExercise,
-  WorkoutGoal,
   WorkoutStats,
   UserSettings,
 } from '@/types';
@@ -68,13 +66,7 @@ export const api = {
   },
 
   // ── Engine ──────────────────────────────────────────────────────────────────
-  generateWorkout(req: GenerateWorkoutRequest): Promise<{
-    workout: {
-      exercises: WorkoutExercise[];
-      goal: WorkoutGoal;
-      targetDurationMinutes: number;
-    };
-  }> {
+  generateWorkout(req: GenerateWorkoutRequest): Promise<{ workout: Workout }> {
     return request('/engine/generate', {
       method: 'POST',
       body: JSON.stringify(req),
@@ -82,22 +74,24 @@ export const api = {
   },
 
   // ── Workouts ────────────────────────────────────────────────────────────────
-  createWorkout(workout: Omit<Workout, 'id'>): Promise<Workout> {
-    return request<Workout>('/workouts', {
+  async createWorkout(workout: Omit<Workout, 'id'>): Promise<Workout> {
+    const res = await request<{ workout: Workout }>('/workouts', {
       method: 'POST',
       body: JSON.stringify(workout),
     });
+    return res.workout;
   },
 
   getWorkout(date: string, id: string): Promise<Workout> {
     return request<Workout>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`);
   },
 
-  updateWorkout(date: string, id: string, updates: Partial<Workout>): Promise<Workout> {
-    return request<Workout>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`, {
-      method: 'PATCH',
+  async updateWorkout(date: string, id: string, updates: Partial<Workout>): Promise<Workout> {
+    const res = await request<{ workout: Workout }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`, {
+      method: 'PUT',
       body: JSON.stringify(updates),
     });
+    return res.workout;
   },
 
   completeWorkout(date: string, id: string): Promise<Workout> {

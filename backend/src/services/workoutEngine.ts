@@ -311,13 +311,19 @@ export async function generateWorkout(context: {
   const exclude = new Set(request.excludeExerciseIds || []);
   const processedMuscles = new Set<MuscleGroup>();
 
+  // Seeded random shuffle so regenerate produces different exercises each time
+  const shuffleSeed = Date.now();
+  const seededRandom = (i: number) => ((shuffleSeed * (i + 1) * 2654435761) >>> 0) / 4294967296;
+  const shuffle = <T,>(arr: T[]): T[] =>
+    [...arr].sort((_, __, i = Math.random()) => i - 0.5);
+
   const pickExercise = (muscle: MuscleGroup, preferCompound: boolean, excludeIds: Set<string>) => {
-    const pool = available.filter(e =>
+    const pool = shuffle(available.filter(e =>
       e.primaryMuscle === muscle &&
       !recentIds.has(e.id) &&
       !excludeIds.has(e.id) &&
       !exclude.has(e.id)
-    );
+    ));
     if (preferCompound) {
       return pool.find(e => e.category === 'compound') ?? pool[0];
     }
@@ -351,7 +357,9 @@ export async function generateWorkout(context: {
       // === SUPERSET ===
       usedIds.add(primaryEx.id);
       const partnerEx = pickExercise(supersetPartner, settings.preferCompound, usedIds);
-      if (partnerEx) {
+      // Never superset two barbell movements — user only has 1 barbell set up at a time
+      const bothBarbell = primaryEx.equipment === 'barbell' && partnerEx?.equipment === 'barbell';
+      if (partnerEx && !bothBarbell) {
         const groupId = uuidv4();
         // In a superset rest is shared — shorter rest per individual exercise
         const supersetRest = Math.round(restSeconds * 0.5);

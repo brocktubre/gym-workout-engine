@@ -68,7 +68,7 @@ export default function Generate() {
     );
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (excludeIds?: string[]) => {
     try {
       const result = await generateMutation.mutateAsync({
         durationMinutes: duration,
@@ -76,6 +76,7 @@ export default function Generate() {
         targetMuscleGroups: targetMuscles.length > 0 ? targetMuscles : undefined,
         includeWarmup,
         allowSupersets,
+        excludeExerciseIds: excludeIds,
       });
       setGeneratedWorkout(result.workout);
     } catch (err) {
@@ -236,7 +237,7 @@ export default function Generate() {
         <Button
           size="lg"
           className="w-full"
-          onClick={handleGenerate}
+          onClick={() => handleGenerate()}
           disabled={generateMutation.isPending}
         >
           {generateMutation.isPending ? (
@@ -285,16 +286,35 @@ export default function Generate() {
                 </div>
               </div>
 
-              {/* Warmup summary (if present) */}
+              {/* Warmup list (if present) */}
               {(generatedWorkout.warmup?.length ?? 0) > 0 && (
-                <div className="flex items-center gap-2 px-4 py-3 bg-[#1c1c1e] rounded-2xl border border-[#38383A]">
-                  <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
-                  <span className="text-sm text-white font-medium">
-                    Warmup: {totalWarmupMinutes} min
-                  </span>
-                  <span className="text-xs text-[#8E8E93] ml-1">
-                    ({generatedWorkout.warmup!.length} items)
-                  </span>
+                <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
+                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#38383A]">
+                    <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
+                    <span className="text-sm font-semibold text-white">Warmup</span>
+                    <span className="text-xs text-[#8E8E93] ml-auto">{totalWarmupMinutes} min total</span>
+                  </div>
+                  <div className="divide-y divide-[#38383A]">
+                    {generatedWorkout.warmup!.map((item, i) => {
+                      const typeColors: Record<string, string> = {
+                        cardio: 'bg-[#FF375F]/20 text-[#FF375F]',
+                        stretch: 'bg-[#0A84FF]/20 text-[#0A84FF]',
+                        mobility: 'bg-[#BF5AF2]/20 text-[#BF5AF2]',
+                      };
+                      const durationLabel = item.durationSeconds >= 60
+                        ? `${Math.round(item.durationSeconds / 60)} min`
+                        : `${item.durationSeconds}s`;
+                      return (
+                        <div key={i} className="flex items-center gap-3 px-4 py-3">
+                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
+                            {item.type}
+                          </span>
+                          <span className="text-sm text-white flex-1">{item.name}</span>
+                          <span className="text-xs text-[#8E8E93] flex-shrink-0">{durationLabel}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
@@ -310,7 +330,7 @@ export default function Generate() {
                 <Button
                   variant="outline"
                   className="flex-1"
-                  onClick={handleGenerate}
+                  onClick={() => handleGenerate(generatedWorkout?.exercises.map(e => e.exerciseId))}
                   disabled={generateMutation.isPending}
                 >
                   <RefreshCw className="h-4 w-4 mr-2" />
