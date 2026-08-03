@@ -112,7 +112,35 @@ export default function ActiveWorkout() {
   const updateWorkoutMutation = useUpdateWorkout();
   const deleteWorkoutMutation = useDeleteWorkout();
 
-  // ── No active workout ──────────────────────────────────────────────────────
+  // ── ALL hooks before any conditional return (Rules of Hooks) ──────────────
+
+  // Safe derived state — uses optional chaining so null activeWorkout is fine
+  const exercises = activeWorkout?.exercises ?? [];
+  const warmupPending =
+    activeWorkout?.warmupStatus === 'pending' &&
+    (activeWorkout?.warmup?.length ?? 0) > 0;
+
+  const handleWarmupComplete = useCallback(
+    (updatedWarmup: WarmupItem[]) => {
+      updateActiveWorkout({ warmup: updatedWarmup, warmupStatus: 'completed' });
+    },
+    [updateActiveWorkout],
+  );
+  const handleSkipAllWarmup = useCallback(() => {
+    updateActiveWorkout({ warmupStatus: 'skipped' });
+  }, [updateActiveWorkout]);
+
+  const turns = useMemo(() => buildTurns(exercises), [exercises]);
+
+  useEffect(() => {
+    if (!isResting && wasRestingRef.current) {
+      wasRestingRef.current = false;
+      setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
+    }
+    if (isResting) wasRestingRef.current = true;
+  }, [isResting, turns.length]);
+
+  // ── Conditional returns — no hooks after this point ──────────────────────
 
   if (!activeWorkout) {
     return (
@@ -123,28 +151,6 @@ export default function ActiveWorkout() {
       </div>
     );
   }
-
-  const exercises = activeWorkout.exercises;
-
-  // ── Warmup phase ───────────────────────────────────────────────────────────
-
-  const warmupPending =
-    activeWorkout.warmupStatus === 'pending' &&
-    (activeWorkout.warmup?.length ?? 0) > 0;
-
-  const handleWarmupComplete = useCallback(
-    (updatedWarmup: WarmupItem[]) => {
-      updateActiveWorkout({
-        warmup: updatedWarmup,
-        warmupStatus: 'completed',
-      });
-    },
-    [updateActiveWorkout],
-  );
-
-  const handleSkipAllWarmup = useCallback(() => {
-    updateActiveWorkout({ warmupStatus: 'skipped' });
-  }, [updateActiveWorkout]);
 
   if (warmupPending) {
     const warmupItems = activeWorkout.warmup!;
@@ -217,11 +223,6 @@ export default function ActiveWorkout() {
       </div>
     );
   }
-
-  // ── Build turns ────────────────────────────────────────────────────────────
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const turns = useMemo(() => buildTurns(exercises), [exercises]);
 
   const totalSets = exercises.reduce((acc, e) => acc + e.sets.length, 0);
   const completedSets = exercises.reduce(
