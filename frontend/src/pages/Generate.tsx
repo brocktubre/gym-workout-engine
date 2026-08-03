@@ -22,17 +22,17 @@ const GOAL_OPTIONS: { value: WorkoutGoal; label: string; emoji: string }[] = [
   { value: 'fat-loss', label: 'Fat Loss', emoji: '🔥' },
 ];
 
-const MUSCLE_OPTIONS: { value: MuscleGroup; label: string; emoji: string }[] = [
-  { value: 'chest', label: 'Chest', emoji: '🫀' },
-  { value: 'back', label: 'Back', emoji: '🦾' },
-  { value: 'shoulders', label: 'Shoulders', emoji: '⬆️' },
-  { value: 'biceps', label: 'Biceps', emoji: '💪' },
-  { value: 'triceps', label: 'Triceps', emoji: '🔱' },
-  { value: 'quads', label: 'Quads', emoji: '🦵' },
-  { value: 'hamstrings', label: 'Hamstrings', emoji: '🦿' },
-  { value: 'glutes', label: 'Glutes', emoji: '🍑' },
-  { value: 'calves', label: 'Calves', emoji: '🦵' },
-  { value: 'core', label: 'Core', emoji: '🎯' },
+const MUSCLE_OPTIONS: { value: MuscleGroup; label: string }[] = [
+  { value: 'chest', label: 'Chest' },
+  { value: 'back', label: 'Back' },
+  { value: 'shoulders', label: 'Shoulders' },
+  { value: 'biceps', label: 'Biceps' },
+  { value: 'triceps', label: 'Triceps' },
+  { value: 'quads', label: 'Quads' },
+  { value: 'hamstrings', label: 'Hamstrings' },
+  { value: 'glutes', label: 'Glutes' },
+  { value: 'calves', label: 'Calves' },
+  { value: 'core', label: 'Core' },
 ];
 
 interface GeneratedWorkout {
@@ -177,7 +177,7 @@ export default function Generate() {
                       : 'bg-[#1c1c1e] text-[#8E8E93] border-[#38383A] hover:bg-[#2c2c2e]',
                   )}
                 >
-                  <span>{m.emoji}</span>
+
                   {m.label}
                 </button>
               );
