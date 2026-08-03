@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Info, TrendingUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faDumbbell, faPersonWalking, faCog,
@@ -42,9 +42,11 @@ interface ExerciseItemProps {
   workoutExercise: WorkoutExercise;
   index?: number;
   showProgress?: boolean;
+  /** When provided, shows a swap button and calls this on tap */
+  onSwap?: () => void;
 }
 
-export function ExerciseItem({ workoutExercise, index, showProgress = false }: ExerciseItemProps) {
+export function ExerciseItem({ workoutExercise, index, showProgress = false, onSwap }: ExerciseItemProps) {
   const [expanded, setExpanded] = useState(false);
   const { exercise, sets, progressionNote, supersetGroupId, supersetOrder } = workoutExercise;
 
@@ -120,6 +122,15 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false }: E
               )}>
                 {completedSets}/{totalSets}
               </span>
+            )}
+            {onSwap && (
+              <button
+                onClick={e => { e.stopPropagation(); onSwap(); }}
+                className="h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors"
+                title="Swap exercise"
+              >
+                <ArrowLeftRight className="h-3.5 w-3.5" />
+              </button>
             )}
             {expanded ? (
               <ChevronUp className="h-4 w-4 text-[#8E8E93]" />

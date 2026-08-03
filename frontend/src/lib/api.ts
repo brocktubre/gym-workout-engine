@@ -129,6 +129,18 @@ export const api = {
     return res.stats;
   },
 
+  // ── Engine extras ───────────────────────────────────────────────────────────
+  async swapSuggest(params: {
+    primaryMuscle: MuscleGroup;
+    excludeIds: string[];
+  }): Promise<Exercise[]> {
+    const res = await request<{ suggestions: Exercise[] }>('/engine/swap-suggest', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
+    return res.suggestions;
+  },
+
   // ── Coaching ─────────────────────────────────────────────────────────────────
   async getCoachingNote(): Promise<CoachingNote> {
     const res = await request<{ note: CoachingNote }>('/coaching/daily-note');

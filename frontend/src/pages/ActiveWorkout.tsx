@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, SkipForward, CheckCircle2 } from 'lucide-react';
+import { X, SkipForward, CheckCircle2, ArrowLeftRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -19,7 +19,8 @@ import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/use
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { calculateVolume } from '@/lib/utils';
-import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout } from '@/types';
+import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout, Exercise } from '@/types';
+import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
 
 // ── Superset turn logic ───────────────────────────────────────────────────────
 
@@ -95,6 +96,33 @@ export default function ActiveWorkout() {
   const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedElapsed, getSavedTurnIndex, isPaused } = useActiveWorkout();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
+  const [showSwapSheet, setShowSwapSheet] = useState(false);
+
+  const handleSwapExercise = (newExercise: Exercise) => {
+    if (!activeWorkout || !currentTurn) return;
+    const idx = currentTurn.exerciseIndex;
+    const original = exercises[idx];
+    if (!original) return;
+    const updatedExercises = exercises.map((ex, i) =>
+      i === idx
+        ? {
+            ...ex,
+            exerciseId: newExercise.id,
+            exercise: newExercise,
+            progressionNote: undefined,
+            sets: ex.sets.map(s => ({
+              ...s,
+              targetWeight:
+                newExercise.equipment === 'bodyweight' || newExercise.equipment === 'rings'
+                  ? undefined
+                  : s.targetWeight,
+            })),
+          }
+        : ex,
+    );
+    updateActiveWorkout({ exercises: updatedExercises });
+    toast({ title: `Swapped to ${newExercise.name}`, variant: 'success', duration: 2000 });
+  };
 
   const { elapsed } = useWorkoutTimer(activeWorkout !== null && !isPaused, isPaused ? getSavedElapsed() : undefined);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
@@ -513,9 +541,18 @@ export default function ActiveWorkout() {
                     </span>
                   </div>
                 </div>
-                <div className="bg-[#2c2c2e] rounded-xl px-3 py-1.5 text-center ml-3 flex-shrink-0">
+                <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                  <button
+                    onClick={() => setShowSwapSheet(true)}
+                    className="h-9 w-9 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors"
+                    title="Swap exercise"
+                  >
+                    <ArrowLeftRight className="h-4 w-4" />
+                  </button>
+                  <div className="bg-[#2c2c2e] rounded-xl px-3 py-1.5 text-center">
                   <p className="text-lg font-bold text-white">{setNumber}</p>
                   <p className="text-[10px] text-[#8E8E93]">of {totalExerciseSets}</p>
+                  </div>
                 </div>
               </div>
 
@@ -622,6 +659,17 @@ export default function ActiveWorkout() {
           )}
         </div>
       </div>
+
+      {/* Swap exercise sheet */}
+      {currentExercise && showSwapSheet && (
+        <SwapExerciseSheet
+          open={showSwapSheet}
+          workoutExercise={currentExercise}
+          allExerciseIds={exercises.map(e => e.exerciseId)}
+          onSwap={handleSwapExercise}
+          onClose={() => setShowSwapSheet(false)}
+        />
+      )}
 
       {/* Exit confirmation dialog */}
       <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>

@@ -11,12 +11,13 @@ import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExerciseItem } from '@/components/workout/ExerciseItem';
+import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { useGenerateWorkout, useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { getTodayDate, formatDuration } from '@/lib/utils';
-import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem } from '@/types';
+import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem, Exercise } from '@/types';
 import { cn } from '@/lib/utils';
 
 const DURATION_OPTIONS = [30, 45, 60, 90];
@@ -65,6 +66,35 @@ export default function Generate() {
   const [includeWarmup, setIncludeWarmup] = useState(true);
   const [allowSupersets, setAllowSupersets] = useState(true);
   const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);
+  const [swapTarget, setSwapTarget] = useState<WorkoutExercise | null>(null);
+
+  const handleSwap = (newExercise: Exercise) => {
+    if (!swapTarget || !generatedWorkout) return;
+    setGeneratedWorkout(prev => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        exercises: prev.exercises.map(we =>
+          we.exerciseId === swapTarget.exerciseId
+            ? {
+                ...we,
+                exerciseId: newExercise.id,
+                exercise: newExercise,
+                progressionNote: undefined,
+                // Keep sets structure; clear weight for bodyweight swaps
+                sets: we.sets.map(s => ({
+                  ...s,
+                  targetWeight: newExercise.category === 'cardio' ? undefined
+                    : newExercise.equipment === 'bodyweight' || newExercise.equipment === 'rings'
+                    ? undefined
+                    : s.targetWeight,
+                })),
+              }
+            : we,
+        ),
+      };
+    });
+  };
 
   const generateMutation = useGenerateWorkout();
   const createWorkoutMutation = useCreateWorkout();
@@ -351,7 +381,12 @@ export default function Generate() {
               {/* Exercise list */}
               <div className="space-y-2">
                 {generatedWorkout.exercises.map((we, i) => (
-                  <ExerciseItem key={we.exerciseId} workoutExercise={we} index={i} />
+                  <ExerciseItem
+                    key={we.exerciseId}
+                    workoutExercise={we}
+                    index={i}
+                    onSwap={() => setSwapTarget(we)}
+                  />
                 ))}
               </div>
 
@@ -380,6 +415,17 @@ export default function Generate() {
           )}
         </AnimatePresence>
       </div>
+
+      {/* Swap exercise sheet */}
+      {swapTarget && generatedWorkout && (
+        <SwapExerciseSheet
+          open={swapTarget !== null}
+          workoutExercise={swapTarget}
+          allExerciseIds={generatedWorkout.exercises.map(e => e.exerciseId)}
+          onSwap={handleSwap}
+          onClose={() => setSwapTarget(null)}
+        />
+      )}
     </div>
   );
 }
