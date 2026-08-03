@@ -1,0 +1,2720 @@
+[
+  {
+    "id": "ex_barbell_bench_press",
+    "name": "Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie flat on bench, feet on floor",
+      "Grip bar just wider than shoulder-width",
+      "Unrack, lower to mid-chest with control",
+      "Press back up explosively to lockout",
+      "Re-rack with control"
+    ],
+    "tips": [
+      "Keep shoulder blades pinched and retracted",
+      "Drive feet into floor for stability",
+      "Bar should touch lower chest, not neck"
+    ]
+  },
+  {
+    "id": "ex_incline_barbell_bench_press",
+    "name": "Incline Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set bench to 30-45 degree incline",
+      "Lie back, grip bar wider than shoulder-width",
+      "Lower bar to upper chest with control",
+      "Press back up to lockout"
+    ],
+    "tips": [
+      "Keep elbows at 45-75 degrees to torso",
+      "Upper chest should make contact, not collarbone",
+      "Squeeze chest hard at the top"
+    ]
+  },
+  {
+    "id": "ex_decline_barbell_bench_press",
+    "name": "Decline Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set bench to 15-30 degree decline, secure feet",
+      "Grip bar slightly wider than shoulder-width",
+      "Lower bar to lower chest with control",
+      "Press back up powerfully"
+    ],
+    "tips": [
+      "Decline reduces shoulder stress",
+      "Great for lower chest development",
+      "Use a spotter — hard to re-rack alone"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_bench_press",
+    "name": "Dumbbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie flat, hold dumbbells at chest level",
+      "Press up until arms are nearly fully extended",
+      "Lower with control, feeling stretch in chest",
+      "Keep wrists stacked over elbows throughout"
+    ],
+    "tips": [
+      "Greater range of motion than barbell",
+      "Allow slight natural arch in lower back",
+      "Neutral or pronated grip both work"
+    ]
+  },
+  {
+    "id": "ex_incline_dumbbell_press",
+    "name": "Incline Dumbbell Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set bench to 30-45 degrees",
+      "Hold dumbbells at shoulder level, elbows out",
+      "Press up and slightly together",
+      "Lower slowly to full stretch"
+    ],
+    "tips": [
+      "Targets upper chest and front delts",
+      "Don't let dumbbells drift too wide",
+      "Squeeze at top for peak contraction"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_flye",
+    "name": "Dumbbell Flye",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie flat, hold dumbbells above chest, slight elbow bend",
+      "Lower dumbbells in wide arc until you feel chest stretch",
+      "Squeeze chest to bring dumbbells back together",
+      "Maintain slight bend in elbows throughout"
+    ],
+    "tips": [
+      "Think 'hugging a tree', not pressing",
+      "Don't go below shoulder level",
+      "Control the eccentric — most growth happens here"
+    ]
+  },
+  {
+    "id": "ex_cable_crossover",
+    "name": "Cable Crossover",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set pulleys high, stand in center",
+      "Grab handles, step forward with slight lean",
+      "With arms slightly bent, sweep hands down and together",
+      "Squeeze chest at bottom of movement",
+      "Slowly return to start"
+    ],
+    "tips": [
+      "Adjust pulley height to target different chest regions",
+      "High pulleys hit lower chest, low pulleys hit upper",
+      "Cross hands at bottom for extra contraction"
+    ]
+  },
+  {
+    "id": "ex_pec_deck",
+    "name": "Pec Deck Machine",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit with back flat against pad",
+      "Grip handles or place forearms on pads",
+      "Squeeze arms together in front of chest",
+      "Hold contraction briefly, then slowly release"
+    ],
+    "tips": [
+      "Keep elbows at shoulder height throughout",
+      "Excellent chest isolation for beginners",
+      "Don't let the weight slam back — control the negative"
+    ]
+  },
+  {
+    "id": "ex_push_up",
+    "name": "Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start in high plank, hands slightly wider than shoulders",
+      "Lower chest toward floor, elbows at 45 degrees",
+      "Stop just before chest touches",
+      "Push back up to full arm extension"
+    ],
+    "tips": [
+      "Keep core braced and body in straight line",
+      "Full range of motion beats half reps",
+      "Elevate feet to increase difficulty"
+    ]
+  },
+  {
+    "id": "ex_chest_dip",
+    "name": "Chest Dip",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Mount parallel bars, arms straight",
+      "Lean torso forward at roughly 30 degrees",
+      "Lower until shoulders are below elbows",
+      "Press back to starting position"
+    ],
+    "tips": [
+      "Lean forward to emphasize chest over triceps",
+      "Keep elbows flared slightly outward",
+      "Use a dip belt for added resistance"
+    ]
+  },
+  {
+    "id": "ex_low_cable_flye",
+    "name": "Low Cable Flye",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set pulleys at lowest position",
+      "Stand center, grab handles, step forward",
+      "With slight elbow bend, arc hands upward and together",
+      "Squeeze upper chest at top"
+    ],
+    "tips": [
+      "Targets upper chest effectively",
+      "Lean slightly forward for better range",
+      "Use light-moderate weight for form"
+    ]
+  },
+  {
+    "id": "ex_incline_push_up",
+    "name": "Incline Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Place hands on elevated surface (bench, box)",
+      "Body in straight line from head to heels",
+      "Lower chest toward surface, elbows at 45 degrees",
+      "Push back to start"
+    ],
+    "tips": [
+      "Easier than standard push-up, good for beginners",
+      "Higher surface = easier variation",
+      "Progress to flat then decline push-ups"
+    ]
+  },
+  {
+    "id": "ex_machine_chest_press",
+    "name": "Machine Chest Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "triceps",
+      "shoulders"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Adjust seat so handles are at chest height",
+      "Grip handles, elbows slightly below shoulder height",
+      "Press forward to full extension",
+      "Control return to start"
+    ],
+    "tips": [
+      "Good for beginners learning pressing pattern",
+      "Safer than free weights for solo training",
+      "Adjust seat height to match your chest"
+    ]
+  },
+  {
+    "id": "ex_landmine_press",
+    "name": "Landmine Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor one end of barbell in landmine attachment or corner",
+      "Kneel or stand, hold end of bar at shoulder",
+      "Press bar up and forward in arc",
+      "Lower with control"
+    ],
+    "tips": [
+      "Great for shoulder-friendly pressing",
+      "Works upper chest at unique angle",
+      "Can be done single or double arm"
+    ]
+  },
+  {
+    "id": "ex_high_cable_flye",
+    "name": "High Cable Flye",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set pulleys at highest position",
+      "Stand center, step forward, grab handles",
+      "Arc hands downward and together with slight elbow bend",
+      "Squeeze lower chest at bottom"
+    ],
+    "tips": [
+      "Targets lower chest",
+      "Keep core tight and maintain slight forward lean",
+      "Consistent tension throughout movement"
+    ]
+  },
+  {
+    "id": "ex_deadlift",
+    "name": "Conventional Deadlift",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand with feet hip-width, bar over mid-foot",
+      "Hinge at hips, grip bar just outside legs",
+      "Chest up, lats engaged, take slack out of bar",
+      "Push floor away — drive hips forward as bar passes knees",
+      "Stand tall at top, lower with control"
+    ],
+    "tips": [
+      "Keep bar close to shins throughout lift",
+      "Think 'leg press the floor' not 'pull'",
+      "Big breath and brace core before every rep"
+    ]
+  },
+  {
+    "id": "ex_barbell_row",
+    "name": "Barbell Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps",
+      "shoulders"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hip-width stance, hinge forward to roughly 45 degrees",
+      "Grip bar overhand, slightly wider than shoulder-width",
+      "Pull bar to lower abdomen, leading with elbows",
+      "Squeeze shoulder blades at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Keep lower back neutral throughout",
+      "Don't use momentum — control both phases",
+      "Elbow path determines which muscles fire most"
+    ]
+  },
+  {
+    "id": "ex_cable_row",
+    "name": "Seated Cable Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "cable",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit at cable row station, feet on platform",
+      "Grab handle with slight forward lean",
+      "Pull to abdomen while sitting upright",
+      "Squeeze shoulder blades together",
+      "Slowly extend arms back to start"
+    ],
+    "tips": [
+      "Don't rock torso — minimal body movement",
+      "Chest up and proud at the top",
+      "Pause and squeeze at the peak contraction"
+    ]
+  },
+  {
+    "id": "ex_lat_pulldown",
+    "name": "Lat Pulldown",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit with thighs under pads, grip bar wider than shoulders",
+      "Lean back slightly, initiate with shoulder blades",
+      "Pull bar to upper chest",
+      "Slowly extend arms back to start"
+    ],
+    "tips": [
+      "Initiate with elbows driving down, not biceps curling",
+      "Slight lean back is okay — excessive is cheating",
+      "Full extension at top for maximum stretch"
+    ]
+  },
+  {
+    "id": "ex_pull_up",
+    "name": "Pull-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hang from bar with overhand grip wider than shoulders",
+      "Depress and retract shoulder blades to initiate",
+      "Pull until chin clears the bar",
+      "Lower with full control to dead hang"
+    ],
+    "tips": [
+      "Dead hang start forces full range of motion",
+      "Think elbows to back pockets",
+      "Add weight via dip belt when bodyweight is easy"
+    ]
+  },
+  {
+    "id": "ex_chin_up",
+    "name": "Chin-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hang from bar with underhand grip shoulder-width",
+      "Pull chest toward bar, elbows driving to sides",
+      "Top position: chin over bar",
+      "Lower all the way to dead hang"
+    ],
+    "tips": [
+      "Underhand grip activates biceps more than pull-up",
+      "Supinate wrists at top for peak bicep contraction",
+      "Easier than pull-up for most beginners"
+    ]
+  },
+  {
+    "id": "ex_t_bar_row",
+    "name": "T-Bar Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps",
+      "shoulders"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Straddle bar, hinge forward to 45 degrees",
+      "Grip V-handle attachment under bar",
+      "Pull bar to chest, leading with elbows",
+      "Squeeze mid-back at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Chest-supported version reduces lower back stress",
+      "Great for mid-back thickness",
+      "Keep hips down — don't stand upright"
+    ]
+  },
+  {
+    "id": "ex_one_arm_dumbbell_row",
+    "name": "One-Arm Dumbbell Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Place one knee and hand on bench for support",
+      "Hold dumbbell in free hand, arm extended",
+      "Pull dumbbell to hip, elbow driving toward ceiling",
+      "Lower with control to full extension"
+    ],
+    "tips": [
+      "Elbow stays close to body — don't flare out",
+      "Think 'elbow to ceiling' not 'hand to hip'",
+      "Full stretch at bottom is key for lat activation"
+    ]
+  },
+  {
+    "id": "ex_face_pull",
+    "name": "Face Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at forehead height with rope attachment",
+      "Grab rope with palms facing in, step back",
+      "Pull rope toward face, elbows high and flared",
+      "Externally rotate wrists at end — 'W' position",
+      "Slowly return to start"
+    ],
+    "tips": [
+      "Essential for shoulder health and rear delt development",
+      "Elbows must stay above wrist height",
+      "Use light weight and high reps"
+    ]
+  },
+  {
+    "id": "ex_straight_arm_pulldown",
+    "name": "Straight-Arm Pulldown",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at high position, grab straight bar",
+      "Stand back, arms extended at chest height",
+      "Keeping arms straight, push bar down to hips",
+      "Squeeze lats at bottom, slowly return"
+    ],
+    "tips": [
+      "Excellent lat isolation without biceps involvement",
+      "Slight bend in elbows is fine",
+      "Focus on the feeling in your lats — mind-muscle connection"
+    ]
+  },
+  {
+    "id": "ex_rack_pull",
+    "name": "Rack Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set pins in rack at knee height",
+      "Grip bar, set back flat with chest up",
+      "Drive hips forward, stand tall",
+      "Lower bar back to pins with control"
+    ],
+    "tips": [
+      "Allows heavier loading than full deadlift",
+      "Focuses on upper portion of deadlift",
+      "Keep lats tight to prevent bar drifting forward"
+    ]
+  },
+  {
+    "id": "ex_good_morning",
+    "name": "Good Morning",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "hamstrings",
+      "glutes"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Bar on upper traps, feet shoulder-width",
+      "Slight bend in knees, hinge forward at hips",
+      "Lower torso toward parallel with floor",
+      "Drive hips forward to return to upright"
+    ],
+    "tips": [
+      "Keep spine neutral — not rounded",
+      "Feel stretch in hamstrings at bottom",
+      "Use light weight and focus on movement pattern"
+    ]
+  },
+  {
+    "id": "ex_back_extension",
+    "name": "Back Extension",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie face-down on hyperextension bench, hips at pad edge",
+      "Cross arms or hold weight at chest",
+      "Lower torso toward floor with control",
+      "Raise back to parallel — do not hyperextend"
+    ],
+    "tips": [
+      "Squeeze glutes at top of movement",
+      "Hold weight plate for added resistance",
+      "Stop at parallel — going higher strains lumbar"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_pullover",
+    "name": "Dumbbell Pullover",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "chest"
+    ],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie perpendicular on bench, upper back supported",
+      "Hold dumbbell vertically above chest",
+      "Lower dumbbell in arc behind head",
+      "Pull back over chest with lat engagement"
+    ],
+    "tips": [
+      "Feel the stretch in lats and serratus",
+      "Keep slight bend in elbows throughout",
+      "Breathe in on the way down, out on the way up"
+    ]
+  },
+  {
+    "id": "ex_reverse_flye",
+    "name": "Reverse Dumbbell Flye",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hinge forward 45-90 degrees, dumbbells hanging",
+      "With slight elbow bend, raise arms out to sides",
+      "Squeeze rear delts and rhomboids at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Lead with elbows, not hands",
+      "Pinch shoulder blades at peak",
+      "Use lighter weight — rear delts are small"
+    ]
+  },
+  {
+    "id": "ex_inverted_row",
+    "name": "Inverted Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set barbell at hip height in rack",
+      "Lie underneath, grip overhand, body straight",
+      "Pull chest to bar, elbows back",
+      "Lower to arm extension with body rigid"
+    ],
+    "tips": [
+      "Easier than pull-ups, great progression",
+      "Elevate feet to increase difficulty",
+      "Keep body rigid like a plank throughout"
+    ]
+  },
+  {
+    "id": "ex_wide_grip_lat_pulldown",
+    "name": "Wide-Grip Lat Pulldown",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit with thighs under pads, grip bar wide",
+      "Lean slightly back, depress shoulder blades",
+      "Pull bar to upper chest",
+      "Slowly extend back to full stretch"
+    ],
+    "tips": [
+      "Wide grip emphasizes lat width",
+      "Don't pull behind neck — bad for shoulder health",
+      "Full stretch at top is crucial"
+    ]
+  },
+  {
+    "id": "ex_close_grip_cable_row",
+    "name": "Close-Grip Cable Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "biceps"
+    ],
+    "equipment": "cable",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit at cable station, use V-bar attachment",
+      "Grab handles, sit upright with slight forward lean",
+      "Pull to lower chest/abdomen, elbows tight to body",
+      "Squeeze mid-back, slowly return"
+    ],
+    "tips": [
+      "Neutral grip reduces forearm fatigue",
+      "Focus on pulling with elbows, not hands",
+      "Brief pause and squeeze at peak contraction"
+    ]
+  },
+  {
+    "id": "ex_barbell_overhead_press",
+    "name": "Barbell Overhead Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps",
+      "core"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand with bar at collarbone, hands just outside shoulders",
+      "Brace core, glutes tight",
+      "Press bar overhead to lockout",
+      "Bar should travel slightly back over ears at top",
+      "Lower to collarbone with control"
+    ],
+    "tips": [
+      "Keep wrists straight — don't let them roll back",
+      "Elbows slightly forward at start, not flared",
+      "Press your head through at lockout"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_shoulder_press",
+    "name": "Dumbbell Shoulder Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit or stand, dumbbells at ear level, palms forward",
+      "Press dumbbells up and slightly together",
+      "Lockout overhead without shrugging",
+      "Lower to ear level with control"
+    ],
+    "tips": [
+      "Seated provides more stability, standing engages core more",
+      "Don't crash the weights at bottom",
+      "Slight arc inward at top — natural movement"
+    ]
+  },
+  {
+    "id": "ex_lateral_raise",
+    "name": "Lateral Raise",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with dumbbells at sides",
+      "With slight elbow bend, raise arms out to sides",
+      "Stop at shoulder height — slight tilt so pinkies slightly higher",
+      "Lower slowly — this is where the work is"
+    ],
+    "tips": [
+      "Lead with elbows, not wrists",
+      "Pause briefly at top",
+      "Slow negatives (3-4s) maximize stimulus"
+    ]
+  },
+  {
+    "id": "ex_front_raise",
+    "name": "Front Raise",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with dumbbells in front of thighs",
+      "Raise one or both arms to shoulder height",
+      "Slight bend in elbows throughout",
+      "Lower with control"
+    ],
+    "tips": [
+      "Targets anterior (front) delt",
+      "Can alternate arms or do both simultaneously",
+      "Keep core tight — don't lean back"
+    ]
+  },
+  {
+    "id": "ex_cable_lateral_raise",
+    "name": "Cable Lateral Raise",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at lowest position on one side",
+      "Grab handle with far hand, slight forward lean",
+      "Raise arm out to side to shoulder height",
+      "Lower slowly against cable tension"
+    ],
+    "tips": [
+      "Cable maintains constant tension unlike dumbbells",
+      "Cross body for unique angle",
+      "Great finishing movement for delts"
+    ]
+  },
+  {
+    "id": "ex_arnold_press",
+    "name": "Arnold Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start with dumbbells at chin, palms facing you",
+      "As you press up, rotate palms to face forward",
+      "Reach full lockout overhead",
+      "Reverse rotation on the way down"
+    ],
+    "tips": [
+      "Hits all three delt heads through rotation",
+      "Invented by Arnold Schwarzenegger",
+      "Use lighter weight than standard press initially"
+    ]
+  },
+  {
+    "id": "ex_upright_row",
+    "name": "Upright Row",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "biceps",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand holding bar with narrow overhand grip",
+      "Pull bar straight up to chin level",
+      "Elbows lead and stay above wrists",
+      "Lower with control"
+    ],
+    "tips": [
+      "Wider grip reduces impingement risk",
+      "Stop at collarbone level if you feel shoulder discomfort",
+      "Can also use dumbbells or EZ bar"
+    ]
+  },
+  {
+    "id": "ex_rear_delt_flye",
+    "name": "Rear Delt Dumbbell Flye",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit at edge of bench, hinge forward onto thighs",
+      "Dumbbells hanging with slight elbow bend",
+      "Raise arms out to sides at shoulder height",
+      "Squeeze rear delts, lower with control"
+    ],
+    "tips": [
+      "Can also do standing or prone on incline bench",
+      "Use lighter weights — rear delts are small",
+      "Think 'showing your armpits' to get the motion right"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_shrug",
+    "name": "Dumbbell Shrug",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand holding dumbbells at sides",
+      "Shrug shoulders straight up toward ears",
+      "Hold at top for 1-2 seconds",
+      "Lower slowly back down"
+    ],
+    "tips": [
+      "Don't roll shoulders — straight up and down",
+      "Pause at top to eliminate momentum",
+      "Traps respond well to heavy loads and high volume"
+    ]
+  },
+  {
+    "id": "ex_barbell_shrug",
+    "name": "Barbell Shrug",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold barbell in front of thighs with overhand grip",
+      "Shrug shoulders directly upward",
+      "Pause and squeeze at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Allows heavier loading than dumbbells",
+      "Straps help maintain grip with heavy weights",
+      "Full range of motion beats heavy partial reps"
+    ]
+  },
+  {
+    "id": "ex_machine_shoulder_press",
+    "name": "Machine Shoulder Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Adjust seat so handles are at ear level",
+      "Grip handles, back flat against pad",
+      "Press to full overhead extension",
+      "Lower with control"
+    ],
+    "tips": [
+      "Safer than free weights overhead",
+      "Great for beginners building shoulder strength",
+      "Back support allows heavier loading"
+    ]
+  },
+  {
+    "id": "ex_barbell_curl",
+    "name": "Barbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand holding bar with underhand grip, shoulder-width",
+      "Keep elbows tucked at sides",
+      "Curl bar to shoulder level",
+      "Slowly lower to full extension"
+    ],
+    "tips": [
+      "Don't swing — keep elbows pinned to torso",
+      "Supinate wrists slightly at top for peak contraction",
+      "Full extension at bottom maximizes stretch"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_curl",
+    "name": "Dumbbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with dumbbells at sides, palms forward",
+      "Curl one or both dumbbells to shoulder level",
+      "Squeeze bicep at top",
+      "Lower to full extension"
+    ],
+    "tips": [
+      "Allows each arm to work independently",
+      "Supinate from neutral grip during the curl for extra activation",
+      "Alternate arms or do both simultaneously"
+    ]
+  },
+  {
+    "id": "ex_hammer_curl",
+    "name": "Hammer Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with dumbbells at sides, thumbs facing up (neutral grip)",
+      "Curl dumbbells to shoulder level, maintaining neutral grip",
+      "Squeeze at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Works brachialis — fills out the arm more",
+      "Can do cross-body hammer curls for variation",
+      "Heavier than supinated curls for most lifters"
+    ]
+  },
+  {
+    "id": "ex_incline_dumbbell_curl",
+    "name": "Incline Dumbbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit on incline bench (45-60 degrees), dumbbells hanging",
+      "Curl dumbbells up from fully stretched position",
+      "Elbows stay behind body throughout",
+      "Lower to full hang"
+    ],
+    "tips": [
+      "Incline creates maximum stretch on long head of bicep",
+      "Excellent for peaking the bicep",
+      "Don't let elbows come forward — defeats the purpose"
+    ]
+  },
+  {
+    "id": "ex_concentration_curl",
+    "name": "Concentration Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit on bench, lean forward, brace elbow on inner thigh",
+      "Hang dumbbell toward floor",
+      "Curl to shoulder level",
+      "Squeeze hard at top, lower slowly"
+    ],
+    "tips": [
+      "Braced elbow eliminates cheating",
+      "Great for isolating individual arms",
+      "Mind-muscle connection is key here"
+    ]
+  },
+  {
+    "id": "ex_cable_curl",
+    "name": "Cable Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at lowest position, attach straight bar or EZ bar",
+      "Step back, grab handle underhand",
+      "Curl to shoulder height, elbows tucked",
+      "Lower with control against cable tension"
+    ],
+    "tips": [
+      "Cable maintains tension at bottom unlike free weights",
+      "Great finishing movement for biceps",
+      "Try different attachments (rope, bar, handles)"
+    ]
+  },
+  {
+    "id": "ex_ez_bar_curl",
+    "name": "EZ Bar Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "ez-bar",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold EZ bar at angled grips, stand upright",
+      "Curl bar to shoulder level, elbows fixed",
+      "Squeeze biceps at top",
+      "Lower to full extension"
+    ],
+    "tips": [
+      "Angled grip reduces wrist stress vs straight bar",
+      "Can also target outer bicep head with wide grip",
+      "Good alternative if straight bar causes wrist pain"
+    ]
+  },
+  {
+    "id": "ex_preacher_curl",
+    "name": "Preacher Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "ez-bar",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit at preacher bench, upper arms resting on pad",
+      "Grip EZ bar underhand",
+      "Curl to chin level",
+      "Lower slowly to full extension"
+    ],
+    "tips": [
+      "Bench eliminates cheat — pure isolation",
+      "Don't lock out completely — keep tension on bicep",
+      "Excellent for building bicep peak"
+    ]
+  },
+  {
+    "id": "ex_spider_curl",
+    "name": "Spider Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie face down on incline bench, arms hanging straight down",
+      "Curl dumbbells up to chin level",
+      "Elbows remain perpendicular to floor",
+      "Lower all the way to full extension"
+    ],
+    "tips": [
+      "Elbows positioned in front of body = maximum short head activation",
+      "Great for bicep thickness and peak",
+      "Keep chest on bench throughout"
+    ]
+  },
+  {
+    "id": "ex_reverse_barbell_curl",
+    "name": "Reverse Barbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand holding bar with overhand (pronated) grip",
+      "Curl bar up to chin level, elbows fixed",
+      "Lower with full control",
+      "Maintain pronated grip throughout"
+    ],
+    "tips": [
+      "Targets brachialis and brachioradialis more than standard curl",
+      "Reduces bicep involvement",
+      "Use lighter weight than supinated curl"
+    ]
+  },
+  {
+    "id": "ex_close_grip_bench_press",
+    "name": "Close-Grip Bench Press",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [
+      "chest",
+      "shoulders"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie on bench, grip bar at shoulder-width or slightly narrower",
+      "Lower bar to lower chest, elbows close to body",
+      "Press back to lockout, squeezing triceps",
+      "Keep wrists straight throughout"
+    ],
+    "tips": [
+      "Don't go too narrow — wrists will suffer",
+      "Elbow path is key — keep them tucked",
+      "One of the best mass builders for triceps"
+    ]
+  },
+  {
+    "id": "ex_tricep_pushdown",
+    "name": "Tricep Pushdown",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at high position with straight bar",
+      "Stand close, grip bar overhand, elbows at sides",
+      "Push bar down to full extension",
+      "Slowly let bar rise back to 90-degree elbow angle"
+    ],
+    "tips": [
+      "Keep elbows pinned to sides throughout",
+      "Squeeze hard at full extension",
+      "Try rope attachment for wider range at bottom"
+    ]
+  },
+  {
+    "id": "ex_ez_bar_skull_crusher",
+    "name": "EZ Bar Skull Crusher",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "ez-bar",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie on bench, hold EZ bar above chest with arms extended",
+      "Lower bar toward forehead by bending elbows only",
+      "Keep upper arms stationary and perpendicular to floor",
+      "Extend arms back to start"
+    ],
+    "tips": [
+      "Upper arms must not move — only elbows bend",
+      "Lower to forehead or behind head for more stretch",
+      "Can superset with close-grip bench for extra pump"
+    ]
+  },
+  {
+    "id": "ex_overhead_tricep_extension",
+    "name": "Overhead Tricep Extension",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit or stand, hold dumbbell with both hands overhead",
+      "Lower dumbbell behind head by bending elbows",
+      "Keep upper arms close to ears",
+      "Extend back overhead to start"
+    ],
+    "tips": [
+      "Overhead position stretches long head of tricep — great for mass",
+      "Keep core tight to protect lower back",
+      "Also works well with cable or EZ bar"
+    ]
+  },
+  {
+    "id": "ex_tricep_dip",
+    "name": "Tricep Dip",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [
+      "chest"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Grip parallel bars, body upright (not leaning forward)",
+      "Lower until elbows reach 90 degrees",
+      "Press back up to full extension",
+      "Keep torso vertical to emphasize triceps"
+    ],
+    "tips": [
+      "Upright torso = more triceps, leaned = more chest",
+      "Avoid going too deep — risks shoulder impingement",
+      "Add weight with dip belt for progression"
+    ]
+  },
+  {
+    "id": "ex_tricep_kickback",
+    "name": "Tricep Kickback",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hinge forward 45 degrees, upper arm parallel to floor",
+      "Holding dumbbell, extend arm back to full lockout",
+      "Squeeze tricep at top",
+      "Lower to 90-degree starting position"
+    ],
+    "tips": [
+      "Upper arm must stay parallel to floor throughout",
+      "Use lighter weight for full range and feel",
+      "Excellent for finishing the tricep"
+    ]
+  },
+  {
+    "id": "ex_cable_overhead_extension",
+    "name": "Cable Overhead Extension",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable high, attach rope, stand facing away",
+      "Hold rope at neck, elbows forward",
+      "Extend arms forward overhead",
+      "Return to start with control"
+    ],
+    "tips": [
+      "Constant cable tension plus overhead stretch = great stimulus",
+      "Keep elbows pointing forward throughout",
+      "Don't let elbows flare wide"
+    ]
+  },
+  {
+    "id": "ex_diamond_push_up",
+    "name": "Diamond Push-Up",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [
+      "chest"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Form diamond shape with hands under chest",
+      "Lower chest to hands, elbows track behind body",
+      "Press back up to full extension",
+      "Keep body rigid throughout"
+    ],
+    "tips": [
+      "Harder than standard push-up on triceps",
+      "Keep hips from sagging",
+      "Great bodyweight tricep exercise when no equipment available"
+    ]
+  },
+  {
+    "id": "ex_rope_pushdown",
+    "name": "Rope Pushdown",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable high, attach rope handle",
+      "Grip rope ends, elbows at sides, 90-degree start",
+      "Push rope down and flare ends apart at bottom",
+      "Return to 90 degrees with control"
+    ],
+    "tips": [
+      "Flaring rope at bottom hits lateral and medial heads",
+      "Elbows stay fixed — only forearms move",
+      "Great pump builder for triceps"
+    ]
+  },
+  {
+    "id": "ex_single_arm_overhead_extension",
+    "name": "Single-Arm Overhead Extension",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit or stand, hold dumbbell overhead with one arm",
+      "Lower dumbbell behind head by bending elbow",
+      "Keep upper arm close to ear",
+      "Extend back to overhead lockout"
+    ],
+    "tips": [
+      "Helps identify and correct arm imbalances",
+      "Support working arm with free hand if needed",
+      "Long head gets maximum stretch in this position"
+    ]
+  },
+  {
+    "id": "ex_barbell_back_squat",
+    "name": "Barbell Back Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Bar on upper traps (high bar) or rear delts (low bar)",
+      "Feet shoulder-width, toes slightly out",
+      "Break at hips and knees simultaneously",
+      "Descend until thighs are parallel to floor or below",
+      "Drive through heels to stand"
+    ],
+    "tips": [
+      "Keep knees tracking over toes throughout",
+      "Chest and elbows up — fight forward lean",
+      "Squat depth matters — parallel or bust"
+    ]
+  },
+  {
+    "id": "ex_front_squat",
+    "name": "Front Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Bar rests on front delts in clean grip or cross-arm position",
+      "Elbows high and forward throughout",
+      "Descend keeping torso upright",
+      "Drive knees out, stand tall"
+    ],
+    "tips": [
+      "Upright torso is essential — bar will fall if you lean",
+      "Wrist mobility required for clean grip",
+      "Hits quads harder than back squat due to torso position"
+    ]
+  },
+  {
+    "id": "ex_leg_press",
+    "name": "Leg Press",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit in machine, feet shoulder-width on platform",
+      "Lower sled until knees reach 90 degrees",
+      "Press through heels to full extension",
+      "Don't lock out knees at top"
+    ],
+    "tips": [
+      "Foot position changes emphasis: high = hamstrings/glutes, low = quads",
+      "Never lock knees at full extension",
+      "Good alternative to squats for those with back issues"
+    ]
+  },
+  {
+    "id": "ex_hack_squat",
+    "name": "Hack Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Step onto hack squat machine platform, shoulders on pads",
+      "Feet shoulder-width or slightly narrower",
+      "Lower until thighs parallel to platform",
+      "Press through heels to return"
+    ],
+    "tips": [
+      "Narrow close stance with toes forward maximizes quad isolation",
+      "Don't let lower back peel off the pad",
+      "One of the best quad isolation machines"
+    ]
+  },
+  {
+    "id": "ex_bulgarian_split_squat",
+    "name": "Bulgarian Split Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Rear foot elevated on bench, front foot forward",
+      "Hold dumbbells at sides",
+      "Lower until rear knee nearly touches floor",
+      "Drive through front foot to stand"
+    ],
+    "tips": [
+      "Foot position matters: closer = more quad, further = more glute",
+      "Front knee should stay over mid-foot",
+      "One of the most effective single-leg exercises"
+    ]
+  },
+  {
+    "id": "ex_walking_lunge",
+    "name": "Walking Lunge",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold dumbbells at sides, stand tall",
+      "Step forward, lower rear knee toward floor",
+      "Drive through front foot, bring rear foot forward",
+      "Continue alternating legs across floor"
+    ],
+    "tips": [
+      "Keep torso upright — don't lean forward",
+      "Front knee should not go past toes",
+      "Great for coordination and unilateral strength"
+    ]
+  },
+  {
+    "id": "ex_leg_extension",
+    "name": "Leg Extension",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit in machine, pad resting on lower shins",
+      "Extend legs to full knee lockout",
+      "Squeeze quads hard at top",
+      "Lower with control"
+    ],
+    "tips": [
+      "Pause and squeeze at full extension",
+      "Don't use momentum — controlled throughout",
+      "Great quad finisher but controversial for knee health — use full ROM"
+    ]
+  },
+  {
+    "id": "ex_box_squat",
+    "name": "Box Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set up like back squat with box behind you",
+      "Squat back onto box, sit briefly",
+      "Keep core tight — don't relax on box",
+      "Drive powerfully back to standing"
+    ],
+    "tips": [
+      "Teaches proper squat depth and pattern",
+      "Sit back more than a free squat",
+      "Great for teaching hip hinge component of squat"
+    ]
+  },
+  {
+    "id": "ex_goblet_squat",
+    "name": "Goblet Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold kettlebell or dumbbell at chest with both hands",
+      "Feet shoulder-width, toes slightly out",
+      "Squat deep, keeping elbows inside knees at bottom",
+      "Stand with control"
+    ],
+    "tips": [
+      "Weight in front helps maintain upright torso",
+      "Excellent for learning squat mechanics",
+      "Can go very deep with proper form"
+    ]
+  },
+  {
+    "id": "ex_sissy_squat",
+    "name": "Sissy Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Stand with feet hip-width, optionally hold support",
+      "Rise onto toes, lean torso back",
+      "Bend knees forward and down",
+      "Return to standing while maintaining lean"
+    ],
+    "tips": [
+      "Extreme quad isolation — knees travel far forward",
+      "Hold a support for balance",
+      "Start with limited range and build up"
+    ]
+  },
+  {
+    "id": "ex_romanian_deadlift",
+    "name": "Romanian Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand holding bar at hips with overhand grip",
+      "Hinge at hips, bar slides down thighs",
+      "Lower until you feel strong hamstring stretch",
+      "Drive hips forward to return to standing"
+    ],
+    "tips": [
+      "Soft bend in knees — this is a hip hinge, not a squat",
+      "Bar stays close to legs throughout",
+      "Feel stretch in hamstrings — that's the target"
+    ]
+  },
+  {
+    "id": "ex_lying_leg_curl",
+    "name": "Lying Leg Curl",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie face down, pad resting on back of ankles",
+      "Curl legs up until hamstrings are fully contracted",
+      "Pause at top",
+      "Lower slowly to start"
+    ],
+    "tips": [
+      "Slow negatives for maximum time under tension",
+      "Toes neutral or slightly pointed in to maximize hamstring engagement",
+      "Don't let hips rise off the pad"
+    ]
+  },
+  {
+    "id": "ex_stiff_leg_deadlift",
+    "name": "Stiff-Leg Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand with legs nearly straight (slight knee bend)",
+      "Hold bar, hinge forward at hips",
+      "Lower bar below knees with straight back",
+      "Drive hips forward to return"
+    ],
+    "tips": [
+      "Straighter legs than RDL for more hamstring stretch",
+      "Keep back flat — rounding is injury risk",
+      "Range of motion limited by hamstring flexibility"
+    ]
+  },
+  {
+    "id": "ex_nordic_hamstring_curl",
+    "name": "Nordic Hamstring Curl",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Kneel with ankles secured under bar or by partner",
+      "Slowly lower body toward floor, resisting with hamstrings",
+      "Use hands to catch yourself at bottom",
+      "Use hands to push back to start"
+    ],
+    "tips": [
+      "One of the hardest hamstring exercises",
+      "Significantly reduces hamstring injury risk",
+      "Progress from partial reps — very demanding"
+    ]
+  },
+  {
+    "id": "ex_sumo_deadlift",
+    "name": "Sumo Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "quads",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Wide stance, toes pointed out significantly",
+      "Grip bar narrow (inside legs)",
+      "Chest up, push knees out over toes",
+      "Pull bar up and slightly back, hips close to bar",
+      "Stand tall with hips forward"
+    ],
+    "tips": [
+      "Hip dominant lift — great for those with long torso",
+      "Knees track toes to protect them",
+      "More inner thigh and glute than conventional"
+    ]
+  },
+  {
+    "id": "ex_good_morning_hamstring",
+    "name": "Good Morning (Hamstring Focus)",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Bar on upper traps, feet shoulder-width",
+      "Slight bend in knees, hinge forward at hips",
+      "Lower until you feel hamstrings strongly stretched",
+      "Drive hips forward and stand"
+    ],
+    "tips": [
+      "Focus on hamstring stretch — not just bending over",
+      "Keep lower back neutral throughout",
+      "Use light to moderate weight only"
+    ]
+  },
+  {
+    "id": "ex_single_leg_rdl",
+    "name": "Single-Leg Romanian Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand on one leg, slight knee bend, hold dumbbell",
+      "Hinge at hip, non-working leg extends behind",
+      "Lower until back is parallel to floor",
+      "Return to standing by driving hip forward"
+    ],
+    "tips": [
+      "Excellent for balance and addressing imbalances",
+      "Hinge at hip — don't just bend at waist",
+      "Keep hips square to floor throughout"
+    ]
+  },
+  {
+    "id": "ex_seated_leg_curl",
+    "name": "Seated Leg Curl",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit in machine, pad on top of shins",
+      "Curl legs back under seat as far as possible",
+      "Hold briefly at maximum contraction",
+      "Slowly extend back to start"
+    ],
+    "tips": [
+      "Hip position stretched vs seated affects contraction range",
+      "Control the return — don't let weight snap back",
+      "Slightly different feel than lying leg curl — both are valuable"
+    ]
+  },
+  {
+    "id": "ex_barbell_hip_thrust",
+    "name": "Barbell Hip Thrust",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Upper back on bench, bar over hips with pad",
+      "Feet flat on floor, knees at 90 degrees",
+      "Drive hips up to full extension",
+      "Squeeze glutes hard at top",
+      "Lower hips toward floor and repeat"
+    ],
+    "tips": [
+      "Full hip extension — don't stop short",
+      "Chin tucked to chest for neutral spine",
+      "One of the best glute builders available"
+    ]
+  },
+  {
+    "id": "ex_glute_bridge",
+    "name": "Glute Bridge",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on back, knees bent, feet flat",
+      "Drive hips up squeezing glutes",
+      "Hold at top for 1-2 seconds",
+      "Lower with control"
+    ],
+    "tips": [
+      "Full hip extension at top",
+      "Can add dumbbell or plate on hips for resistance",
+      "Beginner-friendly hip thrust progression"
+    ]
+  },
+  {
+    "id": "ex_cable_kickback",
+    "name": "Cable Kickback",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Attach ankle cuff to cable at lowest position",
+      "Stand facing machine, slight forward lean",
+      "Kick working leg back to full hip extension",
+      "Squeeze glute hard, lower with control"
+    ],
+    "tips": [
+      "Keep working leg straight at peak",
+      "Don't swing — slow and controlled",
+      "Can also be done on all-fours"
+    ]
+  },
+  {
+    "id": "ex_donkey_kick",
+    "name": "Donkey Kick",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start on all fours, hands under shoulders",
+      "Drive one knee toward ceiling, foot flexed",
+      "Squeeze glute at top",
+      "Lower with control and repeat"
+    ],
+    "tips": [
+      "Focus on glute contraction, not how high you kick",
+      "Keep hips level — don't rotate",
+      "Add ankle weights for progressive overload"
+    ]
+  },
+  {
+    "id": "ex_sumo_squat",
+    "name": "Sumo Squat",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Wide stance, toes out 45 degrees, hold dumbbell vertically",
+      "Sit hips straight down between legs",
+      "Drive through heels and squeeze glutes to stand",
+      "Keep chest tall throughout"
+    ],
+    "tips": [
+      "Wide stance shifts emphasis to inner thighs and glutes",
+      "Hold dumbbell between legs or at chest",
+      "Great for glute and adductor development"
+    ]
+  },
+  {
+    "id": "ex_lateral_band_walk",
+    "name": "Lateral Band Walk",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "resistance-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Place band around ankles or above knees",
+      "Slight squat position, feet shoulder-width",
+      "Step laterally, maintaining band tension",
+      "Walk 10-15 steps each direction"
+    ],
+    "tips": [
+      "Keep tension in band at all times — don't let feet come too close",
+      "Stay low in squat position throughout",
+      "Great glute med activation for knee health"
+    ]
+  },
+  {
+    "id": "ex_clamshell",
+    "name": "Clamshell",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "resistance-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on side with band above knees",
+      "Hips and knees bent at 90 degrees, feet stacked",
+      "Rotate top knee up like opening a clamshell",
+      "Squeeze glute at top, lower with control"
+    ],
+    "tips": [
+      "Excellent glute medius activation",
+      "Hips stay stacked — don't roll back",
+      "Progress to standing hip abduction or cable variation"
+    ]
+  },
+  {
+    "id": "ex_reverse_hyperextension",
+    "name": "Reverse Hyperextension",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings",
+      "back"
+    ],
+    "equipment": "machine",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie face down on reverse hyper machine, hips at pad edge",
+      "Swing legs up to horizontal, squeezing glutes",
+      "Lower legs with control",
+      "Use momentum minimally"
+    ],
+    "tips": [
+      "Excellent for glutes and lower back health",
+      "Decompresses lumbar spine on the down phase",
+      "Can be done on a regular bench with ankle weights"
+    ]
+  },
+  {
+    "id": "ex_plank",
+    "name": "Plank",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Forearms on floor, elbows under shoulders",
+      "Body forms straight line from head to heels",
+      "Squeeze core, glutes, and quads",
+      "Hold position — breathe steadily"
+    ],
+    "tips": [
+      "Don't let hips sag or pike up",
+      "Posterior pelvic tilt slightly to protect lower back",
+      "Progress by increasing duration or adding weight"
+    ]
+  },
+  {
+    "id": "ex_side_plank",
+    "name": "Side Plank",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on side, forearm on floor under shoulder",
+      "Feet stacked, lift hips to form straight line",
+      "Squeeze obliques and hold",
+      "Don't let hips drop"
+    ],
+    "tips": [
+      "Trains lateral stability and obliques",
+      "Progress by raising top arm or leg",
+      "Modify by bending bottom knee"
+    ]
+  },
+  {
+    "id": "ex_hollow_body_hold",
+    "name": "Hollow Body Hold",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie on back, press lower back into floor",
+      "Raise shoulders and legs slightly off floor",
+      "Arms extended overhead or at sides",
+      "Hold position breathing shallowly"
+    ],
+    "tips": [
+      "Lower back must remain pressed to floor throughout",
+      "Start with legs higher and arms at sides",
+      "Foundation of gymnastics strength training"
+    ]
+  },
+  {
+    "id": "ex_dead_bug",
+    "name": "Dead Bug",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on back, arms vertical, hips and knees at 90 degrees",
+      "Press lower back into floor",
+      "Simultaneously lower opposite arm and leg toward floor",
+      "Return to start, repeat other side"
+    ],
+    "tips": [
+      "Lower back must not arch off floor",
+      "Move slowly and deliberately",
+      "Excellent anti-extension core exercise"
+    ]
+  },
+  {
+    "id": "ex_ab_wheel_rollout",
+    "name": "Ab Wheel Rollout",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "advanced",
+    "instructions": [
+      "Kneel holding ab wheel with arms extended",
+      "Roll wheel forward, lowering torso to floor",
+      "Extend as far as possible while maintaining control",
+      "Contract core to pull back to start"
+    ],
+    "tips": [
+      "Start with short range and build up",
+      "Keep lower back neutral — don't hyperextend",
+      "One of the hardest bodyweight core exercises"
+    ]
+  },
+  {
+    "id": "ex_cable_crunch",
+    "name": "Cable Crunch",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Kneel facing cable machine, rope at high position",
+      "Hold rope behind head",
+      "Crunch forward, bringing elbows to knees",
+      "Slowly return to upright"
+    ],
+    "tips": [
+      "Allows progressive overload unlike floor crunches",
+      "Round the upper back — think ribcage to hips",
+      "Keep hips stationary — move only the spine"
+    ]
+  },
+  {
+    "id": "ex_hanging_leg_raise",
+    "name": "Hanging Leg Raise",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hang from pull-up bar with overhand grip",
+      "Raise legs to horizontal or vertical",
+      "Lower with control — don't swing",
+      "Keep upper body stable"
+    ],
+    "tips": [
+      "Posterior pelvic tilt at top for max ab contraction",
+      "Bent-knee version is easier modification",
+      "Control the negative — don't let legs drop"
+    ]
+  },
+  {
+    "id": "ex_russian_twist",
+    "name": "Russian Twist",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit with knees bent, torso leaned back 45 degrees",
+      "Feet elevated or on floor",
+      "Rotate torso side to side",
+      "Touch hands or weight to floor each side"
+    ],
+    "tips": [
+      "Elevate feet to increase difficulty",
+      "Add weight plate or medicine ball",
+      "Rotate through thoracic spine, not just arms"
+    ]
+  },
+  {
+    "id": "ex_bicycle_crunch",
+    "name": "Bicycle Crunch",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on back, hands behind head",
+      "Lift shoulders off floor",
+      "Bring opposite elbow to opposite knee in cycling motion",
+      "Extend other leg simultaneously"
+    ],
+    "tips": [
+      "Don't pull on neck — hands just touch head",
+      "Full rotation each side for oblique engagement",
+      "Control the pace — slow beats fast"
+    ]
+  },
+  {
+    "id": "ex_v_up",
+    "name": "V-Up",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie flat, arms overhead, legs extended",
+      "Simultaneously raise arms and legs to meet in middle",
+      "Form V-shape at peak",
+      "Lower with control"
+    ],
+    "tips": [
+      "Keep legs straight for full range",
+      "Touch toes at peak if possible",
+      "A demanding full ab exercise"
+    ]
+  },
+  {
+    "id": "ex_mountain_climber",
+    "name": "Mountain Climber",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start in high plank position",
+      "Drive one knee toward chest",
+      "Quickly alternate legs in running motion",
+      "Keep hips level and core braced"
+    ],
+    "tips": [
+      "Hips should stay in line with body — don't pike",
+      "Faster = more cardio, slower = more core",
+      "Great metabolic finisher"
+    ]
+  },
+  {
+    "id": "ex_pallof_press",
+    "name": "Pallof Press",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at chest height, stand sideways to machine",
+      "Hold handle at chest with both hands",
+      "Press straight out, resisting rotation",
+      "Hold briefly, pull back to chest"
+    ],
+    "tips": [
+      "Anti-rotation exercise — resist turning toward cable",
+      "Excellent for sports performance and spine health",
+      "Move slowly and deliberately"
+    ]
+  },
+  {
+    "id": "ex_standing_calf_raise",
+    "name": "Standing Calf Raise",
+    "primaryMuscle": "calves",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand on calf raise machine, balls of feet on edge",
+      "Lower heels as far below platform as possible",
+      "Rise up onto toes as high as possible",
+      "Pause at peak, lower slowly"
+    ],
+    "tips": [
+      "Full range of motion — bottom stretch is crucial",
+      "Slow negatives work better than fast bouncing reps",
+      "Calves respond well to high rep work"
+    ]
+  },
+  {
+    "id": "ex_seated_calf_raise",
+    "name": "Seated Calf Raise",
+    "primaryMuscle": "calves",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit at machine, pads on lower thighs",
+      "Lower heels to full stretch",
+      "Rise up on toes as high as possible",
+      "Hold peak contraction, lower slowly"
+    ],
+    "tips": [
+      "Seated position emphasizes soleus more than gastrocnemius",
+      "Train both seated and standing for complete calf development",
+      "Pause at peak and bottom for maximum effect"
+    ]
+  },
+  {
+    "id": "ex_donkey_calf_raise",
+    "name": "Donkey Calf Raise",
+    "primaryMuscle": "calves",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Bend forward at waist and grip support",
+      "Partner sits on lower back or use machine",
+      "Toes on raised surface, heels hanging",
+      "Raise and lower heels through full range"
+    ],
+    "tips": [
+      "Bent torso pre-stretches the gastrocnemius",
+      "One of Arnold's favorite calf exercises",
+      "Can be done with bodyweight on steps"
+    ]
+  },
+  {
+    "id": "ex_treadmill_run",
+    "name": "Treadmill Run",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings",
+      "calves"
+    ],
+    "equipment": "machine",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set speed and incline, step on moving belt",
+      "Maintain upright posture, natural arm swing",
+      "Land mid-foot, not heel striking",
+      "Cool down with 2-3 minute walk"
+    ],
+    "tips": [
+      "Slight incline (1-2%) mimics outdoor running",
+      "Don't hold handrails — use proper running form",
+      "Build duration before speed"
+    ]
+  },
+  {
+    "id": "ex_stationary_bike",
+    "name": "Stationary Bike",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings"
+    ],
+    "equipment": "machine",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Adjust seat height — slight bend at bottom of pedal stroke",
+      "Maintain steady cadence (80-100 RPM for most)",
+      "Keep upper body relaxed",
+      "Adjust resistance to maintain target heart rate"
+    ],
+    "tips": [
+      "Low impact — great for recovery sessions",
+      "Upright bike less stress on back than recumbent",
+      "Intervals on bike are very effective for fat loss"
+    ]
+  },
+  {
+    "id": "ex_rowing_machine",
+    "name": "Rowing Machine",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": [
+      "back",
+      "biceps",
+      "quads"
+    ],
+    "equipment": "machine",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Grab handle with overhand grip, sit tall",
+      "Drive legs first — fully extend",
+      "Then lean back slightly and pull handle to lower chest",
+      "Return: arms out, lean forward, bend knees"
+    ],
+    "tips": [
+      "Sequence: legs → back → arms on pull; reverse on recovery",
+      "Avoid hunching — keep chest tall",
+      "Full body cardio with excellent calorie burn"
+    ]
+  },
+  {
+    "id": "ex_jump_rope",
+    "name": "Jump Rope",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": [
+      "calves",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold handles, rope behind feet",
+      "Jump on balls of feet, rope passes under",
+      "Keep jumps low — just enough clearance",
+      "Use wrists to rotate rope, not shoulders"
+    ],
+    "tips": [
+      "Start with basic 2-foot jump before progressing",
+      "Excellent for coordination and conditioning",
+      "30s on / 15s off intervals are highly effective"
+    ]
+  },
+  {
+    "id": "ex_burpee",
+    "name": "Burpee",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": [
+      "chest",
+      "quads",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand, then squat and place hands on floor",
+      "Jump feet back to plank position",
+      "Perform push-up",
+      "Jump feet to hands, then jump up with arms overhead"
+    ],
+    "tips": [
+      "Scale by stepping instead of jumping",
+      "Maintain tight core in plank phase",
+      "Full body metabolic conditioning exercise"
+    ]
+  },
+  {
+    "id": "ex_cable_face_pull",
+    "name": "Cable Face Pull",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable at upper-chest height with rope attachment",
+      "Grip rope with thumbs up, step back",
+      "Pull rope to face, elbows high and flared out",
+      "End position: hands beside ears, W-shape",
+      "Slowly return to start"
+    ],
+    "tips": [
+      "Critical for shoulder health and rear delt development",
+      "Keep elbows above wrist height throughout",
+      "High reps work best — 15-25 per set"
+    ]
+  },
+  {
+    "id": "ex_machine_lateral_raise",
+    "name": "Machine Lateral Raise",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Adjust machine pad to arm position",
+      "Sit upright, elbows pressing against pads",
+      "Raise arms to shoulder height",
+      "Lower with control"
+    ],
+    "tips": [
+      "Consistent tension throughout vs dumbbell version",
+      "Eliminates momentum and cheating",
+      "Great for high-rep burnout sets"
+    ]
+  },
+  {
+    "id": "ex_barbell_squat_pause",
+    "name": "Pause Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Set up like back squat",
+      "Descend to parallel depth",
+      "Pause for 2-3 seconds at bottom — no bouncing",
+      "Drive powerfully back to standing"
+    ],
+    "tips": [
+      "Eliminates the stretch reflex — builds raw strength",
+      "Lighter weight than regular squat",
+      "Excellent for fixing squat depth and form issues"
+    ]
+  },
+  {
+    "id": "ex_hip_abduction_machine",
+    "name": "Hip Abduction Machine",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit in machine, pads on outer knees",
+      "Push legs outward against resistance",
+      "Hold briefly at maximum abduction",
+      "Control return to start"
+    ],
+    "tips": [
+      "Targets glute medius and minimus",
+      "Foot position affects which fibers are targeted",
+      "Great superset with hip adduction machine"
+    ]
+  },
+  {
+    "id": "ex_trap_bar_deadlift",
+    "name": "Trap Bar Deadlift",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "quads",
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "barbell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Step inside trap bar, feet shoulder-width",
+      "Hinge and grip handles, chest up",
+      "Drive through floor, bar rises along legs",
+      "Stand tall at top, lower with control"
+    ],
+    "tips": [
+      "More quad involvement than conventional deadlift",
+      "Easier to learn than conventional — great for beginners",
+      "Neutral grip reduces wrist strain"
+    ]
+  },
+  {
+    "id": "ex_cable_pullthrough",
+    "name": "Cable Pull-Through",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes"
+    ],
+    "equipment": "cable",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set cable low, attach rope, stand facing away",
+      "Hinge forward grasping rope between legs",
+      "Drive hips forward to stand, squeezing glutes",
+      "Hinge back with control for next rep"
+    ],
+    "tips": [
+      "Excellent hip hinge teaching tool",
+      "Feel the stretch in hamstrings at bottom",
+      "Light weight and focus on movement pattern"
+    ]
+  },
+  {
+    "id": "ex_hollow_rock",
+    "name": "Hollow Rock",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start in hollow body hold position",
+      "Lower back pressed into floor, arms overhead",
+      "Rock forward and back like a rocking chair",
+      "Maintain hollow position throughout — no breaking"
+    ],
+    "tips": [
+      "Don't let lower back arch off floor",
+      "Gymnastics staple for core strength",
+      "Progress from hollow body hold before adding rock"
+    ]
+  },
+  {
+    "id": "ex_dumbbell_step_up",
+    "name": "Dumbbell Step-Up",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "dumbbell",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold dumbbells at sides, stand in front of bench",
+      "Step one foot onto bench",
+      "Drive through that foot to stand on bench",
+      "Step down and alternate legs"
+    ],
+    "tips": [
+      "Drive through the top leg — don't push off back foot",
+      "Knee tracks over toes on working leg",
+      "Height of step determines difficulty"
+    ]
+  },
+  {
+    "id": "ex_ez_bar_overhead_press",
+    "name": "EZ Bar Overhead Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "triceps"
+    ],
+    "equipment": "ez-bar",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold EZ bar at angled grip positions at collarbone",
+      "Press overhead to full lockout",
+      "Bar travels slightly behind head at top",
+      "Lower with control to collarbone"
+    ],
+    "tips": [
+      "Easier on wrists than straight barbell",
+      "Good alternative for those with wrist pain",
+      "Stand or seated both work well"
+    ]
+  },
+  {
+    "id": "ex_cable_bicep_curl_high",
+    "name": "High Cable Bicep Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set both cables at high position",
+      "Stand in center, grab both handles",
+      "Curl hands toward head, like a double bicep pose",
+      "Squeeze hard at peak, lower with control"
+    ],
+    "tips": [
+      "Maximum stretch and peak contraction in one movement",
+      "Can do one arm at a time",
+      "Great finisher for the bicep workout"
+    ]
+  }
+]

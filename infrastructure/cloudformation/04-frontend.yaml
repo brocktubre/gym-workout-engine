@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Gym Workout Engine - CloudFront + S3 Frontend + Lambda@Edge PIN Auth'
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+  DomainName:
+    Type: String
+    Default: gym.oc.taglineconsultants.com
+  CertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:381753457015:certificate/5d5ea3ee-5f8d-4968-9c37-ab32633dfdb6
+  S3BucketName:
+    Type: String
+    Default: gym.oc.taglineconsultants.com
+  ApiEndpoint:
+    Type: String
+    Description: API Gateway endpoint URL (without trailing slash)
+
+Resources:
+  CloudFrontOAC:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub 'gym-workout-engine-oac-${Stage}'
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref S3BucketName
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub 'arn:aws:s3:::${S3BucketName}/*'
+            Condition:
+              StringEquals:
+                'AWS:SourceArn': !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/${CloudFrontDistribution}'
+
+  EdgeAuthRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'gym-workout-engine-edge-auth-role-${Stage}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+                - edgelambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+  EdgeAuthFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub 'gym-workout-engine-edge-auth-${Stage}'
+      Runtime: nodejs20.x
+      Handler: index.handler
+      Role: !GetAtt EdgeAuthRole.Arn
+      MemorySize: 128
+      Timeout: 5
+      Code:
+        ZipFile: |
+          // Placeholder - deploy with actual code via CI/CD
+          exports.handler = async (event) => event.Records[0].cf.request;
+      Description: 'Lambda@Edge PIN authentication for gym.oc.taglineconsultants.com'
+
+  EdgeAuthVersion:
+    Type: AWS::Lambda::Version
+    Properties:
+      FunctionName: !Ref EdgeAuthFunction
+
+  CloudFrontDistribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Aliases:
+          - !Ref DomainName
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref CertificateArn
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        Origins:
+          - Id: S3Origin
+            DomainName: !Sub '${S3BucketName}.s3.us-east-1.amazonaws.com'
+            S3OriginConfig:
+              OriginAccessIdentity: ''
+            OriginAccessControlId: !Ref CloudFrontOAC
+          - Id: ApiOrigin
+            DomainName: !Select
+              - 2
+              - !Split ['/', !Ref ApiEndpoint]
+            CustomOriginConfig:
+              HTTPSPort: 443
+              OriginProtocolPolicy: https-only
+        DefaultCacheBehavior:
+          TargetOriginId: S3Origin
+          ViewerProtocolPolicy: redirect-to-https
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6  # CachingOptimized
+          LambdaFunctionAssociations:
+            - EventType: viewer-request
+              LambdaFunctionARN: !Ref EdgeAuthVersion
+        CacheBehaviors:
+          - PathPattern: /api/*
+            TargetOriginId: ApiOrigin
+            ViewerProtocolPolicy: https-only
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad  # CachingDisabled
+            OriginRequestPolicyId: b689b0a8-53d0-40ab-baf2-68738e2966ac  # AllViewerExceptHostHeader
+          - PathPattern: /__auth
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+            CachePolicyId: 4135ea2d-6df8-44a3-9df3-4b5a84be39ad  # CachingDisabled
+            LambdaFunctionAssociations:
+              - EventType: viewer-request
+                LambdaFunctionARN: !Ref EdgeAuthVersion
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+          - ErrorCode: 404
+            ResponseCode: 200
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 0
+      Tags:
+        - Key: Project
+          Value: gym-workout-engine
+
+Outputs:
+  DistributionId:
+    Value: !Ref CloudFrontDistribution
+    Export:
+      Name: !Sub 'GymWorkoutEngine-DistributionId-${Stage}'
+  DistributionDomain:
+    Value: !GetAtt CloudFrontDistribution.DomainName
+    Export:
+      Name: !Sub 'GymWorkoutEngine-DistributionDomain-${Stage}'

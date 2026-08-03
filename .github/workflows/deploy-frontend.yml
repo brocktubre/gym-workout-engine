@@ -1,0 +1,60 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'frontend/**'
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-1
+  STAGE: prod
+  S3_BUCKET: gym.oc.taglineconsultants.com
+
+jobs:
+  deploy:
+    name: Build & Deploy to S3 + CloudFront
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.DEPLOY_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.DEPLOY_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+      - name: Build Frontend
+        working-directory: frontend
+        env:
+          VITE_API_URL: ''  # Empty = use CloudFront /api/* path
+        run: |
+          npm ci
+          npm run build
+      - name: Deploy to S3
+        run: |
+          # Deploy all assets with long-lived cache headers (content-addressed by Vite)
+          aws s3 sync frontend/dist/ s3://${{ env.S3_BUCKET }}/ \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "index.html"
+          # Deploy index.html with no-cache so users always get the latest shell
+          aws s3 cp frontend/dist/index.html s3://${{ env.S3_BUCKET }}/index.html \
+            --cache-control "no-cache, no-store, must-revalidate"
+      - name: Invalidate CloudFront Cache
+        run: |
+          CF_DIST_ID=$(aws cloudformation describe-stacks \
+            --stack-name "gym-workout-engine-frontend-${{ env.STAGE }}" \
+            --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
+            --output text)
+          aws cloudfront create-invalidation \
+            --distribution-id $CF_DIST_ID \
+            --paths "/index.html"
+          echo "✅ Frontend deployed to https://gym.oc.taglineconsultants.com"

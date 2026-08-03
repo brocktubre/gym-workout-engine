@@ -1,0 +1,21 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'ACM Certificate for gym.oc.taglineconsultants.com (us-east-1, required for CloudFront)'
+
+# IMPORTANT: This certificate was pre-provisioned.
+# Certificate ARN: arn:aws:acm:us-east-1:381753457015:certificate/5d5ea3ee-5f8d-4968-9c37-ab32633dfdb6
+# DNS validation record has been added to Route53 hosted zone Z06672042E3V34N26VIQA
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: gym.oc.taglineconsultants.com
+  CertificateArn:
+    Type: String
+    Default: arn:aws:acm:us-east-1:381753457015:certificate/5d5ea3ee-5f8d-4968-9c37-ab32633dfdb6
+    Description: Pre-provisioned certificate ARN
+
+Outputs:
+  CertificateArn:
+    Value: !Ref CertificateArn
+    Export:
+      Name: GymWorkoutEngine-CertificateArn

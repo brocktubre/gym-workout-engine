@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Gym Workout Engine - Route53 DNS Record'
+
+Parameters:
+  HostedZoneId:
+    Type: String
+    Default: Z06672042E3V34N26VIQA
+  DomainName:
+    Type: String
+    Default: gym.oc.taglineconsultants.com
+  CloudFrontDomain:
+    Type: String
+    Description: CloudFront distribution domain name (e.g., d123xyz.cloudfront.net)
+
+Resources:
+  DnsRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      Name: !Ref DomainName
+      Type: A
+      AliasTarget:
+        DNSName: !Ref CloudFrontDomain
+        HostedZoneId: Z2FDTNDATAQYW2  # CloudFront hosted zone ID (always this value)
+        EvaluateTargetHealth: false

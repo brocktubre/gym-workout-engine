@@ -1,0 +1,151 @@
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ChevronDown, ChevronUp, Info, TrendingUp } from 'lucide-react';
+import { MuscleGroupBadge } from './MuscleGroupBadge';
+import { cn } from '@/lib/utils';
+import type { WorkoutExercise } from '@/types';
+
+const equipmentEmoji: Record<string, string> = {
+  barbell: '🏋️',
+  dumbbell: '💪',
+  bodyweight: '🤸',
+  machine: '⚙️',
+  cable: '🔗',
+  'resistance-band': '🪢',
+  kettlebell: '🔔',
+  'ez-bar': '〰️',
+};
+
+interface ExerciseItemProps {
+  workoutExercise: WorkoutExercise;
+  index?: number;
+  showProgress?: boolean;
+}
+
+export function ExerciseItem({ workoutExercise, index, showProgress = false }: ExerciseItemProps) {
+  const [expanded, setExpanded] = useState(false);
+  const { exercise, sets, progressionNote } = workoutExercise;
+
+  const completedSets = sets.filter((s) => s.completed).length;
+  const totalSets = sets.length;
+  const isFullyDone = completedSets === totalSets && totalSets > 0;
+
+  return (
+    <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
+      {/* Main row */}
+      <button
+        className="w-full text-left p-4"
+        onClick={() => setExpanded((v) => !v)}
+      >
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start gap-3 flex-1 min-w-0">
+            <div className="flex-shrink-0 h-8 w-8 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-base">
+              {equipmentEmoji[exercise.equipment] ?? '🏋️'}
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 flex-wrap">
+                {index !== undefined && (
+                  <span className="text-xs font-bold text-[#8E8E93]">
+                    #{index + 1}
+                  </span>
+                )}
+                <span className={cn('font-semibold text-sm', isFullyDone && showProgress ? 'text-[#30D158]' : 'text-white')}>
+                  {exercise.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
+                <span className="text-[#8E8E93] text-xs">
+                  {totalSets} × {sets[0]?.targetReps ?? '?'} reps
+                  {sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}kg` : ''}
+                </span>
+              </div>
+              {progressionNote && (
+                <div className="flex items-center gap-1 mt-1">
+                  <TrendingUp className="h-3 w-3 text-[#30D158]" />
+                  <span className="text-[#30D158] text-xs">{progressionNote}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {showProgress && (
+              <span className={cn(
+                'text-xs font-medium px-2 py-0.5 rounded-full',
+                isFullyDone
+                  ? 'bg-[#30D158]/20 text-[#30D158]'
+                  : completedSets > 0
+                  ? 'bg-[#FF9F0A]/20 text-[#FF9F0A]'
+                  : 'bg-[#38383A] text-[#8E8E93]',
+              )}>
+                {completedSets}/{totalSets}
+              </span>
+            )}
+            {expanded ? (
+              <ChevronUp className="h-4 w-4 text-[#8E8E93]" />
+            ) : (
+              <ChevronDown className="h-4 w-4 text-[#8E8E93]" />
+            )}
+          </div>
+        </div>
+      </button>
+
+      {/* Expanded instructions */}
+      <AnimatePresence>
+        {expanded && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <div className="px-4 pb-4 border-t border-[#38383A] pt-3 space-y-3">
+              {exercise.instructions.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <Info className="h-3.5 w-3.5 text-[#0A84FF]" />
+                    <span className="text-xs font-semibold text-[#0A84FF]">Instructions</span>
+                  </div>
+                  <ol className="space-y-1">
+                    {exercise.instructions.map((step, i) => (
+                      <li key={i} className="text-xs text-[#8E8E93] flex gap-2">
+                        <span className="text-[#FF375F] font-medium shrink-0">{i + 1}.</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+              {exercise.tips.length > 0 && (
+                <div>
+                  <div className="flex items-center gap-1.5 mb-2">
+                    <span className="text-xs font-semibold text-[#FF9F0A]">💡 Tips</span>
+                  </div>
+                  <ul className="space-y-1">
+                    {exercise.tips.map((tip, i) => (
+                      <li key={i} className="text-xs text-[#8E8E93] flex gap-2">
+                        <span className="text-[#FF9F0A] shrink-0">•</span>
+                        <span>{tip}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {exercise.secondaryMuscles.length > 0 && (
+                <div>
+                  <span className="text-xs text-[#8E8E93]">Also works: </span>
+                  <div className="inline-flex flex-wrap gap-1 mt-1">
+                    {exercise.secondaryMuscles.map((m) => (
+                      <MuscleGroupBadge key={m} muscle={m} size="sm" />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

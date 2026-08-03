@@ -1,0 +1,55 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Gym Workout Engine - DynamoDB table'
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+    AllowedValues: [prod, staging, dev]
+
+Resources:
+  WorkoutTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub 'gym-workout-engine-${Stage}'
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            ProjectionType: ALL
+      Tags:
+        - Key: Project
+          Value: gym-workout-engine
+        - Key: Stage
+          Value: !Ref Stage
+
+Outputs:
+  TableName:
+    Value: !Ref WorkoutTable
+    Export:
+      Name: !Sub 'GymWorkoutEngine-TableName-${Stage}'
+  TableArn:
+    Value: !GetAtt WorkoutTable.Arn
+    Export:
+      Name: !Sub 'GymWorkoutEngine-TableArn-${Stage}'

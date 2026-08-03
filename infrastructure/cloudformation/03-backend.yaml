@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Gym Workout Engine - Lambda API Backend + API Gateway'
+
+Parameters:
+  Stage:
+    Type: String
+    Default: prod
+  TableName:
+    Type: String
+    Default: gym-workout-engine-prod
+  FrontendUrl:
+    Type: String
+    Default: https://gym.oc.taglineconsultants.com
+  LambdaZipBucket:
+    Type: String
+    Description: S3 bucket where lambda.zip is uploaded
+    Default: gym.oc.taglineconsultants.com
+  LambdaZipKey:
+    Type: String
+    Default: lambda/lambda.zip
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'gym-workout-engine-lambda-role-${Stage}'
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+      Policies:
+        - PolicyName: DynamoDBAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}'
+                  - !Sub 'arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${TableName}/index/*'
+
+  ApiFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: !Sub 'gym-workout-engine-api-${Stage}'
+      Runtime: nodejs20.x
+      Handler: lambda.handler
+      Role: !GetAtt LambdaExecutionRole.Arn
+      MemorySize: 512
+      Timeout: 30
+      Code:
+        S3Bucket: !Ref LambdaZipBucket
+        S3Key: !Ref LambdaZipKey
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref TableName
+          STAGE: !Ref Stage
+          FRONTEND_URL: !Ref FrontendUrl
+          AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1'
+      Tags:
+        - Key: Project
+          Value: gym-workout-engine
+
+  HttpApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: !Sub 'gym-workout-engine-api-${Stage}'
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref FrontendUrl
+          - http://localhost:5173
+        AllowMethods:
+          - GET
+          - POST
+          - PUT
+          - DELETE
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        MaxAge: 86400
+
+  LambdaIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref HttpApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt ApiFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  DefaultRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref HttpApi
+      RouteKey: '$default'
+      Target: !Sub 'integrations/${LambdaIntegration}'
+
+  ApiStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref HttpApi
+      StageName: '$default'
+      AutoDeploy: true
+
+  ApiInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref ApiFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub 'arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpApi}/*'
+
+Outputs:
+  ApiEndpoint:
+    Value: !GetAtt HttpApi.ApiEndpoint
+    Export:
+      Name: !Sub 'GymWorkoutEngine-ApiEndpoint-${Stage}'
+  FunctionName:
+    Value: !Ref ApiFunction
+    Export:
+      Name: !Sub 'GymWorkoutEngine-FunctionName-${Stage}'
+  FunctionArn:
+    Value: !GetAtt ApiFunction.Arn
+    Export:
+      Name: !Sub 'GymWorkoutEngine-FunctionArn-${Stage}'
