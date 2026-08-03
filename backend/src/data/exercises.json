@@ -68,7 +68,7 @@
     "tips": [
       "Decline reduces shoulder stress",
       "Great for lower chest development",
-      "Use a spotter — hard to re-rack alone"
+      "Use a spotter \u2014 hard to re-rack alone"
     ]
   },
   {
@@ -137,7 +137,7 @@
     "tips": [
       "Think 'hugging a tree', not pressing",
       "Don't go below shoulder level",
-      "Control the eccentric — most growth happens here"
+      "Control the eccentric \u2014 most growth happens here"
     ]
   },
   {
@@ -180,7 +180,7 @@
     "tips": [
       "Keep elbows at shoulder height throughout",
       "Excellent chest isolation for beginners",
-      "Don't let the weight slam back — control the negative"
+      "Don't let the weight slam back \u2014 control the negative"
     ]
   },
   {
@@ -363,7 +363,7 @@
       "Stand with feet hip-width, bar over mid-foot",
       "Hinge at hips, grip bar just outside legs",
       "Chest up, lats engaged, take slack out of bar",
-      "Push floor away — drive hips forward as bar passes knees",
+      "Push floor away \u2014 drive hips forward as bar passes knees",
       "Stand tall at top, lower with control"
     ],
     "tips": [
@@ -393,7 +393,7 @@
     ],
     "tips": [
       "Keep lower back neutral throughout",
-      "Don't use momentum — control both phases",
+      "Don't use momentum \u2014 control both phases",
       "Elbow path determines which muscles fire most"
     ]
   },
@@ -416,7 +416,7 @@
       "Slowly extend arms back to start"
     ],
     "tips": [
-      "Don't rock torso — minimal body movement",
+      "Don't rock torso \u2014 minimal body movement",
       "Chest up and proud at the top",
       "Pause and squeeze at the peak contraction"
     ]
@@ -440,7 +440,7 @@
     ],
     "tips": [
       "Initiate with elbows driving down, not biceps curling",
-      "Slight lean back is okay — excessive is cheating",
+      "Slight lean back is okay \u2014 excessive is cheating",
       "Full extension at top for maximum stretch"
     ]
   },
@@ -513,7 +513,7 @@
     "tips": [
       "Chest-supported version reduces lower back stress",
       "Great for mid-back thickness",
-      "Keep hips down — don't stand upright"
+      "Keep hips down \u2014 don't stand upright"
     ]
   },
   {
@@ -534,7 +534,7 @@
       "Lower with control to full extension"
     ],
     "tips": [
-      "Elbow stays close to body — don't flare out",
+      "Elbow stays close to body \u2014 don't flare out",
       "Think 'elbow to ceiling' not 'hand to hip'",
       "Full stretch at bottom is key for lat activation"
     ]
@@ -554,7 +554,7 @@
       "Set cable at forehead height with rope attachment",
       "Grab rope with palms facing in, step back",
       "Pull rope toward face, elbows high and flared",
-      "Externally rotate wrists at end — 'W' position",
+      "Externally rotate wrists at end \u2014 'W' position",
       "Slowly return to start"
     ],
     "tips": [
@@ -581,7 +581,7 @@
     "tips": [
       "Excellent lat isolation without biceps involvement",
       "Slight bend in elbows is fine",
-      "Focus on the feeling in your lats — mind-muscle connection"
+      "Focus on the feeling in your lats \u2014 mind-muscle connection"
     ]
   },
   {
@@ -627,33 +627,9 @@
       "Drive hips forward to return to upright"
     ],
     "tips": [
-      "Keep spine neutral — not rounded",
+      "Keep spine neutral \u2014 not rounded",
       "Feel stretch in hamstrings at bottom",
       "Use light weight and focus on movement pattern"
-    ]
-  },
-  {
-    "id": "ex_back_extension",
-    "name": "Back Extension",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "glutes",
-      "hamstrings"
-    ],
-    "equipment": "bodyweight",
-    "category": "isolation",
-    "movementType": "hinge",
-    "difficulty": "beginner",
-    "instructions": [
-      "Lie face-down on hyperextension bench, hips at pad edge",
-      "Cross arms or hold weight at chest",
-      "Lower torso toward floor with control",
-      "Raise back to parallel — do not hyperextend"
-    ],
-    "tips": [
-      "Squeeze glutes at top of movement",
-      "Hold weight plate for added resistance",
-      "Stop at parallel — going higher strains lumbar"
     ]
   },
   {
@@ -699,7 +675,7 @@
     "tips": [
       "Lead with elbows, not hands",
       "Pinch shoulder blades at peak",
-      "Use lighter weight — rear delts are small"
+      "Use lighter weight \u2014 rear delts are small"
     ]
   },
   {
@@ -745,7 +721,7 @@
     ],
     "tips": [
       "Wide grip emphasizes lat width",
-      "Don't pull behind neck — bad for shoulder health",
+      "Don't pull behind neck \u2014 bad for shoulder health",
       "Full stretch at top is crucial"
     ]
   },
@@ -792,7 +768,7 @@
       "Lower to collarbone with control"
     ],
     "tips": [
-      "Keep wrists straight — don't let them roll back",
+      "Keep wrists straight \u2014 don't let them roll back",
       "Elbows slightly forward at start, not flared",
       "Press your head through at lockout"
     ]
@@ -817,7 +793,7 @@
     "tips": [
       "Seated provides more stability, standing engages core more",
       "Don't crash the weights at bottom",
-      "Slight arc inward at top — natural movement"
+      "Slight arc inward at top \u2014 natural movement"
     ]
   },
   {
@@ -832,8 +808,8 @@
     "instructions": [
       "Stand with dumbbells at sides",
       "With slight elbow bend, raise arms out to sides",
-      "Stop at shoulder height — slight tilt so pinkies slightly higher",
-      "Lower slowly — this is where the work is"
+      "Stop at shoulder height \u2014 slight tilt so pinkies slightly higher",
+      "Lower slowly \u2014 this is where the work is"
     ],
     "tips": [
       "Lead with elbows, not wrists",
@@ -859,7 +835,7 @@
     "tips": [
       "Targets anterior (front) delt",
       "Can alternate arms or do both simultaneously",
-      "Keep core tight — don't lean back"
+      "Keep core tight \u2014 don't lean back"
     ]
   },
   {
@@ -949,7 +925,7 @@
     ],
     "tips": [
       "Can also do standing or prone on incline bench",
-      "Use lighter weights — rear delts are small",
+      "Use lighter weights \u2014 rear delts are small",
       "Think 'showing your armpits' to get the motion right"
     ]
   },
@@ -969,7 +945,7 @@
       "Lower slowly back down"
     ],
     "tips": [
-      "Don't roll shoulders — straight up and down",
+      "Don't roll shoulders \u2014 straight up and down",
       "Pause at top to eliminate momentum",
       "Traps respond well to heavy loads and high volume"
     ]
@@ -1034,7 +1010,7 @@
       "Slowly lower to full extension"
     ],
     "tips": [
-      "Don't swing — keep elbows pinned to torso",
+      "Don't swing \u2014 keep elbows pinned to torso",
       "Supinate wrists slightly at top for peak contraction",
       "Full extension at bottom maximizes stretch"
     ]
@@ -1076,7 +1052,7 @@
       "Lower with control"
     ],
     "tips": [
-      "Works brachialis — fills out the arm more",
+      "Works brachialis \u2014 fills out the arm more",
       "Can do cross-body hammer curls for variation",
       "Heavier than supinated curls for most lifters"
     ]
@@ -1099,7 +1075,7 @@
     "tips": [
       "Incline creates maximum stretch on long head of bicep",
       "Excellent for peaking the bicep",
-      "Don't let elbows come forward — defeats the purpose"
+      "Don't let elbows come forward \u2014 defeats the purpose"
     ]
   },
   {
@@ -1181,8 +1157,8 @@
       "Lower slowly to full extension"
     ],
     "tips": [
-      "Bench eliminates cheat — pure isolation",
-      "Don't lock out completely — keep tension on bicep",
+      "Bench eliminates cheat \u2014 pure isolation",
+      "Don't lock out completely \u2014 keep tension on bicep",
       "Excellent for building bicep peak"
     ]
   },
@@ -1247,8 +1223,8 @@
       "Keep wrists straight throughout"
     ],
     "tips": [
-      "Don't go too narrow — wrists will suffer",
-      "Elbow path is key — keep them tucked",
+      "Don't go too narrow \u2014 wrists will suffer",
+      "Elbow path is key \u2014 keep them tucked",
       "One of the best mass builders for triceps"
     ]
   },
@@ -1289,7 +1265,7 @@
       "Extend arms back to start"
     ],
     "tips": [
-      "Upper arms must not move — only elbows bend",
+      "Upper arms must not move \u2014 only elbows bend",
       "Lower to forehead or behind head for more stretch",
       "Can superset with close-grip bench for extra pump"
     ]
@@ -1310,7 +1286,7 @@
       "Extend back overhead to start"
     ],
     "tips": [
-      "Overhead position stretches long head of tricep — great for mass",
+      "Overhead position stretches long head of tricep \u2014 great for mass",
       "Keep core tight to protect lower back",
       "Also works well with cable or EZ bar"
     ]
@@ -1334,7 +1310,7 @@
     ],
     "tips": [
       "Upright torso = more triceps, leaned = more chest",
-      "Avoid going too deep — risks shoulder impingement",
+      "Avoid going too deep \u2014 risks shoulder impingement",
       "Add weight with dip belt for progression"
     ]
   },
@@ -1420,7 +1396,7 @@
     ],
     "tips": [
       "Flaring rope at bottom hits lateral and medial heads",
-      "Elbows stay fixed — only forearms move",
+      "Elbows stay fixed \u2014 only forearms move",
       "Great pump builder for triceps"
     ]
   },
@@ -1467,8 +1443,8 @@
     ],
     "tips": [
       "Keep knees tracking over toes throughout",
-      "Chest and elbows up — fight forward lean",
-      "Squat depth matters — parallel or bust"
+      "Chest and elbows up \u2014 fight forward lean",
+      "Squat depth matters \u2014 parallel or bust"
     ]
   },
   {
@@ -1490,7 +1466,7 @@
       "Drive knees out, stand tall"
     ],
     "tips": [
-      "Upright torso is essential — bar will fall if you lean",
+      "Upright torso is essential \u2014 bar will fall if you lean",
       "Wrist mobility required for clean grip",
       "Hits quads harder than back squat due to torso position"
     ]
@@ -1585,7 +1561,7 @@
       "Continue alternating legs across floor"
     ],
     "tips": [
-      "Keep torso upright — don't lean forward",
+      "Keep torso upright \u2014 don't lean forward",
       "Front knee should not go past toes",
       "Great for coordination and unilateral strength"
     ]
@@ -1607,8 +1583,8 @@
     ],
     "tips": [
       "Pause and squeeze at full extension",
-      "Don't use momentum — controlled throughout",
-      "Great quad finisher but controversial for knee health — use full ROM"
+      "Don't use momentum \u2014 controlled throughout",
+      "Great quad finisher but controversial for knee health \u2014 use full ROM"
     ]
   },
   {
@@ -1626,7 +1602,7 @@
     "instructions": [
       "Set up like back squat with box behind you",
       "Squat back onto box, sit briefly",
-      "Keep core tight — don't relax on box",
+      "Keep core tight \u2014 don't relax on box",
       "Drive powerfully back to standing"
     ],
     "tips": [
@@ -1660,27 +1636,6 @@
     ]
   },
   {
-    "id": "ex_sissy_squat",
-    "name": "Sissy Squat",
-    "primaryMuscle": "quads",
-    "secondaryMuscles": [],
-    "equipment": "bodyweight",
-    "category": "isolation",
-    "movementType": "legs",
-    "difficulty": "advanced",
-    "instructions": [
-      "Stand with feet hip-width, optionally hold support",
-      "Rise onto toes, lean torso back",
-      "Bend knees forward and down",
-      "Return to standing while maintaining lean"
-    ],
-    "tips": [
-      "Extreme quad isolation — knees travel far forward",
-      "Hold a support for balance",
-      "Start with limited range and build up"
-    ]
-  },
-  {
     "id": "ex_romanian_deadlift",
     "name": "Romanian Deadlift",
     "primaryMuscle": "hamstrings",
@@ -1699,9 +1654,9 @@
       "Drive hips forward to return to standing"
     ],
     "tips": [
-      "Soft bend in knees — this is a hip hinge, not a squat",
+      "Soft bend in knees \u2014 this is a hip hinge, not a squat",
       "Bar stays close to legs throughout",
-      "Feel stretch in hamstrings — that's the target"
+      "Feel stretch in hamstrings \u2014 that's the target"
     ]
   },
   {
@@ -1745,7 +1700,7 @@
     ],
     "tips": [
       "Straighter legs than RDL for more hamstring stretch",
-      "Keep back flat — rounding is injury risk",
+      "Keep back flat \u2014 rounding is injury risk",
       "Range of motion limited by hamstring flexibility"
     ]
   },
@@ -1767,7 +1722,7 @@
     "tips": [
       "One of the hardest hamstring exercises",
       "Significantly reduces hamstring injury risk",
-      "Progress from partial reps — very demanding"
+      "Progress from partial reps \u2014 very demanding"
     ]
   },
   {
@@ -1791,7 +1746,7 @@
       "Stand tall with hips forward"
     ],
     "tips": [
-      "Hip dominant lift — great for those with long torso",
+      "Hip dominant lift \u2014 great for those with long torso",
       "Knees track toes to protect them",
       "More inner thigh and glute than conventional"
     ]
@@ -1815,7 +1770,7 @@
       "Drive hips forward and stand"
     ],
     "tips": [
-      "Focus on hamstring stretch — not just bending over",
+      "Focus on hamstring stretch \u2014 not just bending over",
       "Keep lower back neutral throughout",
       "Use light to moderate weight only"
     ]
@@ -1840,7 +1795,7 @@
     ],
     "tips": [
       "Excellent for balance and addressing imbalances",
-      "Hinge at hip — don't just bend at waist",
+      "Hinge at hip \u2014 don't just bend at waist",
       "Keep hips square to floor throughout"
     ]
   },
@@ -1861,8 +1816,8 @@
     ],
     "tips": [
       "Hip position stretched vs seated affects contraction range",
-      "Control the return — don't let weight snap back",
-      "Slightly different feel than lying leg curl — both are valuable"
+      "Control the return \u2014 don't let weight snap back",
+      "Slightly different feel than lying leg curl \u2014 both are valuable"
     ]
   },
   {
@@ -1884,7 +1839,7 @@
       "Lower hips toward floor and repeat"
     ],
     "tips": [
-      "Full hip extension — don't stop short",
+      "Full hip extension \u2014 don't stop short",
       "Chin tucked to chest for neutral spine",
       "One of the best glute builders available"
     ]
@@ -1929,7 +1884,7 @@
     ],
     "tips": [
       "Keep working leg straight at peak",
-      "Don't swing — slow and controlled",
+      "Don't swing \u2014 slow and controlled",
       "Can also be done on all-fours"
     ]
   },
@@ -1950,7 +1905,7 @@
     ],
     "tips": [
       "Focus on glute contraction, not how high you kick",
-      "Keep hips level — don't rotate",
+      "Keep hips level \u2014 don't rotate",
       "Add ankle weights for progressive overload"
     ]
   },
@@ -1994,7 +1949,7 @@
       "Walk 10-15 steps each direction"
     ],
     "tips": [
-      "Keep tension in band at all times — don't let feet come too close",
+      "Keep tension in band at all times \u2014 don't let feet come too close",
       "Stay low in squat position throughout",
       "Great glute med activation for knee health"
     ]
@@ -2016,7 +1971,7 @@
     ],
     "tips": [
       "Excellent glute medius activation",
-      "Hips stay stacked — don't roll back",
+      "Hips stay stacked \u2014 don't roll back",
       "Progress to standing hip abduction or cable variation"
     ]
   },
@@ -2059,7 +2014,7 @@
       "Forearms on floor, elbows under shoulders",
       "Body forms straight line from head to heels",
       "Squeeze core, glutes, and quads",
-      "Hold position — breathe steadily"
+      "Hold position \u2014 breathe steadily"
     ],
     "tips": [
       "Don't let hips sag or pike up",
@@ -2150,7 +2105,7 @@
     ],
     "tips": [
       "Start with short range and build up",
-      "Keep lower back neutral — don't hyperextend",
+      "Keep lower back neutral \u2014 don't hyperextend",
       "One of the hardest bodyweight core exercises"
     ]
   },
@@ -2171,8 +2126,8 @@
     ],
     "tips": [
       "Allows progressive overload unlike floor crunches",
-      "Round the upper back — think ribcage to hips",
-      "Keep hips stationary — move only the spine"
+      "Round the upper back \u2014 think ribcage to hips",
+      "Keep hips stationary \u2014 move only the spine"
     ]
   },
   {
@@ -2187,13 +2142,13 @@
     "instructions": [
       "Hang from pull-up bar with overhand grip",
       "Raise legs to horizontal or vertical",
-      "Lower with control — don't swing",
+      "Lower with control \u2014 don't swing",
       "Keep upper body stable"
     ],
     "tips": [
       "Posterior pelvic tilt at top for max ab contraction",
       "Bent-knee version is easier modification",
-      "Control the negative — don't let legs drop"
+      "Control the negative \u2014 don't let legs drop"
     ]
   },
   {
@@ -2233,9 +2188,9 @@
       "Extend other leg simultaneously"
     ],
     "tips": [
-      "Don't pull on neck — hands just touch head",
+      "Don't pull on neck \u2014 hands just touch head",
       "Full rotation each side for oblique engagement",
-      "Control the pace — slow beats fast"
+      "Control the pace \u2014 slow beats fast"
     ]
   },
   {
@@ -2277,7 +2232,7 @@
       "Keep hips level and core braced"
     ],
     "tips": [
-      "Hips should stay in line with body — don't pike",
+      "Hips should stay in line with body \u2014 don't pike",
       "Faster = more cardio, slower = more core",
       "Great metabolic finisher"
     ]
@@ -2298,7 +2253,7 @@
       "Hold briefly, pull back to chest"
     ],
     "tips": [
-      "Anti-rotation exercise — resist turning toward cable",
+      "Anti-rotation exercise \u2014 resist turning toward cable",
       "Excellent for sports performance and spine health",
       "Move slowly and deliberately"
     ]
@@ -2319,7 +2274,7 @@
       "Pause at peak, lower slowly"
     ],
     "tips": [
-      "Full range of motion — bottom stretch is crucial",
+      "Full range of motion \u2014 bottom stretch is crucial",
       "Slow negatives work better than fast bouncing reps",
       "Calves respond well to high rep work"
     ]
@@ -2387,7 +2342,7 @@
     ],
     "tips": [
       "Slight incline (1-2%) mimics outdoor running",
-      "Don't hold handrails — use proper running form",
+      "Don't hold handrails \u2014 use proper running form",
       "Build duration before speed"
     ]
   },
@@ -2404,13 +2359,13 @@
     "movementType": "cardio",
     "difficulty": "beginner",
     "instructions": [
-      "Adjust seat height — slight bend at bottom of pedal stroke",
+      "Adjust seat height \u2014 slight bend at bottom of pedal stroke",
       "Maintain steady cadence (80-100 RPM for most)",
       "Keep upper body relaxed",
       "Adjust resistance to maintain target heart rate"
     ],
     "tips": [
-      "Low impact — great for recovery sessions",
+      "Low impact \u2014 great for recovery sessions",
       "Upright bike less stress on back than recumbent",
       "Intervals on bike are very effective for fat loss"
     ]
@@ -2430,13 +2385,13 @@
     "difficulty": "intermediate",
     "instructions": [
       "Grab handle with overhand grip, sit tall",
-      "Drive legs first — fully extend",
+      "Drive legs first \u2014 fully extend",
       "Then lean back slightly and pull handle to lower chest",
       "Return: arms out, lean forward, bend knees"
     ],
     "tips": [
-      "Sequence: legs → back → arms on pull; reverse on recovery",
-      "Avoid hunching — keep chest tall",
+      "Sequence: legs \u2192 back \u2192 arms on pull; reverse on recovery",
+      "Avoid hunching \u2014 keep chest tall",
       "Full body cardio with excellent calorie burn"
     ]
   },
@@ -2455,7 +2410,7 @@
     "instructions": [
       "Hold handles, rope behind feet",
       "Jump on balls of feet, rope passes under",
-      "Keep jumps low — just enough clearance",
+      "Keep jumps low \u2014 just enough clearance",
       "Use wrists to rotate rope, not shoulders"
     ],
     "tips": [
@@ -2510,7 +2465,7 @@
     "tips": [
       "Critical for shoulder health and rear delt development",
       "Keep elbows above wrist height throughout",
-      "High reps work best — 15-25 per set"
+      "High reps work best \u2014 15-25 per set"
     ]
   },
   {
@@ -2550,11 +2505,11 @@
     "instructions": [
       "Set up like back squat",
       "Descend to parallel depth",
-      "Pause for 2-3 seconds at bottom — no bouncing",
+      "Pause for 2-3 seconds at bottom \u2014 no bouncing",
       "Drive powerfully back to standing"
     ],
     "tips": [
-      "Eliminates the stretch reflex — builds raw strength",
+      "Eliminates the stretch reflex \u2014 builds raw strength",
       "Lighter weight than regular squat",
       "Excellent for fixing squat depth and form issues"
     ]
@@ -2601,7 +2556,7 @@
     ],
     "tips": [
       "More quad involvement than conventional deadlift",
-      "Easier to learn than conventional — great for beginners",
+      "Easier to learn than conventional \u2014 great for beginners",
       "Neutral grip reduces wrist strain"
     ]
   },
@@ -2641,7 +2596,7 @@
       "Start in hollow body hold position",
       "Lower back pressed into floor, arms overhead",
       "Rock forward and back like a rocking chair",
-      "Maintain hollow position throughout — no breaking"
+      "Maintain hollow position throughout \u2014 no breaking"
     ],
     "tips": [
       "Don't let lower back arch off floor",
@@ -2668,7 +2623,7 @@
       "Step down and alternate legs"
     ],
     "tips": [
-      "Drive through the top leg — don't push off back foot",
+      "Drive through the top leg \u2014 don't push off back foot",
       "Knee tracks over toes on working leg",
       "Height of step determines difficulty"
     ]
@@ -2717,12 +2672,14 @@
       "Great finisher for the bicep workout"
     ]
   },
-
   {
     "id": "ex_ring_row",
     "name": "Ring Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps", "core"],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "pull",
@@ -2743,7 +2700,11 @@
     "id": "ex_ring_push_up",
     "name": "Ring Push-Up",
     "primaryMuscle": "chest",
-    "secondaryMuscles": ["shoulders", "triceps", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "push",
@@ -2757,14 +2718,17 @@
     "tips": [
       "Turn rings out at lockout for extra chest contraction",
       "Instability demands more stabilizer activation",
-      "Harder than floor push-up — progress methodically"
+      "Harder than floor push-up \u2014 progress methodically"
     ]
   },
   {
     "id": "ex_ring_dip",
     "name": "Ring Dip",
     "primaryMuscle": "triceps",
-    "secondaryMuscles": ["chest", "shoulders"],
+    "secondaryMuscles": [
+      "chest",
+      "shoulders"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "push",
@@ -2778,14 +2742,17 @@
     "tips": [
       "Turn rings out at top for shoulder stability",
       "Keep rings as close to body as possible",
-      "Much harder than bar dips — master those first"
+      "Much harder than bar dips \u2014 master those first"
     ]
   },
   {
     "id": "ex_ring_support_hold",
     "name": "Ring Support Hold",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "triceps"],
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps"
+    ],
     "equipment": "rings",
     "category": "isolation",
     "movementType": "core",
@@ -2794,7 +2761,7 @@
       "Support bodyweight on rings with arms fully extended",
       "Turn rings out to 45 degrees externally",
       "Squeeze everything: core, glutes, quads",
-      "Hold for timed duration — breathe steadily"
+      "Hold for timed duration \u2014 breathe steadily"
     ],
     "tips": [
       "Rings turned out stabilizes the shoulder joint",
@@ -2806,7 +2773,11 @@
     "id": "ex_ring_muscle_up",
     "name": "Ring Muscle-Up",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["chest", "triceps", "core"],
+    "secondaryMuscles": [
+      "chest",
+      "triceps",
+      "core"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "pull",
@@ -2818,7 +2789,7 @@
       "Press to lockout in support position, rings turned out"
     ],
     "tips": [
-      "False grip is essential — practice it separately",
+      "False grip is essential \u2014 practice it separately",
       "The transition is the hardest part",
       "Build strict pull-ups and ring dips first"
     ]
@@ -2827,7 +2798,9 @@
     "id": "ex_ring_body_row",
     "name": "Ring Body Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps"],
+    "secondaryMuscles": [
+      "biceps"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "pull",
@@ -2836,7 +2809,7 @@
       "Set rings at waist height with wider foot position",
       "Hang with almost upright body angle",
       "Pull chest to rings, elbows back",
-      "Lower with control — body stays straight"
+      "Lower with control \u2014 body stays straight"
     ],
     "tips": [
       "More upright body = easier; more horizontal = harder",
@@ -2848,7 +2821,10 @@
     "id": "ex_ring_pike_push_up",
     "name": "Ring Pike Push-Up",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["triceps", "core"],
+    "secondaryMuscles": [
+      "triceps",
+      "core"
+    ],
     "equipment": "rings",
     "category": "compound",
     "movementType": "push",
@@ -2869,7 +2845,10 @@
     "id": "ex_ring_rollout",
     "name": "Ring Rollout",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "back"],
+    "secondaryMuscles": [
+      "shoulders",
+      "back"
+    ],
     "equipment": "rings",
     "category": "isolation",
     "movementType": "core",
@@ -2882,7 +2861,7 @@
     ],
     "tips": [
       "Similar to ab wheel rollout but with rings",
-      "Keep lower back neutral — do not hyperextend",
+      "Keep lower back neutral \u2014 do not hyperextend",
       "Start with limited range and build progressively"
     ]
   },
@@ -2890,7 +2869,9 @@
     "id": "ex_ring_face_pull",
     "name": "Ring Face Pull",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["shoulders"],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
     "equipment": "rings",
     "category": "isolation",
     "movementType": "pull",
@@ -2899,7 +2880,7 @@
       "Set rings at forehead height",
       "Lean back holding rings, palms facing in",
       "Pull rings to face, elbows high and flared",
-      "Externally rotate at end — hands beside ears"
+      "Externally rotate at end \u2014 hands beside ears"
     ],
     "tips": [
       "Great for rear delts and external rotators",
@@ -2907,12 +2888,14 @@
       "Use as a shoulder health prehab movement"
     ]
   },
-
   {
     "id": "ex_weighted_pull_up",
     "name": "Weighted Pull-Up",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps", "core"],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
     "equipment": "pull-up-bar",
     "category": "compound",
     "movementType": "pull",
@@ -2925,7 +2908,7 @@
     ],
     "tips": [
       "Only add weight when bodyweight reps feel easy",
-      "Maintain perfect form — don't swing or kip",
+      "Maintain perfect form \u2014 don't swing or kip",
       "Small weight increments work best"
     ]
   },
@@ -2933,7 +2916,10 @@
     "id": "ex_l_sit_pull_up",
     "name": "L-Sit Pull-Up",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps", "core"],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
     "equipment": "pull-up-bar",
     "category": "compound",
     "movementType": "pull",
@@ -2954,7 +2940,9 @@
     "id": "ex_toes_to_bar",
     "name": "Toes-to-Bar",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["back"],
+    "secondaryMuscles": [
+      "back"
+    ],
     "equipment": "pull-up-bar",
     "category": "isolation",
     "movementType": "core",
@@ -2963,10 +2951,10 @@
       "Hang from pull-up bar with overhand grip",
       "Engage lats to stabilize upper body",
       "Raise straight legs to touch bar",
-      "Lower with control — minimize swing"
+      "Lower with control \u2014 minimize swing"
     ],
     "tips": [
-      "Initiate with abs — don't just kick with hip flexors",
+      "Initiate with abs \u2014 don't just kick with hip flexors",
       "Knees-to-elbows is an easier regression",
       "Control the descent to build more core strength"
     ]
@@ -2975,7 +2963,10 @@
     "id": "ex_bar_muscle_up",
     "name": "Bar Muscle-Up",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["chest", "triceps"],
+    "secondaryMuscles": [
+      "chest",
+      "triceps"
+    ],
     "equipment": "pull-up-bar",
     "category": "compound",
     "movementType": "pull",
@@ -2988,7 +2979,7 @@
     ],
     "tips": [
       "Requires strong pull-ups and dips as a base",
-      "The transition is the skill element — practice slow negatives",
+      "The transition is the skill element \u2014 practice slow negatives",
       "Straight bar muscle-up is harder than ring version"
     ]
   },
@@ -3004,21 +2995,23 @@
     "instructions": [
       "Grip bar with overhand or neutral grip",
       "Hang with arms fully extended, feet off floor",
-      "Relax grip slightly — focus on shoulder decompression",
+      "Relax grip slightly \u2014 focus on shoulder decompression",
       "Hold for timed duration"
     ],
     "tips": [
-      "Decompresses the lumbar spine — great after heavy lifts",
+      "Decompresses the lumbar spine \u2014 great after heavy lifts",
       "Also builds grip strength and shoulder mobility",
       "Progress to scapular pulls before attempting pull-ups"
     ]
   },
-
   {
     "id": "ex_landmine_shoulder_press",
     "name": "Landmine Shoulder Press",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["triceps", "core"],
+    "secondaryMuscles": [
+      "triceps",
+      "core"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "push",
@@ -3030,7 +3023,7 @@
       "Lower with control to shoulder"
     ],
     "tips": [
-      "Arc motion is shoulder-friendly — great for those with pain",
+      "Arc motion is shoulder-friendly \u2014 great for those with pain",
       "Single arm version builds shoulder stability",
       "Can be done half-kneeling for more core demand"
     ]
@@ -3039,7 +3032,9 @@
     "id": "ex_landmine_row",
     "name": "Landmine Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps"],
+    "secondaryMuscles": [
+      "biceps"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "pull",
@@ -3060,7 +3055,10 @@
     "id": "ex_landmine_squat",
     "name": "Landmine Squat",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "legs",
@@ -3072,7 +3070,7 @@
       "Drive through heels to stand"
     ],
     "tips": [
-      "Bar angle assists upright torso — great for beginners",
+      "Bar angle assists upright torso \u2014 great for beginners",
       "Easier on lower back than back squat",
       "Good teaching tool for squat pattern"
     ]
@@ -3081,7 +3079,10 @@
     "id": "ex_landmine_rdl",
     "name": "Landmine Romanian Deadlift",
     "primaryMuscle": "hamstrings",
-    "secondaryMuscles": ["glutes", "back"],
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "hinge",
@@ -3102,7 +3103,9 @@
     "id": "ex_landmine_rotation",
     "name": "Landmine Rotation",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders"],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
     "equipment": "landmine",
     "category": "isolation",
     "movementType": "core",
@@ -3111,7 +3114,7 @@
       "Anchor barbell in landmine, stand facing anchor point",
       "Hold end of bar with both hands at arm's length",
       "Rotate bar in arc from one side to the other",
-      "Control the movement — resist rotation on return"
+      "Control the movement \u2014 resist rotation on return"
     ],
     "tips": [
       "Power comes from hips and core, not arms",
@@ -3123,7 +3126,11 @@
     "id": "ex_landmine_thruster",
     "name": "Landmine Thruster",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["shoulders", "glutes", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "glutes",
+      "core"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "legs",
@@ -3144,7 +3151,10 @@
     "id": "ex_landmine_anti_rotation_press",
     "name": "Landmine Anti-Rotation Press",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "chest"],
+    "secondaryMuscles": [
+      "shoulders",
+      "chest"
+    ],
     "equipment": "landmine",
     "category": "isolation",
     "movementType": "core",
@@ -3165,7 +3175,11 @@
     "id": "ex_landmine_split_jerk",
     "name": "Landmine Split Jerk",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["quads", "core", "triceps"],
+    "secondaryMuscles": [
+      "quads",
+      "core",
+      "triceps"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "push",
@@ -3186,7 +3200,10 @@
     "id": "ex_landmine_single_arm_row",
     "name": "Landmine Single-Arm Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps", "core"],
+    "secondaryMuscles": [
+      "biceps",
+      "core"
+    ],
     "equipment": "landmine",
     "category": "compound",
     "movementType": "pull",
@@ -3203,12 +3220,14 @@
       "Great for identifying and fixing back imbalances"
     ]
   },
-
   {
     "id": "ex_battle_rope_alt_waves",
     "name": "Battle Rope Alternating Waves",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["shoulders", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
     "equipment": "battle-rope",
     "category": "cardio",
     "movementType": "cardio",
@@ -3229,7 +3248,10 @@
     "id": "ex_battle_rope_double_waves",
     "name": "Battle Rope Double Waves",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["shoulders", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
     "equipment": "battle-rope",
     "category": "cardio",
     "movementType": "cardio",
@@ -3250,7 +3272,11 @@
     "id": "ex_battle_rope_slams",
     "name": "Battle Rope Slams",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["shoulders", "core", "back"],
+    "secondaryMuscles": [
+      "shoulders",
+      "core",
+      "back"
+    ],
     "equipment": "battle-rope",
     "category": "cardio",
     "movementType": "cardio",
@@ -3271,7 +3297,9 @@
     "id": "ex_battle_rope_circles",
     "name": "Battle Rope Circles",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["core"],
+    "secondaryMuscles": [
+      "core"
+    ],
     "equipment": "battle-rope",
     "category": "compound",
     "movementType": "push",
@@ -3292,7 +3320,10 @@
     "id": "ex_battle_rope_lateral_shuffle",
     "name": "Battle Rope Lateral Shuffle",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["quads", "shoulders"],
+    "secondaryMuscles": [
+      "quads",
+      "shoulders"
+    ],
     "equipment": "battle-rope",
     "category": "cardio",
     "movementType": "cardio",
@@ -3313,7 +3344,9 @@
     "id": "ex_battle_rope_russian_twist",
     "name": "Battle Rope Russian Twist",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders"],
+    "secondaryMuscles": [
+      "shoulders"
+    ],
     "equipment": "battle-rope",
     "category": "isolation",
     "movementType": "core",
@@ -3330,12 +3363,15 @@
       "Challenging combination of core rotation and rope conditioning"
     ]
   },
-
   {
     "id": "ex_sled_push",
     "name": "Sled Push",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
     "equipment": "sled",
     "category": "compound",
     "movementType": "legs",
@@ -3347,7 +3383,7 @@
       "Push for prescribed distance"
     ],
     "tips": [
-      "Stay low — higher handles = less leg drive",
+      "Stay low \u2014 higher handles = less leg drive",
       "Drive through the whole foot, not just toes",
       "Excellent no-eccentric conditioning for recovery days"
     ]
@@ -3356,7 +3392,10 @@
     "id": "ex_sled_pull",
     "name": "Sled Pull",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps", "hamstrings"],
+    "secondaryMuscles": [
+      "biceps",
+      "hamstrings"
+    ],
     "equipment": "sled",
     "category": "compound",
     "movementType": "pull",
@@ -3368,7 +3407,7 @@
       "Pull for prescribed distance"
     ],
     "tips": [
-      "Keep pulling mechanics — use arms and hips",
+      "Keep pulling mechanics \u2014 use arms and hips",
       "Walk backward with controlled steps",
       "Face-away version targets posterior chain more"
     ]
@@ -3377,7 +3416,10 @@
     "id": "ex_sled_drag",
     "name": "Sled Drag",
     "primaryMuscle": "hamstrings",
-    "secondaryMuscles": ["glutes", "back"],
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
     "equipment": "sled",
     "category": "compound",
     "movementType": "hinge",
@@ -3398,7 +3440,9 @@
     "id": "ex_sled_row",
     "name": "Sled Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps"],
+    "secondaryMuscles": [
+      "biceps"
+    ],
     "equipment": "sled",
     "category": "compound",
     "movementType": "pull",
@@ -3415,12 +3459,15 @@
       "Constant tension on the back muscles throughout"
     ]
   },
-
   {
     "id": "ex_box_jump",
     "name": "Box Jump",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings", "calves"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "calves"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
@@ -3432,8 +3479,8 @@
       "Land softly on box in squat position, then stand"
     ],
     "tips": [
-      "Land softly — absorb through hips and knees",
-      "Step down, don't jump down — protects knees",
+      "Land softly \u2014 absorb through hips and knees",
+      "Step down, don't jump down \u2014 protects knees",
       "Start with lower box height and build up"
     ]
   },
@@ -3441,7 +3488,10 @@
     "id": "ex_box_jump_over",
     "name": "Box Jump Over",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["quads", "glutes"],
+    "secondaryMuscles": [
+      "quads",
+      "glutes"
+    ],
     "equipment": "plyometric-box",
     "category": "cardio",
     "movementType": "cardio",
@@ -3462,7 +3512,10 @@
     "id": "ex_step_up_knee_drive",
     "name": "Step-Up with Knee Drive",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
@@ -3475,7 +3528,7 @@
     ],
     "tips": [
       "Drive knee high for glute activation",
-      "Push through the top leg — not the floor leg",
+      "Push through the top leg \u2014 not the floor leg",
       "Great for hip flexor and quad development"
     ]
   },
@@ -3483,14 +3536,18 @@
     "id": "ex_depth_jump",
     "name": "Depth Jump",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings", "calves"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "calves"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
     "difficulty": "advanced",
     "instructions": [
       "Stand on box edge, toes near the front",
-      "Step off box — do not jump off",
+      "Step off box \u2014 do not jump off",
       "Upon landing, immediately jump up as high as possible",
       "Minimize ground contact time"
     ],
@@ -3504,20 +3561,23 @@
     "id": "ex_box_squat_jump",
     "name": "Box Squat Jump",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
     "difficulty": "intermediate",
     "instructions": [
       "Stand in front of box, sit back onto box",
-      "Pause briefly — no relaxing core",
+      "Pause briefly \u2014 no relaxing core",
       "Explosively jump up off box, feet leave surface",
       "Land and repeat"
     ],
     "tips": [
-      "Pause eliminates stretch reflex — pure explosive power",
-      "Keep weight moderate — focus on speed",
+      "Pause eliminates stretch reflex \u2014 pure explosive power",
+      "Keep weight moderate \u2014 focus on speed",
       "Excellent for developing starting strength"
     ]
   },
@@ -3525,7 +3585,10 @@
     "id": "ex_lateral_box_jump",
     "name": "Lateral Box Jump",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "abductors"],
+    "secondaryMuscles": [
+      "glutes",
+      "abductors"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
@@ -3546,7 +3609,11 @@
     "id": "ex_single_leg_box_jump",
     "name": "Single-Leg Box Jump",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
     "equipment": "plyometric-box",
     "category": "compound",
     "movementType": "legs",
@@ -3563,12 +3630,15 @@
       "Builds unilateral power and reduces injury risk"
     ]
   },
-
   {
     "id": "ex_wall_ball_shot",
     "name": "Wall Ball Shot",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["shoulders", "glutes", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "glutes",
+      "core"
+    ],
     "equipment": "medicine-ball",
     "category": "compound",
     "movementType": "legs",
@@ -3589,20 +3659,24 @@
     "id": "ex_slam_ball_slam",
     "name": "Slam Ball Slam",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "back", "quads"],
+    "secondaryMuscles": [
+      "shoulders",
+      "back",
+      "quads"
+    ],
     "equipment": "medicine-ball",
     "category": "compound",
     "movementType": "core",
     "difficulty": "intermediate",
     "instructions": [
       "Hold slam ball overhead with both hands",
-      "Extend fully — rise onto toes",
+      "Extend fully \u2014 rise onto toes",
       "Slam ball into floor as hard as possible",
       "Pick it up and repeat"
     ],
     "tips": [
-      "Use your whole body — not just arms",
-      "Slam balls don't bounce — stand aside if needed",
+      "Use your whole body \u2014 not just arms",
+      "Slam balls don't bounce \u2014 stand aside if needed",
       "Excellent for power and stress release"
     ]
   },
@@ -3619,40 +3693,22 @@
       "Sit with knees bent, feet elevated or on floor",
       "Hold medicine ball at chest, lean back 45 degrees",
       "Rotate ball to one side touching floor",
-      "Rotate to other side — continue alternating"
+      "Rotate to other side \u2014 continue alternating"
     ],
     "tips": [
       "Rotate through thoracic spine, not just arms",
       "Heavier ball increases demand",
-      "Control each touch — don't bounce the ball"
-    ]
-  },
-  {
-    "id": "ex_mb_chest_pass",
-    "name": "Medicine Ball Chest Pass",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": ["shoulders", "triceps"],
-    "equipment": "medicine-ball",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Stand facing wall, hold ball at chest",
-      "Explosively push ball into wall",
-      "Catch the rebound and immediately repeat",
-      "Maintain continuous rhythm"
-    ],
-    "tips": [
-      "Use rubber medicine ball for wall work",
-      "Power comes from the chest and triceps",
-      "Partner pass variation develops team training"
+      "Control each touch \u2014 don't bounce the ball"
     ]
   },
   {
     "id": "ex_mb_overhead_throw",
     "name": "Medicine Ball Overhead Throw",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["core", "back"],
+    "secondaryMuscles": [
+      "core",
+      "back"
+    ],
     "equipment": "medicine-ball",
     "category": "compound",
     "movementType": "push",
@@ -3669,12 +3725,15 @@
       "Great for athletic throwing mechanics"
     ]
   },
-
   {
     "id": "ex_sandbag_carry",
     "name": "Sandbag Carry",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["back", "quads", "shoulders"],
+    "secondaryMuscles": [
+      "back",
+      "quads",
+      "shoulders"
+    ],
     "equipment": "sandbag",
     "category": "compound",
     "movementType": "core",
@@ -3695,7 +3754,11 @@
     "id": "ex_sandbag_clean",
     "name": "Sandbag Clean",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "secondaryMuscles": [
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
     "equipment": "sandbag",
     "category": "compound",
     "movementType": "hinge",
@@ -3716,7 +3779,11 @@
     "id": "ex_sandbag_shouldering",
     "name": "Sandbag Shouldering",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "secondaryMuscles": [
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
     "equipment": "sandbag",
     "category": "compound",
     "movementType": "hinge",
@@ -3737,7 +3804,11 @@
     "id": "ex_sandbag_squat",
     "name": "Sandbag Squat",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings",
+      "core"
+    ],
     "equipment": "sandbag",
     "category": "compound",
     "movementType": "legs",
@@ -3754,12 +3825,15 @@
       "Great functional strength builder"
     ]
   },
-
   {
     "id": "ex_echo_bike_sprint",
     "name": "Echo Bike Sprint Intervals",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["quads", "shoulders", "hamstrings"],
+    "secondaryMuscles": [
+      "quads",
+      "shoulders",
+      "hamstrings"
+    ],
     "equipment": "echo-bike",
     "category": "cardio",
     "movementType": "cardio",
@@ -3771,7 +3845,7 @@
       "Rest for 40-60 seconds and repeat"
     ],
     "tips": [
-      "Echo bike uses fan resistance — harder you go, harder it gets",
+      "Echo bike uses fan resistance \u2014 harder you go, harder it gets",
       "Drive with both arms and legs simultaneously",
       "Brutal but highly effective conditioning tool"
     ]
@@ -3780,7 +3854,10 @@
     "id": "ex_echo_bike_steady",
     "name": "Echo Bike Steady State",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["quads", "shoulders"],
+    "secondaryMuscles": [
+      "quads",
+      "shoulders"
+    ],
     "equipment": "echo-bike",
     "category": "cardio",
     "movementType": "cardio",
@@ -3801,7 +3878,11 @@
     "id": "ex_rower_sprint",
     "name": "Rowing Sprint Intervals",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["back", "quads", "biceps"],
+    "secondaryMuscles": [
+      "back",
+      "quads",
+      "biceps"
+    ],
     "equipment": "rower",
     "category": "cardio",
     "movementType": "cardio",
@@ -3813,7 +3894,7 @@
       "Rest and repeat for prescribed intervals"
     ],
     "tips": [
-      "Sequence: legs → back → arms; reverse on recovery",
+      "Sequence: legs \u2192 back \u2192 arms; reverse on recovery",
       "Catch position: shins vertical, arms extended",
       "Monitor split time (/500m) for pacing"
     ]
@@ -3822,7 +3903,11 @@
     "id": "ex_rower_steady",
     "name": "Rowing Steady State",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["back", "quads", "biceps"],
+    "secondaryMuscles": [
+      "back",
+      "quads",
+      "biceps"
+    ],
     "equipment": "rower",
     "category": "cardio",
     "movementType": "cardio",
@@ -3831,7 +3916,7 @@
       "Set up on rower with feet strapped in",
       "Maintain consistent stroke rate (18-24 SPM)",
       "Row at conversational pace for 20-40 minutes",
-      "Focus on technique — long smooth strokes"
+      "Focus on technique \u2014 long smooth strokes"
     ],
     "tips": [
       "Quality strokes beat fast frantic rowing",
@@ -3843,7 +3928,11 @@
     "id": "ex_ski_erg_sprint",
     "name": "SkiErg Sprint Intervals",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["shoulders", "back", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "back",
+      "core"
+    ],
     "equipment": "ski-erg",
     "category": "cardio",
     "movementType": "cardio",
@@ -3864,7 +3953,11 @@
     "id": "ex_ski_erg_steady",
     "name": "SkiErg Steady State",
     "primaryMuscle": "cardio",
-    "secondaryMuscles": ["shoulders", "back", "core"],
+    "secondaryMuscles": [
+      "shoulders",
+      "back",
+      "core"
+    ],
     "equipment": "ski-erg",
     "category": "cardio",
     "movementType": "cardio",
@@ -3881,12 +3974,15 @@
       "Lower impact on legs than running or biking"
     ]
   },
-
   {
     "id": "ex_kb_swing",
     "name": "Kettlebell Swing",
     "primaryMuscle": "hamstrings",
-    "secondaryMuscles": ["glutes", "back", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "back",
+      "core"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "hinge",
@@ -3899,7 +3995,7 @@
     ],
     "tips": [
       "This is a HIP HINGE, not a squat",
-      "Power comes from the hips — arms are just a guide",
+      "Power comes from the hips \u2014 arms are just a guide",
       "Squeeze glutes hard at the top of each rep"
     ]
   },
@@ -3907,7 +4003,11 @@
     "id": "ex_kb_tgu",
     "name": "Kettlebell Turkish Get-Up",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "glutes", "quads"],
+    "secondaryMuscles": [
+      "shoulders",
+      "glutes",
+      "quads"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "core",
@@ -3928,7 +4028,11 @@
     "id": "ex_kb_clean",
     "name": "Kettlebell Clean",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "secondaryMuscles": [
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "hinge",
@@ -3949,7 +4053,12 @@
     "id": "ex_kb_snatch",
     "name": "Kettlebell Snatch",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["back", "hamstrings", "glutes", "core"],
+    "secondaryMuscles": [
+      "back",
+      "hamstrings",
+      "glutes",
+      "core"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "push",
@@ -3970,7 +4079,10 @@
     "id": "ex_kb_press",
     "name": "Kettlebell Press",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["triceps", "core"],
+    "secondaryMuscles": [
+      "triceps",
+      "core"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "push",
@@ -3991,7 +4103,9 @@
     "id": "ex_kb_row",
     "name": "Kettlebell Row",
     "primaryMuscle": "back",
-    "secondaryMuscles": ["biceps"],
+    "secondaryMuscles": [
+      "biceps"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "pull",
@@ -4012,7 +4126,11 @@
     "id": "ex_kb_deadlift",
     "name": "Kettlebell Deadlift",
     "primaryMuscle": "hamstrings",
-    "secondaryMuscles": ["glutes", "back", "core"],
+    "secondaryMuscles": [
+      "glutes",
+      "back",
+      "core"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "hinge",
@@ -4033,7 +4151,11 @@
     "id": "ex_kb_windmill",
     "name": "Kettlebell Windmill",
     "primaryMuscle": "core",
-    "secondaryMuscles": ["shoulders", "hamstrings", "glutes"],
+    "secondaryMuscles": [
+      "shoulders",
+      "hamstrings",
+      "glutes"
+    ],
     "equipment": "kettlebell",
     "category": "compound",
     "movementType": "core",
@@ -4046,16 +4168,17 @@
     ],
     "tips": [
       "Overhead arm must remain locked out throughout",
-      "Lateral hip flexion — not rotation",
+      "Lateral hip flexion \u2014 not rotation",
       "Excellent shoulder stability and core rotation exercise"
     ]
   },
-
   {
     "id": "ex_band_pull_apart",
     "name": "Band Pull-Apart",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["back"],
+    "secondaryMuscles": [
+      "back"
+    ],
     "equipment": "resistance-band",
     "category": "isolation",
     "movementType": "pull",
@@ -4076,7 +4199,9 @@
     "id": "ex_band_face_pull",
     "name": "Band Face Pull",
     "primaryMuscle": "shoulders",
-    "secondaryMuscles": ["back"],
+    "secondaryMuscles": [
+      "back"
+    ],
     "equipment": "resistance-band",
     "category": "isolation",
     "movementType": "pull",
@@ -4090,14 +4215,17 @@
     "tips": [
       "Critical for rear delt and external rotator health",
       "Perfect for travel when no cable machine available",
-      "High reps work best — 15-25 per set"
+      "High reps work best \u2014 15-25 per set"
     ]
   },
   {
     "id": "ex_band_good_morning",
     "name": "Band Good Morning",
     "primaryMuscle": "hamstrings",
-    "secondaryMuscles": ["glutes", "back"],
+    "secondaryMuscles": [
+      "glutes",
+      "back"
+    ],
     "equipment": "resistance-band",
     "category": "compound",
     "movementType": "hinge",
@@ -4109,7 +4237,7 @@
       "Drive hips forward to return to standing"
     ],
     "tips": [
-      "Band provides lighter resistance than barbell — great for learning",
+      "Band provides lighter resistance than barbell \u2014 great for learning",
       "Keep spine neutral throughout",
       "Feel the stretch in hamstrings at the bottom"
     ]
@@ -4118,7 +4246,10 @@
     "id": "ex_band_squat",
     "name": "Band Squat",
     "primaryMuscle": "quads",
-    "secondaryMuscles": ["glutes", "hamstrings"],
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
     "equipment": "resistance-band",
     "category": "compound",
     "movementType": "legs",
@@ -4130,8 +4261,8 @@
       "Drive through heels to stand"
     ],
     "tips": [
-      "Band resistance increases at top — great for quad lockout",
-      "Lighter than barbell — perfect for warm-up or high reps",
+      "Band resistance increases at top \u2014 great for quad lockout",
+      "Lighter than barbell \u2014 perfect for warm-up or high reps",
       "Add band around knees to cue proper knee tracking"
     ]
   }

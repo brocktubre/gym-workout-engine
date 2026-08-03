@@ -79,6 +79,8 @@ const DEFAULT_SETTINGS: UserSettings = {
   fatigueWindowHours: 48,
   exerciseVarietyDays: 7,
   preferCompound: true,
+  includeWarmup: true,
+  allowSupersets: true,
 };
 
 function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
@@ -99,7 +101,12 @@ export default function Settings() {
 
   useEffect(() => {
     if (serverSettings) {
-      setForm(serverSettings);
+      // Merge with defaults so missing fields (new additions) don't cause crashes
+      setForm({ ...DEFAULT_SETTINGS, ...serverSettings,
+        availableEquipment: serverSettings.availableEquipment?.length
+          ? serverSettings.availableEquipment
+          : DEFAULT_SETTINGS.availableEquipment,
+      });
       setIsDirty(false);
     }
   }, [serverSettings]);
@@ -178,7 +185,7 @@ export default function Settings() {
                 <p className="text-xs font-semibold text-[#636366] uppercase tracking-wider mb-2">{cat}</p>
                 <div className="grid grid-cols-2 gap-2">
                   {catItems.map((eq) => {
-                    const selected = form.availableEquipment.includes(eq.value);
+                    const selected = (form.availableEquipment ?? []).includes(eq.value);
                     return (
                       <button
                         key={eq.value}
@@ -394,11 +401,49 @@ export default function Settings() {
           </div>
         </motion.section>
 
+        {/* Include Warmup */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-white">Include Warmup</h3>
+              <p className="text-xs text-[#8E8E93] mt-0.5">5-10 min cardio + muscle-specific stretching before workouts</p>
+            </div>
+            <Switch
+              checked={form.includeWarmup ?? true}
+              onCheckedChange={(v) => update('includeWarmup', v)}
+            />
+          </div>
+        </motion.section>
+
+        {/* Allow Supersets */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.32 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-white">Allow Supersets</h3>
+              <p className="text-xs text-[#8E8E93] mt-0.5">Pair antagonist muscle groups for time-efficient training</p>
+            </div>
+            <Switch
+              checked={form.allowSupersets ?? true}
+              onCheckedChange={(v) => update('allowSupersets', v)}
+            />
+          </div>
+        </motion.section>
+
         {/* Save button */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
+          transition={{ delay: 0.36 }}
         >
           <Button
             size="lg"
