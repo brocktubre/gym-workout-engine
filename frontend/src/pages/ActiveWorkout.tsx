@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, SkipForward, CheckCircle2, ArrowLeftRight } from 'lucide-react';
+import { X, SkipForward, CheckCircle2, ArrowLeftRight, ChevronRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -577,25 +577,111 @@ export default function ActiveWorkout() {
 
         {/* Rest timer overlay */}
         <AnimatePresence>
-          {isResting && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              className="flex flex-col items-center gap-1 py-2"
-            >
-              {currentTurn.betweenExercise && (
-                <p className="text-xs font-semibold text-[#FF9F0A] uppercase tracking-wider mb-1">
-                  Rest between exercises
-                </p>
-              )}
-              <RestTimer
-                seconds={restSeconds}
-                totalSeconds={restTotalRef.current}
-                onSkip={skipRest}
-              />
-            </motion.div>
-          )}
+          {isResting && (() => {
+            // Peek at the next turn to build the "Next Up" preview
+            const nextTurn = turns[currentTurnIndex + 1];
+            const nextExercise = nextTurn ? exercises[nextTurn.exerciseIndex] : undefined;
+            // For supersets, also grab the partner if the next turn starts a new superset
+            const nextPartner = nextTurn?.isSuperset && nextExercise?.supersetGroupId
+              ? exercises.find(
+                  e => e.supersetGroupId === nextExercise.supersetGroupId &&
+                       e.exerciseId !== nextExercise.exerciseId,
+                )
+              : undefined;
+
+            const nextSetNum  = (nextTurn?.setIndex ?? 0) + 1;
+            const nextSetTotal = nextExercise?.sets.length ?? 0;
+
+            return (
+              <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 12 }}
+                className="w-full space-y-3 py-2"
+              >
+                {/* Timer row */}
+                <div className="flex flex-col items-center gap-1">
+                  {currentTurn.betweenExercise && (
+                    <p className="text-xs font-semibold text-[#FF9F0A] uppercase tracking-wider">
+                      Rest between exercises
+                    </p>
+                  )}
+                  <RestTimer
+                    seconds={restSeconds}
+                    totalSeconds={restTotalRef.current}
+                    onSkip={skipRest}
+                  />
+                </div>
+
+                {/* Next Up card — only shown during between-exercise rest */}
+                {currentTurn.betweenExercise && nextExercise && (
+                  <div className="bg-[#1c1c1e] rounded-2xl border border-[#FF9F0A]/25 p-4">
+                    {/* Header */}
+                    <div className="flex items-center gap-2 mb-3">
+                      <ChevronRight className="h-3.5 w-3.5 text-[#FF9F0A]" />
+                      <span className="text-xs font-bold text-[#FF9F0A] uppercase tracking-wider">
+                        Next Up
+                      </span>
+                      {nextPartner && (
+                        <span className="text-[10px] text-[#8E8E93] ml-1">Superset</span>
+                      )}
+                    </div>
+
+                    {/* Exercise(s) */}
+                    {[nextExercise, ...(nextPartner ? [nextPartner] : [])].map((ex, i) => {
+                      const exSet = ex.sets[nextTurn?.setIndex ?? 0] ?? ex.sets[0];
+                      const hasWeight = exSet?.targetWeight && exSet.targetWeight > 0;
+                      return (
+                        <div
+                          key={ex.exerciseId}
+                          className={i > 0 ? 'mt-3 pt-3 border-t border-[#38383A]' : ''}
+                        >
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-bold text-white leading-tight">
+                                {ex.exercise.name}
+                              </p>
+                              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                                <MuscleGroupBadge muscle={ex.exercise.primaryMuscle} size="sm" />
+                                <span className="text-[10px] text-[#8E8E93] capitalize">
+                                  {ex.exercise.equipment.replace(/-/g, ' ')}
+                                </span>
+                              </div>
+                            </div>
+                            {/* Set counter badge */}
+                            <div className="bg-[#2c2c2e] rounded-xl px-2.5 py-1.5 text-center flex-shrink-0">
+                              <p className="text-sm font-bold text-white leading-none">
+                                {nextSetNum}/{nextSetTotal}
+                              </p>
+                              <p className="text-[10px] text-[#8E8E93]">set</p>
+                            </div>
+                          </div>
+
+                          {/* Reps + weight pills */}
+                          <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+                            <span className="text-xs font-semibold bg-[#2c2c2e] text-white px-3 py-1 rounded-full">
+                              {exSet?.targetReps ?? '?'} reps
+                            </span>
+                            {hasWeight && (
+                              <span className="text-xs font-semibold bg-[#FF375F]/15 text-[#FF375F] px-3 py-1 rounded-full">
+                                {exSet!.targetWeight} lbs
+                              </span>
+                            )}
+                            {ex.progressionNote && (
+                              <span className="text-[10px] text-[#30D158] flex items-center gap-1">
+                                <FontAwesomeIcon icon={faArrowTrendUp} className="text-[10px]" />
+                                {ex.progressionNote}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            );
+          })()}
         </AnimatePresence>
 
         {/* Sets */}
