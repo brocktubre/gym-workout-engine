@@ -53,13 +53,13 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
               {formatDate(workout.date)}
             </p>
             <p className="text-xs text-[#8E8E93] capitalize mt-0.5">
-              {workout.goal.replace('-', ' ')}
+              {workout.goal?.replace('-', ' ') ?? ''}
             </p>
           </div>
           <div className="flex items-center gap-1.5">
             <StatusIcon className={`h-4 w-4 ${statusColor}`} />
             <span className={`text-xs font-medium capitalize ${statusColor}`}>
-              {workout.status.replace('-', ' ')}
+              {workout.status?.replace('-', ' ') ?? ''}
             </span>
           </div>
         </div>

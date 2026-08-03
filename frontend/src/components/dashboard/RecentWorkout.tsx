@@ -62,7 +62,7 @@ export function RecentWorkout({ workout }: RecentWorkoutProps) {
             : 'bg-[#2c2c2e] text-[#8E8E93]'
         }`}
       >
-        {workout.status.replace('-', ' ')}
+        {workout.status?.replace('-', ' ') ?? ''}
       </span>
     </div>
   );

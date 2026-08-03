@@ -2716,5 +2716,1423 @@
       "Can do one arm at a time",
       "Great finisher for the bicep workout"
     ]
+  },
+
+  {
+    "id": "ex_ring_row",
+    "name": "Ring Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps", "core"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set rings at waist height, hang underneath with body straight",
+      "Grip rings with palms facing each other",
+      "Pull chest to rings, keeping elbows close to body",
+      "Lower with full control to arm extension"
+    ],
+    "tips": [
+      "Lower rings = harder; raise rings = easier",
+      "Keep body rigid like a plank throughout",
+      "Rings allow natural wrist rotation for better engagement"
+    ]
+  },
+  {
+    "id": "ex_ring_push_up",
+    "name": "Ring Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["shoulders", "triceps", "core"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set rings at low height, grip with arms extended",
+      "Body in plank position, hands shoulder-width",
+      "Lower chest toward rings with control",
+      "Press back up to full extension, turning rings out at top"
+    ],
+    "tips": [
+      "Turn rings out at lockout for extra chest contraction",
+      "Instability demands more stabilizer activation",
+      "Harder than floor push-up — progress methodically"
+    ]
+  },
+  {
+    "id": "ex_ring_dip",
+    "name": "Ring Dip",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": ["chest", "shoulders"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Support yourself on rings with arms locked out, rings turned out",
+      "Lower body by bending elbows, keeping rings close",
+      "Descend until shoulders below elbows",
+      "Press back to lockout, turn rings out at top"
+    ],
+    "tips": [
+      "Turn rings out at top for shoulder stability",
+      "Keep rings as close to body as possible",
+      "Much harder than bar dips — master those first"
+    ]
+  },
+  {
+    "id": "ex_ring_support_hold",
+    "name": "Ring Support Hold",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "triceps"],
+    "equipment": "rings",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Support bodyweight on rings with arms fully extended",
+      "Turn rings out to 45 degrees externally",
+      "Squeeze everything: core, glutes, quads",
+      "Hold for timed duration — breathe steadily"
+    ],
+    "tips": [
+      "Rings turned out stabilizes the shoulder joint",
+      "Full body tension is key",
+      "Foundation for ring dips and muscle-ups"
+    ]
+  },
+  {
+    "id": "ex_ring_muscle_up",
+    "name": "Ring Muscle-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["chest", "triceps", "core"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "advanced",
+    "instructions": [
+      "Hang from rings with false grip (wrist over ring)",
+      "Pull explosively, driving elbows down and back",
+      "Transition through when rings reach chest level",
+      "Press to lockout in support position, rings turned out"
+    ],
+    "tips": [
+      "False grip is essential — practice it separately",
+      "The transition is the hardest part",
+      "Build strict pull-ups and ring dips first"
+    ]
+  },
+  {
+    "id": "ex_ring_body_row",
+    "name": "Ring Body Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set rings at waist height with wider foot position",
+      "Hang with almost upright body angle",
+      "Pull chest to rings, elbows back",
+      "Lower with control — body stays straight"
+    ],
+    "tips": [
+      "More upright body = easier; more horizontal = harder",
+      "Great regression for those working toward pull-ups",
+      "Rings allow natural wrist rotation throughout"
+    ]
+  },
+  {
+    "id": "ex_ring_pike_push_up",
+    "name": "Ring Pike Push-Up",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["triceps", "core"],
+    "equipment": "rings",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set rings low, adopt push-up position with hips raised high",
+      "Body forms inverted V shape",
+      "Lower head toward floor between rings",
+      "Press back up through shoulders"
+    ],
+    "tips": [
+      "More vertical body angle = more shoulder emphasis",
+      "Progression toward handstand push-up",
+      "Instability of rings increases demand significantly"
+    ]
+  },
+  {
+    "id": "ex_ring_rollout",
+    "name": "Ring Rollout",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "back"],
+    "equipment": "rings",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "advanced",
+    "instructions": [
+      "Kneel with rings set low, arms extended",
+      "Roll rings forward as body lowers toward floor",
+      "Extend as far as possible with control",
+      "Contract core to pull rings back to start"
+    ],
+    "tips": [
+      "Similar to ab wheel rollout but with rings",
+      "Keep lower back neutral — do not hyperextend",
+      "Start with limited range and build progressively"
+    ]
+  },
+  {
+    "id": "ex_ring_face_pull",
+    "name": "Ring Face Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["shoulders"],
+    "equipment": "rings",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set rings at forehead height",
+      "Lean back holding rings, palms facing in",
+      "Pull rings to face, elbows high and flared",
+      "Externally rotate at end — hands beside ears"
+    ],
+    "tips": [
+      "Great for rear delts and external rotators",
+      "Rings allow natural wrist rotation unlike cable",
+      "Use as a shoulder health prehab movement"
+    ]
+  },
+
+  {
+    "id": "ex_weighted_pull_up",
+    "name": "Weighted Pull-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps", "core"],
+    "equipment": "pull-up-bar",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "advanced",
+    "instructions": [
+      "Attach weight via dip belt or hold dumbbell between feet",
+      "Hang from bar with overhand grip wider than shoulders",
+      "Pull until chin clears bar",
+      "Lower with full control to dead hang"
+    ],
+    "tips": [
+      "Only add weight when bodyweight reps feel easy",
+      "Maintain perfect form — don't swing or kip",
+      "Small weight increments work best"
+    ]
+  },
+  {
+    "id": "ex_l_sit_pull_up",
+    "name": "L-Sit Pull-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps", "core"],
+    "equipment": "pull-up-bar",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "advanced",
+    "instructions": [
+      "Hang from bar with legs extended horizontally in L-sit",
+      "Maintain L-sit position throughout",
+      "Pull chin to bar",
+      "Lower with control while keeping legs raised"
+    ],
+    "tips": [
+      "Requires significant core and hip flexor strength",
+      "Master L-sit hold before combining with pull-up",
+      "Tremendous upper body and core demand"
+    ]
+  },
+  {
+    "id": "ex_toes_to_bar",
+    "name": "Toes-to-Bar",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["back"],
+    "equipment": "pull-up-bar",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "advanced",
+    "instructions": [
+      "Hang from pull-up bar with overhand grip",
+      "Engage lats to stabilize upper body",
+      "Raise straight legs to touch bar",
+      "Lower with control — minimize swing"
+    ],
+    "tips": [
+      "Initiate with abs — don't just kick with hip flexors",
+      "Knees-to-elbows is an easier regression",
+      "Control the descent to build more core strength"
+    ]
+  },
+  {
+    "id": "ex_bar_muscle_up",
+    "name": "Bar Muscle-Up",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["chest", "triceps"],
+    "equipment": "pull-up-bar",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "advanced",
+    "instructions": [
+      "Hang from bar with overhand grip",
+      "Generate momentum with a kip or pull explosively",
+      "Drive bar to hips and transition chest over bar",
+      "Press to full lockout above bar"
+    ],
+    "tips": [
+      "Requires strong pull-ups and dips as a base",
+      "The transition is the skill element — practice slow negatives",
+      "Straight bar muscle-up is harder than ring version"
+    ]
+  },
+  {
+    "id": "ex_dead_hang",
+    "name": "Dead Hang",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [],
+    "equipment": "pull-up-bar",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Grip bar with overhand or neutral grip",
+      "Hang with arms fully extended, feet off floor",
+      "Relax grip slightly — focus on shoulder decompression",
+      "Hold for timed duration"
+    ],
+    "tips": [
+      "Decompresses the lumbar spine — great after heavy lifts",
+      "Also builds grip strength and shoulder mobility",
+      "Progress to scapular pulls before attempting pull-ups"
+    ]
+  },
+
+  {
+    "id": "ex_landmine_shoulder_press",
+    "name": "Landmine Shoulder Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["triceps", "core"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor barbell in landmine, kneel or stand",
+      "Hold end of bar at shoulder with one hand",
+      "Press bar forward and up in arc",
+      "Lower with control to shoulder"
+    ],
+    "tips": [
+      "Arc motion is shoulder-friendly — great for those with pain",
+      "Single arm version builds shoulder stability",
+      "Can be done half-kneeling for more core demand"
+    ]
+  },
+  {
+    "id": "ex_landmine_row",
+    "name": "Landmine Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor barbell in landmine, stand beside the loaded end",
+      "Hinge forward, grip end of bar with both hands",
+      "Pull bar to lower chest, leading with elbows",
+      "Lower with full control"
+    ],
+    "tips": [
+      "Keep lower back neutral throughout",
+      "Rotating grip variation allows natural movement",
+      "Great for mid and upper back thickness"
+    ]
+  },
+  {
+    "id": "ex_landmine_squat",
+    "name": "Landmine Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "core"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Anchor barbell in landmine, hold end of bar at chest",
+      "Stand with feet shoulder-width, toes slightly out",
+      "Squat down, keeping torso upright",
+      "Drive through heels to stand"
+    ],
+    "tips": [
+      "Bar angle assists upright torso — great for beginners",
+      "Easier on lower back than back squat",
+      "Good teaching tool for squat pattern"
+    ]
+  },
+  {
+    "id": "ex_landmine_rdl",
+    "name": "Landmine Romanian Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor barbell in landmine, hold end of bar at hips",
+      "Hinge at hips, bar follows thighs downward",
+      "Lower until hamstrings are strongly stretched",
+      "Drive hips forward to stand"
+    ],
+    "tips": [
+      "Single arm version adds rotation challenge",
+      "Keep bar close to body throughout",
+      "Feel the hamstring stretch at the bottom"
+    ]
+  },
+  {
+    "id": "ex_landmine_rotation",
+    "name": "Landmine Rotation",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders"],
+    "equipment": "landmine",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor barbell in landmine, stand facing anchor point",
+      "Hold end of bar with both hands at arm's length",
+      "Rotate bar in arc from one side to the other",
+      "Control the movement — resist rotation on return"
+    ],
+    "tips": [
+      "Power comes from hips and core, not arms",
+      "Keep arms relatively straight throughout",
+      "Excellent for rotational sport performance"
+    ]
+  },
+  {
+    "id": "ex_landmine_thruster",
+    "name": "Landmine Thruster",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["shoulders", "glutes", "core"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold end of bar at shoulder, feet shoulder-width",
+      "Squat to parallel depth",
+      "Drive up explosively and press bar overhead in one motion",
+      "Lower bar back to shoulder and descend into next squat"
+    ],
+    "tips": [
+      "Use leg drive to power the press",
+      "A powerful conditioning movement",
+      "Can be done single arm for more challenge"
+    ]
+  },
+  {
+    "id": "ex_landmine_anti_rotation_press",
+    "name": "Landmine Anti-Rotation Press",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "chest"],
+    "equipment": "landmine",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand perpendicular to landmine, hold bar with both hands at chest",
+      "Press bar away from body while resisting rotation",
+      "Hold briefly at extension",
+      "Return to chest position with control"
+    ],
+    "tips": [
+      "Core must resist rotating toward the bar",
+      "Keep hips square throughout",
+      "Excellent anti-rotation training"
+    ]
+  },
+  {
+    "id": "ex_landmine_split_jerk",
+    "name": "Landmine Split Jerk",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["quads", "core", "triceps"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Hold end of bar at shoulder, feet together",
+      "Dip slightly at knees, then drive up explosively",
+      "Split legs into lunge position as bar is pressed overhead",
+      "Stand feet together, lower bar to shoulder"
+    ],
+    "tips": [
+      "Combine leg drive with press for maximum power",
+      "Great Olympic lifting accessory movement",
+      "Practice split footwork before adding weight"
+    ]
+  },
+  {
+    "id": "ex_landmine_single_arm_row",
+    "name": "Landmine Single-Arm Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps", "core"],
+    "equipment": "landmine",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Anchor barbell in landmine, stand alongside loaded end",
+      "Hinge forward, grip bar end with one hand",
+      "Row bar to hip, elbow driving back and up",
+      "Lower with control and full arm extension"
+    ],
+    "tips": [
+      "Allows greater range of motion than barbell row",
+      "Elbow should drive toward ceiling at top",
+      "Great for identifying and fixing back imbalances"
+    ]
+  },
+
+  {
+    "id": "ex_battle_rope_alt_waves",
+    "name": "Battle Rope Alternating Waves",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["shoulders", "core"],
+    "equipment": "battle-rope",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet shoulder-width, slight squat",
+      "Hold one rope end in each hand",
+      "Alternate raising and lowering arms to create waves",
+      "Maintain constant wave motion for duration"
+    ],
+    "tips": [
+      "Keep waves consistent and controlled",
+      "Stay in athletic stance throughout",
+      "Great conditioning with minimal joint stress"
+    ]
+  },
+  {
+    "id": "ex_battle_rope_double_waves",
+    "name": "Battle Rope Double Waves",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["shoulders", "core"],
+    "equipment": "battle-rope",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold both rope ends, stand in athletic stance",
+      "Raise both arms simultaneously and slam down",
+      "Create double waves that travel down rope together",
+      "Maintain rhythm for timed intervals"
+    ],
+    "tips": [
+      "More demanding than alternating waves",
+      "Full body power output",
+      "30-second intervals with 30 seconds rest is effective"
+    ]
+  },
+  {
+    "id": "ex_battle_rope_slams",
+    "name": "Battle Rope Slams",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["shoulders", "core", "back"],
+    "equipment": "battle-rope",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold both rope ends, stand in athletic stance",
+      "Raise both arms overhead",
+      "Slam ropes down to floor with maximum force",
+      "Cycle through continuously"
+    ],
+    "tips": [
+      "Generate power from the whole body",
+      "Explosive slam works posterior chain",
+      "Great stress relief and conditioning exercise"
+    ]
+  },
+  {
+    "id": "ex_battle_rope_circles",
+    "name": "Battle Rope Circles",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["core"],
+    "equipment": "battle-rope",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold both rope ends at hip level",
+      "Make outward circles with both arms simultaneously",
+      "Keep circles consistent in size and speed",
+      "Alternate direction each set"
+    ],
+    "tips": [
+      "Inward and outward circles target different muscles",
+      "Maintain athletic stance throughout",
+      "Great shoulder endurance builder"
+    ]
+  },
+  {
+    "id": "ex_battle_rope_lateral_shuffle",
+    "name": "Battle Rope Lateral Shuffle",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["quads", "shoulders"],
+    "equipment": "battle-rope",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold rope ends, stand beside anchor point",
+      "Create waves while shuffling laterally",
+      "Maintain wave motion throughout the shuffle",
+      "Shuffle back and forth for timed intervals"
+    ],
+    "tips": [
+      "Combines lateral movement with upper body work",
+      "Great for athletic conditioning",
+      "Keep waves consistent during lateral movement"
+    ]
+  },
+  {
+    "id": "ex_battle_rope_russian_twist",
+    "name": "Battle Rope Russian Twist",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders"],
+    "equipment": "battle-rope",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Sit on floor holding both rope ends, torso leaned back 45 degrees",
+      "Lift feet off floor (optional)",
+      "Slam both ropes alternately left and right",
+      "Rotate through torso each side"
+    ],
+    "tips": [
+      "Rotate through thoracic spine, not just arms",
+      "Core must resist rotation on each side",
+      "Challenging combination of core rotation and rope conditioning"
+    ]
+  },
+
+  {
+    "id": "ex_sled_push",
+    "name": "Sled Push",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "equipment": "sled",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Load sled with appropriate weight",
+      "Grip handles, lean into sled at 45 degrees",
+      "Drive forward with powerful leg strides",
+      "Push for prescribed distance"
+    ],
+    "tips": [
+      "Stay low — higher handles = less leg drive",
+      "Drive through the whole foot, not just toes",
+      "Excellent no-eccentric conditioning for recovery days"
+    ]
+  },
+  {
+    "id": "ex_sled_pull",
+    "name": "Sled Pull",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps", "hamstrings"],
+    "equipment": "sled",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Attach rope or straps to sled",
+      "Face sled, grip rope with both hands",
+      "Walk backward pulling sled toward you",
+      "Pull for prescribed distance"
+    ],
+    "tips": [
+      "Keep pulling mechanics — use arms and hips",
+      "Walk backward with controlled steps",
+      "Face-away version targets posterior chain more"
+    ]
+  },
+  {
+    "id": "ex_sled_drag",
+    "name": "Sled Drag",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back"],
+    "equipment": "sled",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Attach harness or rope around waist",
+      "Lean forward and walk, dragging sled behind",
+      "Drive through heels, hinge at hip",
+      "Maintain strong forward lean throughout"
+    ],
+    "tips": [
+      "Hip hinge position loads hamstrings and glutes",
+      "No eccentric loading makes it great for recovery",
+      "Start with moderate load and build"
+    ]
+  },
+  {
+    "id": "ex_sled_row",
+    "name": "Sled Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "sled",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Attach straps to sled, face the sled",
+      "Hold straps at chest height, lean back slightly",
+      "Row straps toward chest while walking backward",
+      "Continue pulling for prescribed distance"
+    ],
+    "tips": [
+      "Maintain upright posture while rowing",
+      "Pull elbows back, not just hands",
+      "Constant tension on the back muscles throughout"
+    ]
+  },
+
+  {
+    "id": "ex_box_jump",
+    "name": "Box Jump",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "calves"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand arm's length from box",
+      "Swing arms back, bend knees into quarter squat",
+      "Explode upward, swinging arms forward",
+      "Land softly on box in squat position, then stand"
+    ],
+    "tips": [
+      "Land softly — absorb through hips and knees",
+      "Step down, don't jump down — protects knees",
+      "Start with lower box height and build up"
+    ]
+  },
+  {
+    "id": "ex_box_jump_over",
+    "name": "Box Jump Over",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["quads", "glutes"],
+    "equipment": "plyometric-box",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand beside box",
+      "Jump laterally over the box",
+      "Land on opposite side and immediately jump back",
+      "Continue for prescribed reps or time"
+    ],
+    "tips": [
+      "Minimal ground contact time for maximum power",
+      "Land softly with bent knees",
+      "Common in CrossFit and conditioning workouts"
+    ]
+  },
+  {
+    "id": "ex_step_up_knee_drive",
+    "name": "Step-Up with Knee Drive",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "core"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand in front of box, step one foot up",
+      "Drive through that foot to stand on box",
+      "As you rise, drive opposite knee high",
+      "Step back down and repeat"
+    ],
+    "tips": [
+      "Drive knee high for glute activation",
+      "Push through the top leg — not the floor leg",
+      "Great for hip flexor and quad development"
+    ]
+  },
+  {
+    "id": "ex_depth_jump",
+    "name": "Depth Jump",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "calves"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Stand on box edge, toes near the front",
+      "Step off box — do not jump off",
+      "Upon landing, immediately jump up as high as possible",
+      "Minimize ground contact time"
+    ],
+    "tips": [
+      "Fastest possible ground contact is the goal",
+      "Most powerful plyometric exercise available",
+      "Requires very solid landing mechanics first"
+    ]
+  },
+  {
+    "id": "ex_box_squat_jump",
+    "name": "Box Squat Jump",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand in front of box, sit back onto box",
+      "Pause briefly — no relaxing core",
+      "Explosively jump up off box, feet leave surface",
+      "Land and repeat"
+    ],
+    "tips": [
+      "Pause eliminates stretch reflex — pure explosive power",
+      "Keep weight moderate — focus on speed",
+      "Excellent for developing starting strength"
+    ]
+  },
+  {
+    "id": "ex_lateral_box_jump",
+    "name": "Lateral Box Jump",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "abductors"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand to one side of box",
+      "Jump laterally onto box with both feet",
+      "Land softly in quarter squat position",
+      "Step down and repeat from other side"
+    ],
+    "tips": [
+      "Develops lateral power and hip stability",
+      "Land with hips back to protect knees",
+      "Great for sport-specific conditioning"
+    ]
+  },
+  {
+    "id": "ex_single_leg_box_jump",
+    "name": "Single-Leg Box Jump",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "equipment": "plyometric-box",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "advanced",
+    "instructions": [
+      "Stand on one leg in front of box",
+      "Lower into single-leg quarter squat",
+      "Jump explosively onto box landing on same leg",
+      "Stabilize on box, step down carefully"
+    ],
+    "tips": [
+      "Master two-leg box jumps first",
+      "Landing stability is critical for safety",
+      "Builds unilateral power and reduces injury risk"
+    ]
+  },
+
+  {
+    "id": "ex_wall_ball_shot",
+    "name": "Wall Ball Shot",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["shoulders", "glutes", "core"],
+    "equipment": "medicine-ball",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold medicine ball at chest, stand facing wall",
+      "Squat to parallel depth",
+      "Drive up explosively and throw ball to target above head",
+      "Catch ball and descend into next squat"
+    ],
+    "tips": [
+      "Use leg drive to power the throw",
+      "Standard target is 10 feet for men, 9 feet for women",
+      "Common CrossFit benchmark movement"
+    ]
+  },
+  {
+    "id": "ex_slam_ball_slam",
+    "name": "Slam Ball Slam",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "back", "quads"],
+    "equipment": "medicine-ball",
+    "category": "compound",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold slam ball overhead with both hands",
+      "Extend fully — rise onto toes",
+      "Slam ball into floor as hard as possible",
+      "Pick it up and repeat"
+    ],
+    "tips": [
+      "Use your whole body — not just arms",
+      "Slam balls don't bounce — stand aside if needed",
+      "Excellent for power and stress release"
+    ]
+  },
+  {
+    "id": "ex_mb_russian_twist",
+    "name": "Medicine Ball Russian Twist",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [],
+    "equipment": "medicine-ball",
+    "category": "isolation",
+    "movementType": "core",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit with knees bent, feet elevated or on floor",
+      "Hold medicine ball at chest, lean back 45 degrees",
+      "Rotate ball to one side touching floor",
+      "Rotate to other side — continue alternating"
+    ],
+    "tips": [
+      "Rotate through thoracic spine, not just arms",
+      "Heavier ball increases demand",
+      "Control each touch — don't bounce the ball"
+    ]
+  },
+  {
+    "id": "ex_mb_chest_pass",
+    "name": "Medicine Ball Chest Pass",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["shoulders", "triceps"],
+    "equipment": "medicine-ball",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand facing wall, hold ball at chest",
+      "Explosively push ball into wall",
+      "Catch the rebound and immediately repeat",
+      "Maintain continuous rhythm"
+    ],
+    "tips": [
+      "Use rubber medicine ball for wall work",
+      "Power comes from the chest and triceps",
+      "Partner pass variation develops team training"
+    ]
+  },
+  {
+    "id": "ex_mb_overhead_throw",
+    "name": "Medicine Ball Overhead Throw",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["core", "back"],
+    "equipment": "medicine-ball",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold ball with both hands overhead",
+      "Arch back slightly to load the movement",
+      "Throw ball forward and down into wall or floor",
+      "Catch and reset"
+    ],
+    "tips": [
+      "Power generated from core and shoulder extension",
+      "Use slam ball if throwing into floor",
+      "Great for athletic throwing mechanics"
+    ]
+  },
+
+  {
+    "id": "ex_sandbag_carry",
+    "name": "Sandbag Carry",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["back", "quads", "shoulders"],
+    "equipment": "sandbag",
+    "category": "compound",
+    "movementType": "core",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Pick up sandbag and hold at chest or bear hug it",
+      "Walk for prescribed distance",
+      "Maintain upright posture throughout",
+      "Set down with control"
+    ],
+    "tips": [
+      "Unstable load challenges core more than fixed implements",
+      "Farmer carry variation with different demands",
+      "Great for functional strength and conditioning"
+    ]
+  },
+  {
+    "id": "ex_sandbag_clean",
+    "name": "Sandbag Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "equipment": "sandbag",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Straddle sandbag, grip handles on sides",
+      "Hinge at hips with flat back",
+      "Drive hips explosively and shrug upward",
+      "Catch bag at shoulder level in front rack"
+    ],
+    "tips": [
+      "Shifting load requires constant core adjustment",
+      "More technically forgiving than barbell clean",
+      "Great for developing power and coordination"
+    ]
+  },
+  {
+    "id": "ex_sandbag_shouldering",
+    "name": "Sandbag Shouldering",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "equipment": "sandbag",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "advanced",
+    "instructions": [
+      "Sandbag on floor, stand beside it",
+      "Pick up bag and lift it to shoulder level",
+      "Get under the bag and load one shoulder",
+      "Lower to floor and repeat other side"
+    ],
+    "tips": [
+      "One of the most functional strength movements",
+      "Mimics loading heavy awkward objects",
+      "Alternate shoulders each rep"
+    ]
+  },
+  {
+    "id": "ex_sandbag_squat",
+    "name": "Sandbag Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings", "core"],
+    "equipment": "sandbag",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Hold sandbag in front rack or bear hug position",
+      "Feet shoulder-width, toes slightly out",
+      "Squat to parallel depth or below",
+      "Drive through heels to stand"
+    ],
+    "tips": [
+      "Shifting bag challenges stability constantly",
+      "Front load keeps torso upright",
+      "Great functional strength builder"
+    ]
+  },
+
+  {
+    "id": "ex_echo_bike_sprint",
+    "name": "Echo Bike Sprint Intervals",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["quads", "shoulders", "hamstrings"],
+    "equipment": "echo-bike",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Set seat height so slight knee bend at bottom",
+      "Grip handles, feet on pedals",
+      "Sprint at maximum effort for 20-30 seconds",
+      "Rest for 40-60 seconds and repeat"
+    ],
+    "tips": [
+      "Echo bike uses fan resistance — harder you go, harder it gets",
+      "Drive with both arms and legs simultaneously",
+      "Brutal but highly effective conditioning tool"
+    ]
+  },
+  {
+    "id": "ex_echo_bike_steady",
+    "name": "Echo Bike Steady State",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["quads", "shoulders"],
+    "equipment": "echo-bike",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set seat height so slight knee bend at bottom",
+      "Grip handles, maintain comfortable pace",
+      "Aim for target heart rate or calorie goal",
+      "Maintain consistent effort throughout"
+    ],
+    "tips": [
+      "Full body cardio with arm and leg drive",
+      "Adjust intensity by effort output",
+      "Low impact on joints despite high caloric burn"
+    ]
+  },
+  {
+    "id": "ex_rower_sprint",
+    "name": "Rowing Sprint Intervals",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["back", "quads", "biceps"],
+    "equipment": "rower",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Sit on rower, strap feet in, grip handle",
+      "Row at maximum effort for 250-500 meters",
+      "Focus on leg drive, then back lean, then arm pull",
+      "Rest and repeat for prescribed intervals"
+    ],
+    "tips": [
+      "Sequence: legs → back → arms; reverse on recovery",
+      "Catch position: shins vertical, arms extended",
+      "Monitor split time (/500m) for pacing"
+    ]
+  },
+  {
+    "id": "ex_rower_steady",
+    "name": "Rowing Steady State",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["back", "quads", "biceps"],
+    "equipment": "rower",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Set up on rower with feet strapped in",
+      "Maintain consistent stroke rate (18-24 SPM)",
+      "Row at conversational pace for 20-40 minutes",
+      "Focus on technique — long smooth strokes"
+    ],
+    "tips": [
+      "Quality strokes beat fast frantic rowing",
+      "Drive ratio should be approximately 1:2 (drive:recovery)",
+      "Great full-body aerobic conditioning"
+    ]
+  },
+  {
+    "id": "ex_ski_erg_sprint",
+    "name": "SkiErg Sprint Intervals",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["shoulders", "back", "core"],
+    "equipment": "ski-erg",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand at SkiErg, grip both handles overhead",
+      "Pull handles down and back in ski poling motion",
+      "Sprint at maximum effort for 250-500 meters",
+      "Rest and repeat"
+    ],
+    "tips": [
+      "Hinge at hips to generate more power",
+      "Use core to transfer force from arms to floor",
+      "Brutally effective upper body and cardio tool"
+    ]
+  },
+  {
+    "id": "ex_ski_erg_steady",
+    "name": "SkiErg Steady State",
+    "primaryMuscle": "cardio",
+    "secondaryMuscles": ["shoulders", "back", "core"],
+    "equipment": "ski-erg",
+    "category": "cardio",
+    "movementType": "cardio",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand at SkiErg, grip handles overhead",
+      "Pull down in smooth double-pole motion",
+      "Maintain consistent pace for 20-40 minutes",
+      "Focus on hip hinge and arm coordination"
+    ],
+    "tips": [
+      "Great upper body dominant aerobic work",
+      "Engages lats, triceps, and core extensively",
+      "Lower impact on legs than running or biking"
+    ]
+  },
+
+  {
+    "id": "ex_kb_swing",
+    "name": "Kettlebell Swing",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back", "core"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet slightly wider than shoulder-width",
+      "Hinge at hips, swing bell back between legs",
+      "Drive hips explosively forward, swinging bell to shoulder height",
+      "Let bell fall and hinge into next rep"
+    ],
+    "tips": [
+      "This is a HIP HINGE, not a squat",
+      "Power comes from the hips — arms are just a guide",
+      "Squeeze glutes hard at the top of each rep"
+    ]
+  },
+  {
+    "id": "ex_kb_tgu",
+    "name": "Kettlebell Turkish Get-Up",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "glutes", "quads"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "core",
+    "difficulty": "advanced",
+    "instructions": [
+      "Lie on back, press bell overhead with locked arm",
+      "Roll to elbow, then to hand while keeping bell raised",
+      "Bridge hips up and sweep leg back into lunge",
+      "Stand up, then reverse the movement back to floor"
+    ],
+    "tips": [
+      "Keep eye contact with the bell throughout",
+      "Learn the movement with no weight first",
+      "One of the best shoulder stability movements available"
+    ]
+  },
+  {
+    "id": "ex_kb_clean",
+    "name": "Kettlebell Clean",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["hamstrings", "glutes", "core"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand with bell between feet, hinge and grip handle",
+      "Drive hips forward explosively, pulling bell up",
+      "Guide bell into rack position at shoulder",
+      "Lower back to floor in controlled swing"
+    ],
+    "tips": [
+      "Bell should wrap around forearm smoothly at top",
+      "Avoid letting bell bang the wrist",
+      "Foundation for the kettlebell press"
+    ]
+  },
+  {
+    "id": "ex_kb_snatch",
+    "name": "Kettlebell Snatch",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["back", "hamstrings", "glutes", "core"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Start with bell between feet in hinge position",
+      "Drive hips and pull bell up along body",
+      "Punch hand through at top to lock out overhead",
+      "Lower by corkscrew drop back to swing"
+    ],
+    "tips": [
+      "Master the clean first before learning snatch",
+      "The punch-through at top prevents wrist bang",
+      "One of the most powerful exercises in existence"
+    ]
+  },
+  {
+    "id": "ex_kb_press",
+    "name": "Kettlebell Press",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["triceps", "core"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Clean bell to rack position at shoulder",
+      "Press overhead to full lockout",
+      "Wrist stays straight, elbow tracks forward",
+      "Lower back to rack position with control"
+    ],
+    "tips": [
+      "Offset center of mass makes stabilizers work harder",
+      "Squeeze glutes and brace core throughout",
+      "Can be done seated or standing"
+    ]
+  },
+  {
+    "id": "ex_kb_row",
+    "name": "Kettlebell Row",
+    "primaryMuscle": "back",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with one foot forward in split stance, bell on floor",
+      "Hinge forward, grip bell with one hand",
+      "Row bell to hip, elbow driving back and up",
+      "Lower to full extension and repeat"
+    ],
+    "tips": [
+      "Keep back flat throughout",
+      "Split stance provides stable base",
+      "Think elbow to ceiling at the top"
+    ]
+  },
+  {
+    "id": "ex_kb_deadlift",
+    "name": "Kettlebell Deadlift",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back", "core"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand over bell with feet hip-width, bell between feet",
+      "Hinge at hips, grip bell handle with both hands",
+      "Drive through heels, extend hips and knees simultaneously",
+      "Stand tall, then lower bell back to floor with control"
+    ],
+    "tips": [
+      "Great introduction to the hip hinge pattern",
+      "Keep chest up and lats engaged",
+      "Can be done single leg for extra challenge"
+    ]
+  },
+  {
+    "id": "ex_kb_windmill",
+    "name": "Kettlebell Windmill",
+    "primaryMuscle": "core",
+    "secondaryMuscles": ["shoulders", "hamstrings", "glutes"],
+    "equipment": "kettlebell",
+    "category": "compound",
+    "movementType": "core",
+    "difficulty": "advanced",
+    "instructions": [
+      "Press bell overhead with one arm, feet at 45-degree angle",
+      "Keep eyes on the bell throughout",
+      "Hinge at hip and reach free hand toward floor",
+      "Return to standing while keeping bell locked overhead"
+    ],
+    "tips": [
+      "Overhead arm must remain locked out throughout",
+      "Lateral hip flexion — not rotation",
+      "Excellent shoulder stability and core rotation exercise"
+    ]
+  },
+
+  {
+    "id": "ex_band_pull_apart",
+    "name": "Band Pull-Apart",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["back"],
+    "equipment": "resistance-band",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Hold band in front of you at shoulder height, arms extended",
+      "Pull band apart by driving elbows out and back",
+      "Squeeze shoulder blades together at end position",
+      "Return to start with control"
+    ],
+    "tips": [
+      "Excellent shoulder health and posture exercise",
+      "Great warm-up before pressing movements",
+      "Overhand and underhand grip target different areas"
+    ]
+  },
+  {
+    "id": "ex_band_face_pull",
+    "name": "Band Face Pull",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": ["back"],
+    "equipment": "resistance-band",
+    "category": "isolation",
+    "movementType": "pull",
+    "difficulty": "beginner",
+    "instructions": [
+      "Anchor band at forehead height",
+      "Grab both ends, palms facing in, step back",
+      "Pull band toward face, elbows high and flared",
+      "End in W-position with hands beside ears"
+    ],
+    "tips": [
+      "Critical for rear delt and external rotator health",
+      "Perfect for travel when no cable machine available",
+      "High reps work best — 15-25 per set"
+    ]
+  },
+  {
+    "id": "ex_band_good_morning",
+    "name": "Band Good Morning",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": ["glutes", "back"],
+    "equipment": "resistance-band",
+    "category": "compound",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand on band, loop over upper back like a barbell",
+      "Slight knee bend, hinge forward at hips",
+      "Lower torso until hamstrings are strongly stretched",
+      "Drive hips forward to return to standing"
+    ],
+    "tips": [
+      "Band provides lighter resistance than barbell — great for learning",
+      "Keep spine neutral throughout",
+      "Feel the stretch in hamstrings at the bottom"
+    ]
+  },
+  {
+    "id": "ex_band_squat",
+    "name": "Band Squat",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": ["glutes", "hamstrings"],
+    "equipment": "resistance-band",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand on band, hold ends at shoulders or loop overhead",
+      "Feet shoulder-width, toes slightly out",
+      "Squat to parallel or below",
+      "Drive through heels to stand"
+    ],
+    "tips": [
+      "Band resistance increases at top — great for quad lockout",
+      "Lighter than barbell — perfect for warm-up or high reps",
+      "Add band around knees to cue proper knee tracking"
+    ]
   }
 ]

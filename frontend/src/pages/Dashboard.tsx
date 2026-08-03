@@ -63,7 +63,7 @@ export default function Dashboard() {
               <div className="flex-1">
                 <p className="font-semibold text-white text-sm">Workout in progress</p>
                 <p className="text-xs text-[#8E8E93] capitalize">
-                  {activeWorkout.goal.replace('-', ' ')} · {activeWorkout.exercises.length} exercises
+                  {activeWorkout.goal?.replace('-', ' ') ?? ''} · {activeWorkout.exercises.length} exercises
                 </p>
               </div>
               <Button

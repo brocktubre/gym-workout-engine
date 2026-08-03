@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faDumbbell, faPersonWalking, faCog,
   faLink, faRing, faBell, faMinus,
+  faArrowUp, faCrosshairs, faWater, faTruckFast, faCube,
+  faShirt, faBagShopping, faCircleDot, faPersonBiking,
+  faPersonSwimming, faPersonSkiing,
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
@@ -17,9 +20,21 @@ const equipmentIcons: Record<string, IconDefinition> = {
   bodyweight: faPersonWalking,
   machine: faCog,
   cable: faLink,
-  'resistance-band': faRing,
+  'resistance-band': faMinus,
   kettlebell: faBell,
   'ez-bar': faMinus,
+  rings: faRing,
+  'pull-up-bar': faArrowUp,
+  landmine: faCrosshairs,
+  'battle-rope': faWater,
+  sled: faTruckFast,
+  'plyometric-box': faCube,
+  'weight-vest': faShirt,
+  sandbag: faBagShopping,
+  'medicine-ball': faCircleDot,
+  'echo-bike': faPersonBiking,
+  rower: faPersonSwimming,
+  'ski-erg': faPersonSkiing,
 };
 
 interface ExerciseItemProps {

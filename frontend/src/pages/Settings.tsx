@@ -6,6 +6,9 @@ import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
   faDumbbell, faPersonWalking, faCog, faLink, faRing,
   faBell, faMinus, faSeedling, faBolt, faRocket,
+  faArrowUp, faCrosshairs, faWater, faTruckFast, faCube,
+  faShirt, faBagShopping, faCircleDot, faPersonBiking,
+  faPersonSwimming, faPersonSkiing,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -18,15 +21,32 @@ import { toast } from '@/components/ui/use-toast';
 import { cn, formatElapsedTime } from '@/lib/utils';
 import type { Equipment, WorkoutGoal, Difficulty, UserSettings } from '@/types';
 
-const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNode }[] = [
-  { value: 'barbell', label: 'Barbell', icon: <FontAwesomeIcon icon={faWeightHanging} /> },
-  { value: 'dumbbell', label: 'Dumbbell', icon: <FontAwesomeIcon icon={faDumbbell} /> },
-  { value: 'bodyweight', label: 'Bodyweight', icon: <FontAwesomeIcon icon={faPersonWalking} /> },
-  { value: 'machine', label: 'Machine', icon: <FontAwesomeIcon icon={faCog} /> },
-  { value: 'cable', label: 'Cable', icon: <FontAwesomeIcon icon={faLink} /> },
-  { value: 'resistance-band', label: 'Resistance Band', icon: <FontAwesomeIcon icon={faRing} /> },
-  { value: 'kettlebell', label: 'Kettlebell', icon: <FontAwesomeIcon icon={faBell} /> },
-  { value: 'ez-bar', label: 'EZ Bar', icon: <FontAwesomeIcon icon={faMinus} /> },
+const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNode; category: string }[] = [
+  // Free Weights
+  { value: 'barbell', label: 'Barbell', icon: <FontAwesomeIcon icon={faWeightHanging} />, category: 'Free Weights' },
+  { value: 'dumbbell', label: 'Dumbbells', icon: <FontAwesomeIcon icon={faDumbbell} />, category: 'Free Weights' },
+  { value: 'kettlebell', label: 'Kettlebells', icon: <FontAwesomeIcon icon={faBell} />, category: 'Free Weights' },
+  // Bodyweight
+  { value: 'bodyweight', label: 'Bodyweight', icon: <FontAwesomeIcon icon={faPersonWalking} />, category: 'Bodyweight' },
+  { value: 'rings', label: 'Gymnastics Rings', icon: <FontAwesomeIcon icon={faRing} />, category: 'Bodyweight' },
+  { value: 'pull-up-bar', label: 'Pull-Up Bar', icon: <FontAwesomeIcon icon={faArrowUp} />, category: 'Bodyweight' },
+  // Functional
+  { value: 'landmine', label: 'Landmine', icon: <FontAwesomeIcon icon={faCrosshairs} />, category: 'Functional' },
+  { value: 'battle-rope', label: 'Battle Rope', icon: <FontAwesomeIcon icon={faWater} />, category: 'Functional' },
+  { value: 'sled', label: 'Sled', icon: <FontAwesomeIcon icon={faTruckFast} />, category: 'Functional' },
+  { value: 'plyometric-box', label: 'Plyo Box', icon: <FontAwesomeIcon icon={faCube} />, category: 'Functional' },
+  { value: 'weight-vest', label: 'Weight Vest', icon: <FontAwesomeIcon icon={faShirt} />, category: 'Functional' },
+  { value: 'sandbag', label: 'Sandbag', icon: <FontAwesomeIcon icon={faBagShopping} />, category: 'Functional' },
+  { value: 'medicine-ball', label: 'Med Ball', icon: <FontAwesomeIcon icon={faCircleDot} />, category: 'Functional' },
+  // Cardio
+  { value: 'echo-bike', label: 'Echo Bike', icon: <FontAwesomeIcon icon={faPersonBiking} />, category: 'Cardio' },
+  { value: 'rower', label: 'Row Erg', icon: <FontAwesomeIcon icon={faPersonSwimming} />, category: 'Cardio' },
+  { value: 'ski-erg', label: 'Ski Erg', icon: <FontAwesomeIcon icon={faPersonSkiing} />, category: 'Cardio' },
+  // Other
+  { value: 'machine', label: 'Machine', icon: <FontAwesomeIcon icon={faCog} />, category: 'Other' },
+  { value: 'cable', label: 'Cable', icon: <FontAwesomeIcon icon={faLink} />, category: 'Other' },
+  { value: 'resistance-band', label: 'Bands', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
+  { value: 'ez-bar', label: 'EZ Bar', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
 ];
 
 const GOAL_OPTIONS: { value: WorkoutGoal; label: string; icon: React.ReactNode }[] = [
@@ -46,7 +66,12 @@ const DURATION_OPTIONS = [30, 45, 60, 90];
 
 // Default settings if API returns nothing yet
 const DEFAULT_SETTINGS: UserSettings = {
-  availableEquipment: ['barbell', 'dumbbell', 'bodyweight'],
+  availableEquipment: [
+    'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
+    'rings', 'pull-up-bar', 'landmine', 'resistance-band',
+    'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
+    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
+  ],
   goal: 'hypertrophy',
   fitnessLevel: 'intermediate',
   defaultDurationMinutes: 60,
@@ -145,26 +170,35 @@ export default function Settings() {
           className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
         >
           <SectionHeader icon={<FontAwesomeIcon icon={faDumbbell} />} title="Available Equipment" />
-          <div className="grid grid-cols-2 gap-2">
-            {EQUIPMENT_OPTIONS.map((eq) => {
-              const selected = form.availableEquipment.includes(eq.value);
-              return (
-                <button
-                  key={eq.value}
-                  onClick={() => toggleEquipment(eq.value)}
-                  className={cn(
-                    'flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-medium transition-colors border text-left',
-                    selected
-                      ? 'bg-[#FF375F]/15 text-[#FF375F] border-[#FF375F]/30'
-                      : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A]',
-                  )}
-                >
-                  <span className="w-4 text-center flex-shrink-0">{eq.icon}</span>
-                  {eq.label}
-                </button>
-              );
-            })}
-          </div>
+          {(['Free Weights', 'Bodyweight', 'Functional', 'Cardio', 'Other'] as const).map((cat) => {
+            const catItems = EQUIPMENT_OPTIONS.filter((eq) => eq.category === cat);
+            if (catItems.length === 0) return null;
+            return (
+              <div key={cat} className="mb-4 last:mb-0">
+                <p className="text-xs font-semibold text-[#636366] uppercase tracking-wider mb-2">{cat}</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {catItems.map((eq) => {
+                    const selected = form.availableEquipment.includes(eq.value);
+                    return (
+                      <button
+                        key={eq.value}
+                        onClick={() => toggleEquipment(eq.value)}
+                        className={cn(
+                          'flex items-center gap-2.5 py-2.5 px-3 rounded-xl text-sm font-medium transition-colors border text-left',
+                          selected
+                            ? 'bg-[#FF375F]/15 text-[#FF375F] border-[#FF375F]/30'
+                            : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A]',
+                        )}
+                      >
+                        <span className="w-4 text-center flex-shrink-0">{eq.icon}</span>
+                        {eq.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
         </motion.section>
 
         <Separator className="bg-[#38383A]" />

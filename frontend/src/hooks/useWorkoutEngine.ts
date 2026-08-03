@@ -20,8 +20,15 @@ function loadActiveWorkout(): Workout | null {
   try {
     const raw = localStorage.getItem(ACTIVE_WORKOUT_KEY);
     if (!raw) return null;
-    return JSON.parse(raw) as Workout;
+    const parsed = JSON.parse(raw) as Workout;
+    // Validate required fields — clear stale/corrupted entries
+    if (!parsed?.id || !parsed?.goal || !parsed?.status || !Array.isArray(parsed?.exercises)) {
+      localStorage.removeItem(ACTIVE_WORKOUT_KEY);
+      return null;
+    }
+    return parsed;
   } catch {
+    localStorage.removeItem(ACTIVE_WORKOUT_KEY);
     return null;
   }
 }

@@ -211,7 +211,7 @@ export default function ActiveWorkout() {
                       <MuscleGroupBadge muscle={currentExercise.exercise.primaryMuscle} />
                     )}
                     <span className="text-xs text-[#8E8E93] capitalize">
-                      {currentExercise?.exercise.equipment.replace('-', ' ')}
+                      {currentExercise?.exercise.equipment?.replace('-', ' ')}
                     </span>
                   </div>
                 </div>
