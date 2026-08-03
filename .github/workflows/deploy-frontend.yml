@@ -53,8 +53,13 @@ jobs:
           CF_DIST_ID=$(aws cloudformation describe-stacks \
             --stack-name "gym-workout-engine-frontend-${{ env.STAGE }}" \
             --query "Stacks[0].Outputs[?OutputKey=='DistributionId'].OutputValue" \
-            --output text)
-          aws cloudfront create-invalidation \
-            --distribution-id $CF_DIST_ID \
-            --paths "/index.html"
-          echo "✅ Frontend deployed to https://gym.oc.taglineconsultants.com"
+            --output text 2>/dev/null || echo "")
+          if [ -n "$CF_DIST_ID" ] && [ "$CF_DIST_ID" != "None" ]; then
+            aws cloudfront create-invalidation \
+              --distribution-id $CF_DIST_ID \
+              --paths "/*"
+            echo "✅ CloudFront cache invalidated"
+          else
+            echo "ℹ️ CloudFront stack not yet deployed — skipping invalidation (run Deploy Infrastructure first)"
+          fi
+          echo "✅ Frontend files deployed to S3: https://gym.oc.taglineconsultants.com"

@@ -40,7 +40,7 @@ jobs:
         run: |
           mkdir -p lambda-package/dist
           cp -r dist/* lambda-package/dist/
-          cp package.json lambda-package/
+          cp package.json package-lock.json lambda-package/
           cd lambda-package && npm ci --omit=dev
           zip -r ../lambda.zip .
       - name: Upload to S3
