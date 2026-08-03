@@ -63,7 +63,7 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false }: E
                 <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
                 <span className="text-[#8E8E93] text-xs">
                   {totalSets} × {sets[0]?.targetReps ?? '?'} reps
-                  {sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}kg` : ''}
+                  {sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}
                 </span>
               </div>
               {progressionNote && (

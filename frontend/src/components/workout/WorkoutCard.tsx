@@ -90,7 +90,7 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
           </div>
           {workout.totalVolume != null && workout.totalVolume > 0 && (
             <div className="flex items-center gap-1">
-              <span>{workout.totalVolume.toLocaleString()} kg total</span>
+              <span>{workout.totalVolume.toLocaleString()} lbs total</span>
             </div>
           )}
         </div>
@@ -125,7 +125,7 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
                     </div>
                     <div className="text-[#8E8E93]">
                       {we.sets.length} × {we.sets[0]?.targetReps ?? '?'} reps
-                      {we.sets[0]?.targetWeight ? ` @ ${we.sets[0].targetWeight}kg` : ''}
+                      {we.sets[0]?.targetWeight ? ` @ ${we.sets[0].targetWeight}lbs` : ''}
                     </div>
                   </div>
                 ))}

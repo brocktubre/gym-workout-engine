@@ -43,11 +43,11 @@ function buildSets(
         const avgW = done.reduce((s, x) => s + (x.completedWeight || 0), 0) / done.length;
         const avgR = done.reduce((s, x) => s + (x.completedReps || x.targetReps), 0) / done.length;
         if (allDone && avgW > 0) {
-          suggestedWeight = avgW + 2.5;
-          progressionNote = `↑ Up 2.5kg from last session (was ${avgW}kg × ${Math.round(avgR)} reps)`;
+          suggestedWeight = avgW + 5;
+          progressionNote = `↑ Up 5lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`;
         } else if (avgW > 0) {
           suggestedWeight = avgW;
-          progressionNote = `Same weight — aim to complete all sets (${avgW}kg × ${Math.round(avgR)} reps last time)`;
+          progressionNote = `Same weight — aim to complete all sets (${avgW}lbs × ${Math.round(avgR)} reps last time)`;
         }
       }
       break;

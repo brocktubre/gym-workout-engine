@@ -1,0 +1,315 @@
+[
+  {
+    "id": "barbell",
+    "name": "Barbell",
+    "category": "Barbells",
+    "enabled": true,
+    "tags": [
+      "strength",
+      "powerlifting",
+      "olympic-lifting",
+      "compound"
+    ],
+    "exerciseTypes": [
+      "Compound Lift",
+      "Strength",
+      "Hypertrophy",
+      "Olympic"
+    ],
+    "notes": "2x Olympic 45lb bars, 1x Training 35lb bar"
+  },
+  {
+    "id": "dumbbell",
+    "name": "Dumbbells",
+    "category": "Dumbbells",
+    "enabled": true,
+    "tags": [
+      "strength",
+      "hypertrophy",
+      "accessory",
+      "unilateral"
+    ],
+    "exerciseTypes": [
+      "Accessory",
+      "Hypertrophy",
+      "Unilateral"
+    ],
+    "notes": "Pairs: 10, 15, 20, 25, 35, 50 lbs",
+    "availableWeightsLbs": [
+      10,
+      15,
+      20,
+      25,
+      35,
+      50
+    ]
+  },
+  {
+    "id": "kettlebell",
+    "name": "Kettlebells",
+    "category": "Kettlebells",
+    "enabled": true,
+    "tags": [
+      "strength",
+      "conditioning",
+      "functional",
+      "unilateral"
+    ],
+    "exerciseTypes": [
+      "Conditioning",
+      "Functional",
+      "Strength"
+    ],
+    "notes": "20, 30, 45 (x2), 54 (x2) lbs",
+    "availableWeightsLbs": [
+      20,
+      30,
+      45,
+      45,
+      54,
+      54
+    ]
+  },
+  {
+    "id": "bodyweight",
+    "name": "Bodyweight",
+    "category": "Bodyweight",
+    "enabled": true,
+    "tags": [
+      "calisthenics",
+      "core",
+      "mobility"
+    ],
+    "exerciseTypes": [
+      "Calisthenics",
+      "Core",
+      "Mobility"
+    ]
+  },
+  {
+    "id": "rings",
+    "name": "Gymnastics Rings",
+    "category": "Bodyweight",
+    "enabled": true,
+    "tags": [
+      "gymnastics",
+      "bodyweight",
+      "calisthenics",
+      "strength"
+    ],
+    "exerciseTypes": [
+      "Gymnastics",
+      "Bodyweight Strength",
+      "Calisthenics"
+    ]
+  },
+  {
+    "id": "pull-up-bar",
+    "name": "Pull-Up Bar",
+    "category": "Bodyweight",
+    "enabled": true,
+    "tags": [
+      "calisthenics",
+      "back",
+      "bodyweight"
+    ],
+    "exerciseTypes": [
+      "Calisthenics",
+      "Bodyweight Strength"
+    ]
+  },
+  {
+    "id": "landmine",
+    "name": "Landmine",
+    "category": "Rack & Strength",
+    "enabled": true,
+    "tags": [
+      "functional",
+      "rotation",
+      "unilateral",
+      "landmine"
+    ],
+    "exerciseTypes": [
+      "Landmine Training",
+      "Functional",
+      "Rotational"
+    ]
+  },
+  {
+    "id": "resistance-band",
+    "name": "Resistance Bands",
+    "category": "Resistance Equipment",
+    "enabled": true,
+    "tags": [
+      "mobility",
+      "warmup",
+      "accessory",
+      "bands"
+    ],
+    "exerciseTypes": [
+      "Warmup",
+      "Mobility",
+      "Accessory"
+    ],
+    "notes": "Loop bands, mini bands, mobility bands"
+  },
+  {
+    "id": "battle-rope",
+    "name": "Battle Rope",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "conditioning",
+      "hiit",
+      "upper-body",
+      "finisher"
+    ],
+    "exerciseTypes": [
+      "Conditioning",
+      "HIIT",
+      "Finisher"
+    ]
+  },
+  {
+    "id": "sled",
+    "name": "Sled",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "conditioning",
+      "loaded-carries",
+      "legs",
+      "finisher"
+    ],
+    "exerciseTypes": [
+      "Conditioning",
+      "Loaded Carries",
+      "Finisher"
+    ]
+  },
+  {
+    "id": "plyometric-box",
+    "name": "Plyometric Box",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "plyometrics",
+      "power",
+      "conditioning",
+      "legs"
+    ],
+    "exerciseTypes": [
+      "Plyometrics",
+      "Power",
+      "Conditioning"
+    ],
+    "notes": "3-in-1: 20\", 24\", 30\" heights"
+  },
+  {
+    "id": "weight-vest",
+    "name": "Weight Vest",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "conditioning",
+      "bodyweight-plus",
+      "functional"
+    ],
+    "exerciseTypes": [
+      "Conditioning",
+      "Weighted Bodyweight"
+    ]
+  },
+  {
+    "id": "sandbag",
+    "name": "Sandbag",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "functional",
+      "conditioning",
+      "loaded-carries",
+      "strongman"
+    ],
+    "exerciseTypes": [
+      "Loaded Carries",
+      "Functional",
+      "Conditioning"
+    ]
+  },
+  {
+    "id": "medicine-ball",
+    "name": "Medicine Ball / Wall Ball",
+    "category": "Functional Training",
+    "enabled": true,
+    "tags": [
+      "power",
+      "conditioning",
+      "core",
+      "rotational"
+    ],
+    "exerciseTypes": [
+      "Power",
+      "Conditioning",
+      "Core"
+    ],
+    "notes": "2x wall balls, 1x 50lb slam ball"
+  },
+  {
+    "id": "echo-bike",
+    "name": "Rogue Echo Bike",
+    "category": "Cardio",
+    "enabled": true,
+    "tags": [
+      "cardio",
+      "conditioning",
+      "hiit",
+      "zone2",
+      "intervals"
+    ],
+    "exerciseTypes": [
+      "Cardio",
+      "HIIT",
+      "Zone 2",
+      "Conditioning"
+    ]
+  },
+  {
+    "id": "rower",
+    "name": "Concept2 RowErg",
+    "category": "Cardio",
+    "enabled": true,
+    "tags": [
+      "cardio",
+      "conditioning",
+      "full-body",
+      "zone2",
+      "intervals"
+    ],
+    "exerciseTypes": [
+      "Cardio",
+      "HIIT",
+      "Zone 2",
+      "Full Body Conditioning"
+    ]
+  },
+  {
+    "id": "ski-erg",
+    "name": "Concept2 SkiErg",
+    "category": "Cardio",
+    "enabled": true,
+    "tags": [
+      "cardio",
+      "conditioning",
+      "upper-body",
+      "zone2",
+      "intervals"
+    ],
+    "exerciseTypes": [
+      "Cardio",
+      "HIIT",
+      "Zone 2",
+      "Upper Body Conditioning"
+    ]
+  }
+]

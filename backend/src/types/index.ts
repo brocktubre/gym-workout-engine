@@ -14,11 +14,23 @@ export type MuscleGroup =
 export type Equipment =
   | 'barbell'
   | 'dumbbell'
+  | 'kettlebell'
   | 'bodyweight'
+  | 'rings'
+  | 'pull-up-bar'
+  | 'landmine'
+  | 'resistance-band'
+  | 'battle-rope'
+  | 'sled'
+  | 'plyometric-box'
+  | 'weight-vest'
+  | 'sandbag'
+  | 'medicine-ball'
+  | 'echo-bike'
+  | 'rower'
+  | 'ski-erg'
   | 'machine'
   | 'cable'
-  | 'resistance-band'
-  | 'kettlebell'
   | 'ez-bar';
 
 export type MovementType = 'push' | 'pull' | 'legs' | 'hinge' | 'core' | 'cardio';

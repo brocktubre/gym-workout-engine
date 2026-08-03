@@ -11,7 +11,12 @@ const client = DynamoDBDocumentClient.from(
 );
 
 const DEFAULT_SETTINGS: UserSettings = {
-  availableEquipment: ['barbell', 'dumbbell', 'bodyweight', 'cable', 'machine'],
+  availableEquipment: [
+    'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
+    'rings', 'pull-up-bar', 'landmine', 'resistance-band',
+    'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
+    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
+  ],
   goal: 'hypertrophy',
   fitnessLevel: 'intermediate',
   defaultDurationMinutes: 60,

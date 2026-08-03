@@ -1,4 +1,5 @@
 import exercisesData from '../data/exercises.json';
+import equipmentData from '../data/equipment.json';
 import { Exercise, MuscleGroup, Equipment } from '../types';
 
 const exercises: Exercise[] = exercisesData as Exercise[];
@@ -34,4 +35,24 @@ export function filterExercises(params: {
 
 export function getExercisesForEquipment(equipment: Equipment[]): Exercise[] {
   return exercises.filter(e => equipment.includes(e.equipment));
+}
+
+export interface EquipmentItem {
+  id: string;
+  name: string;
+  category: string;
+  enabled: boolean;
+  tags: string[];
+  exerciseTypes: string[];
+  notes?: string;
+}
+
+const equipmentList: EquipmentItem[] = equipmentData as EquipmentItem[];
+
+export function getAllEquipment(): EquipmentItem[] {
+  return equipmentList;
+}
+
+export function getEnabledEquipment(): EquipmentItem[] {
+  return equipmentList.filter(e => e.enabled);
 }

@@ -41,7 +41,7 @@ export function SetRow({ set, onComplete, onChange, isActive = false }: SetRowPr
       <div className="flex items-center gap-1.5 flex-1">
         <button
           className="h-7 w-7 rounded-full bg-[#38383A] flex items-center justify-center text-white disabled:opacity-40 active:scale-90 transition-transform"
-          onClick={() => onChange('weight', Math.max(0, weight - 2.5))}
+          onClick={() => onChange('weight', Math.max(0, weight - 5))}
           disabled={set.completed}
         >
           <Minus className="h-3 w-3" />
@@ -53,18 +53,18 @@ export function SetRow({ set, onComplete, onChange, isActive = false }: SetRowPr
             value={weight === 0 ? '' : weight}
             placeholder="0"
             min={0}
-            step={2.5}
+            step={5}
             disabled={set.completed}
             onChange={(e) => {
               const v = parseFloat(e.target.value);
               if (!isNaN(v)) onChange('weight', v);
             }}
           />
-          <div className="text-[10px] text-[#8E8E93]">kg</div>
+          <div className="text-[10px] text-[#8E8E93]">lbs</div>
         </div>
         <button
           className="h-7 w-7 rounded-full bg-[#38383A] flex items-center justify-center text-white disabled:opacity-40 active:scale-90 transition-transform"
-          onClick={() => onChange('weight', weight + 2.5)}
+          onClick={() => onChange('weight', weight + 5)}
           disabled={set.completed}
         >
           <Plus className="h-3 w-3" />

@@ -71,7 +71,7 @@ function CustomTooltip({ active, payload, label }: any) {
     <div className="bg-[#2c2c2e] border border-[#38383A] rounded-xl px-3 py-2 text-xs">
       <p className="text-[#8E8E93] mb-1">{label as string}</p>
       <p className="text-white font-semibold">
-        {(payload[0]?.value as number)?.toLocaleString()} kg
+        {(payload[0]?.value as number)?.toLocaleString()} lbs
       </p>
       <p className="text-[#8E8E93]">{payload[0]?.payload?.count as number} workouts</p>
     </div>

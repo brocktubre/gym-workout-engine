@@ -48,7 +48,7 @@ export function RecentWorkout({ workout }: RecentWorkoutProps) {
           </span>
           {workout.totalVolume != null && workout.totalVolume > 0 && (
             <span className="text-xs text-[#8E8E93]">
-              {workout.totalVolume.toLocaleString()}kg vol
+              {workout.totalVolume.toLocaleString()}lbs vol
             </span>
           )}
         </div>

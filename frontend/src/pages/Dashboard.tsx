@@ -137,7 +137,7 @@ export default function Dashboard() {
                 <p className="text-base font-bold text-white">
                   {todayWorkout.totalVolume != null ? `${todayWorkout.totalVolume.toLocaleString()}` : '—'}
                 </p>
-                <p className="text-[10px] text-[#8E8E93]">kg vol</p>
+                <p className="text-[10px] text-[#8E8E93]">lbs vol</p>
               </div>
             </div>
           </motion.div>

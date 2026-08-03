@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { getAllExercises, getExerciseById, filterExercises } from '../services/exerciseService';
+import { getAllExercises, getExerciseById, filterExercises, getAllEquipment } from '../services/exerciseService';
 import { MuscleGroup, Equipment } from '../types';
 
 const router = Router();
@@ -21,6 +21,12 @@ router.get('/:id', (req: Request, res: Response) => {
     return;
   }
   res.json({ exercise });
+});
+
+// GET /api/exercises/equipment - return full equipment inventory
+router.get('/equipment', (_req: Request, res: Response) => {
+  const equipment = getAllEquipment();
+  res.json({ equipment, total: equipment.length });
 });
 
 export default router;
