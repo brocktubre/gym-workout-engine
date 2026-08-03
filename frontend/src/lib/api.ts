@@ -82,8 +82,9 @@ export const api = {
     return res.workout;
   },
 
-  getWorkout(date: string, id: string): Promise<Workout> {
-    return request<Workout>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`);
+  async getWorkout(date: string, id: string): Promise<Workout> {
+    const res = await request<{ workout: Workout }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`);
+    return res.workout;
   },
 
   async updateWorkout(date: string, id: string, updates: Partial<Workout>): Promise<Workout> {
@@ -94,30 +95,35 @@ export const api = {
     return res.workout;
   },
 
-  completeWorkout(date: string, id: string): Promise<Workout> {
-    return request<Workout>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}/complete`, {
+  async completeWorkout(date: string, id: string): Promise<Workout> {
+    const res = await request<{ workout: Workout }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}/complete`, {
       method: 'POST',
     });
+    return res.workout;
   },
 
-  getHistory(start: string, end: string): Promise<Workout[]> {
+  async getHistory(start: string, end: string): Promise<Workout[]> {
     const qs = new URLSearchParams({ start, end });
-    return request<Workout[]>(`/workouts?${qs.toString()}`);
+    const res = await request<{ workouts: Workout[]; total: number }>(`/workouts/history?${qs.toString()}`);
+    return res.workouts;
   },
 
-  getStats(): Promise<WorkoutStats> {
-    return request<WorkoutStats>('/workouts/stats');
+  async getStats(): Promise<WorkoutStats> {
+    const res = await request<{ stats: WorkoutStats }>('/workouts/stats');
+    return res.stats;
   },
 
   // ── Settings ────────────────────────────────────────────────────────────────
-  getSettings(): Promise<UserSettings> {
-    return request<UserSettings>('/settings');
+  async getSettings(): Promise<UserSettings> {
+    const res = await request<{ settings: UserSettings }>('/settings');
+    return res.settings;
   },
 
-  updateSettings(settings: Partial<UserSettings>): Promise<UserSettings> {
-    return request<UserSettings>('/settings', {
-      method: 'PATCH',
+  async updateSettings(settings: Partial<UserSettings>): Promise<UserSettings> {
+    const res = await request<{ settings: UserSettings }>('/settings', {
+      method: 'PUT',
       body: JSON.stringify(settings),
     });
+    return res.settings;
   },
 };

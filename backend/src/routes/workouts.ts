@@ -60,11 +60,14 @@ router.post('/', async (req: Request, res: Response) => {
       id: body.id || uuidv4(),
       date: body.date || today,
       createdAt: body.createdAt || new Date().toISOString(),
-      status: 'generated',
+      status: body.status || 'generated',
       exercises: body.exercises || [],
       targetDurationMinutes: body.targetDurationMinutes || 60,
       goal: body.goal || 'hypertrophy',
       notes: body.notes,
+      // Preserve warmup fields
+      ...(body.warmup ? { warmup: body.warmup } : {}),
+      ...(body.warmupStatus ? { warmupStatus: body.warmupStatus } : {}),
     };
     await saveWorkout(workout);
     res.status(201).json({ workout });

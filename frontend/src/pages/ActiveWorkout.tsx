@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, SkipForward, CheckCircle2 } from 'lucide-react';
@@ -16,7 +16,6 @@ import { Progress } from '@/components/ui/progress';
 import { SetRow } from '@/components/workout/SetRow';
 import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
-import { WarmupPhase } from '@/components/workout/WarmupPhase';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
 import { useCompleteWorkout, useUpdateWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
@@ -30,7 +29,11 @@ interface WorkoutTurn {
   setIndex: number;
   isSuperset: boolean;
   supersetGroupId?: string;
+  /** True when the NEXT turn is a different exercise — triggers 60s rest */
+  betweenExercise: boolean;
 }
+
+const BETWEEN_EXERCISE_REST = 60; // 1 minute always between different movements
 
 function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
   const turns: WorkoutTurn[] = [];
@@ -58,16 +61,30 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
               setIndex: s,
               isSuperset: true,
               supersetGroupId: ex.supersetGroupId,
+              betweenExercise: false,
             });
           }
         }
       }
     } else {
       ex.sets.forEach((_, si) => {
-        turns.push({ exerciseIndex: ei, setIndex: si, isSuperset: false });
+        turns.push({ exerciseIndex: ei, setIndex: si, isSuperset: false, betweenExercise: false });
       });
     }
   });
+
+  // Annotate each turn: is the next turn a different exercise/superset group?
+  for (let i = 0; i < turns.length; i++) {
+    const cur = turns[i];
+    const nxt = turns[i + 1];
+    if (!nxt) {
+      cur.betweenExercise = false;
+      continue;
+    }
+    const sameGroup = cur.supersetGroupId && cur.supersetGroupId === nxt.supersetGroupId;
+    const sameExercise = cur.exerciseIndex === nxt.exerciseIndex;
+    cur.betweenExercise = !sameGroup && !sameExercise;
+  }
 
   return turns;
 }
@@ -82,6 +99,7 @@ export default function ActiveWorkout() {
 
   const { elapsed } = useWorkoutTimer(activeWorkout !== null);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
+  const wasRestingRef = useRef(false);
 
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
@@ -121,12 +139,74 @@ export default function ActiveWorkout() {
   }, [updateActiveWorkout]);
 
   if (warmupPending) {
+    const warmupItems = activeWorkout.warmup!;
     return (
-      <WarmupPhase
-        warmup={activeWorkout.warmup!}
-        onComplete={handleWarmupComplete}
-        onSkipAll={handleSkipAllWarmup}
-      />
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
+        {/* Header */}
+        <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur-xl z-40 px-4 pt-14 pb-4 border-b border-[#38383A]">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-white">Warmup</h1>
+              <p className="text-sm text-[#8E8E93]">
+                {Math.round(warmupItems.reduce((s, i) => s + i.durationSeconds, 0) / 60)} min before your workout
+              </p>
+            </div>
+            <WorkoutTimer elapsed={elapsed} size="default" />
+          </div>
+        </div>
+        {/* Warmup list */}
+        <div className="flex-1 px-4 py-4 space-y-2 pb-40">
+          {warmupItems.map((item, i) => {
+            const typeColors: Record<string, string> = {
+              cardio: 'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/30',
+              stretch: 'bg-[#0A84FF]/20 text-[#0A84FF] border-[#0A84FF]/30',
+              mobility: 'bg-[#BF5AF2]/20 text-[#BF5AF2] border-[#BF5AF2]/30',
+            };
+            const durationLabel = item.durationSeconds >= 60
+              ? `${Math.round(item.durationSeconds / 60)} min`
+              : `${item.durationSeconds}s`;
+            return (
+              <div key={i} className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4">
+                <div className="flex items-start gap-3">
+                  <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border flex-shrink-0 mt-0.5 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
+                    {item.type}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-sm font-semibold text-white">{item.name}</p>
+                      <span className="text-xs text-[#FF375F] font-semibold ml-2 flex-shrink-0">{durationLabel}</span>
+                    </div>
+                    <ul className="space-y-0.5">
+                      {item.instructions.map((instr, j) => (
+                        <li key={j} className="text-xs text-[#8E8E93] flex gap-1.5">
+                          <span className="text-[#48484A] flex-shrink-0">{j + 1}.</span>
+                          <span>{instr}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        {/* Bottom actions */}
+        <div className="fixed bottom-0 left-0 right-0 px-4 py-4 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A] pb-[calc(1rem+env(safe-area-inset-bottom,0px))]">
+          <div className="flex gap-3">
+            <Button variant="outline" onClick={handleSkipAllWarmup} className="flex-1">
+              Skip Warmup
+            </Button>
+            <Button
+              size="lg"
+              className="flex-[2]"
+              onClick={() => handleWarmupComplete(warmupItems.map(item => ({ ...item, completed: true })))}
+            >
+              <CheckCircle2 className="h-5 w-5 mr-2" />
+              Warmup Done — Start Training
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   }
 
@@ -182,6 +262,20 @@ export default function ActiveWorkout() {
   const setNumber = currentTurn.setIndex + 1;
   const totalExerciseSets = currentExercise?.sets.length ?? 0;
 
+  // ── Auto-advance when rest ends ──────────────────────────────────────────
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  useEffect(() => {
+    if (!isResting && wasRestingRef.current) {
+      wasRestingRef.current = false;
+      // Move to next turn automatically
+      setCurrentTurnIndex((i) => {
+        const next = Math.min(i + 1, turns.length - 1);
+        return next;
+      });
+    }
+    if (isResting) wasRestingRef.current = true;
+  }, [isResting, turns.length]);
+
   // ── Event handlers ─────────────────────────────────────────────────────────
 
   function handleSetUpdate(field: 'weight' | 'reps', value: number) {
@@ -216,7 +310,9 @@ export default function ActiveWorkout() {
     updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
     updateActiveWorkout(updated as Workout);
 
-    const restSecs = set.restSeconds ?? 90;
+    const restSecs = currentTurn.betweenExercise
+      ? BETWEEN_EXERCISE_REST
+      : (set.restSeconds ?? 90);
     startRest(restSecs);
 
     toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });

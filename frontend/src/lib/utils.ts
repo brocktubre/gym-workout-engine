@@ -6,10 +6,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDuration(minutes: number): string {
-  if (minutes < 60) return `${minutes}m`;
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
+export function formatDuration(minutes: number | undefined | null): string {
+  if (minutes == null || isNaN(minutes) || minutes <= 0) return '—';
+  const mins = Math.round(minutes);
+  if (mins < 60) return `${mins}m`;
+  const h = Math.floor(mins / 60);
+  const m = mins % 60;
   return m ? `${h}h ${m}m` : `${h}h`;
 }
 
