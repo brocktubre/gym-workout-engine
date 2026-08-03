@@ -9,7 +9,9 @@
     "package": "npm run build && cd dist && zip -r ../lambda.zip . && cd .. && zip -r lambda.zip node_modules"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.29.0",
     "@aws-sdk/client-dynamodb": "^3.600.0",
+    "@aws-sdk/client-secrets-manager": "^3.600.0",
     "@aws-sdk/lib-dynamodb": "^3.600.0",
     "@vendia/serverless-express": "^4.12.6",
     "cors": "^2.8.5",

@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { getSettings, getRecentWorkouts } from '../services/dynamodbService';
 import { generateWorkout } from '../services/workoutEngine';
+import { enhanceWorkoutWithClaude } from '../services/claudeService';
 import { GenerateWorkoutRequest } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -19,7 +20,10 @@ router.post('/generate', async (req: Request, res: Response) => {
       getRecentWorkouts(14),
     ]);
 
-    const { exercises, warmup } = await generateWorkout({ settings, recentWorkouts, request });
+    const { exercises: ruleExercises, warmup } = await generateWorkout({ settings, recentWorkouts, request });
+
+    // Hybrid: rule engine generates candidates, Claude refines order + supersets
+    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts);
 
     const today = new Date().toISOString().split('T')[0];
     const workout = {
