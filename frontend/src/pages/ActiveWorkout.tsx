@@ -1,9 +1,9 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronRight, SkipForward, CheckCircle2 } from 'lucide-react';
+import { X, SkipForward, CheckCircle2 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowTrendUp } from '@fortawesome/free-solid-svg-icons';
+import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -16,16 +16,68 @@ import { Progress } from '@/components/ui/progress';
 import { SetRow } from '@/components/workout/SetRow';
 import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
+import { WarmupPhase } from '@/components/workout/WarmupPhase';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
 import { useCompleteWorkout, useUpdateWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { calculateVolume } from '@/lib/utils';
-import type { WorkoutSet } from '@/types';
+import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout } from '@/types';
+
+// ── Superset turn logic ───────────────────────────────────────────────────────
+
+interface WorkoutTurn {
+  exerciseIndex: number;
+  setIndex: number;
+  isSuperset: boolean;
+  supersetGroupId?: string;
+}
+
+function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
+  const turns: WorkoutTurn[] = [];
+  const processedGroups = new Set<string>();
+
+  exercises.forEach((ex, ei) => {
+    if (ex.supersetGroupId) {
+      if (processedGroups.has(ex.supersetGroupId)) return;
+      processedGroups.add(ex.supersetGroupId);
+
+      // Gather all partners sorted by supersetOrder
+      const partners = exercises
+        .map((e, i) => ({ exercise: e, index: i }))
+        .filter(({ exercise }) => exercise.supersetGroupId === ex.supersetGroupId)
+        .sort((a, b) => (a.exercise.supersetOrder ?? 0) - (b.exercise.supersetOrder ?? 0));
+
+      const maxSets = Math.max(...partners.map((p) => p.exercise.sets.length));
+
+      // Interleave: A1, B1, A2, B2 ...
+      for (let s = 0; s < maxSets; s++) {
+        for (const { exercise, index } of partners) {
+          if (s < exercise.sets.length) {
+            turns.push({
+              exerciseIndex: index,
+              setIndex: s,
+              isSuperset: true,
+              supersetGroupId: ex.supersetGroupId,
+            });
+          }
+        }
+      }
+    } else {
+      ex.sets.forEach((_, si) => {
+        turns.push({ exerciseIndex: ei, setIndex: si, isSuperset: false });
+      });
+    }
+  });
+
+  return turns;
+}
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
   const { activeWorkout, updateActiveWorkout, clearActiveWorkout } = useActiveWorkout();
-  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
   const [showExitDialog, setShowExitDialog] = useState(false);
 
   const { elapsed } = useWorkoutTimer(activeWorkout !== null);
@@ -34,7 +86,8 @@ export default function ActiveWorkout() {
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
 
-  // No active workout – redirect
+  // ── No active workout ──────────────────────────────────────────────────────
+
   if (!activeWorkout) {
     return (
       <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-4 px-4">
@@ -46,8 +99,42 @@ export default function ActiveWorkout() {
   }
 
   const exercises = activeWorkout.exercises;
-  const currentExercise = exercises[currentExerciseIndex];
-  const isLastExercise = currentExerciseIndex === exercises.length - 1;
+
+  // ── Warmup phase ───────────────────────────────────────────────────────────
+
+  const warmupPending =
+    activeWorkout.warmupStatus === 'pending' &&
+    (activeWorkout.warmup?.length ?? 0) > 0;
+
+  const handleWarmupComplete = useCallback(
+    (updatedWarmup: WarmupItem[]) => {
+      updateActiveWorkout({
+        warmup: updatedWarmup,
+        warmupStatus: 'completed',
+      });
+    },
+    [updateActiveWorkout],
+  );
+
+  const handleSkipAllWarmup = useCallback(() => {
+    updateActiveWorkout({ warmupStatus: 'skipped' });
+  }, [updateActiveWorkout]);
+
+  if (warmupPending) {
+    return (
+      <WarmupPhase
+        warmup={activeWorkout.warmup!}
+        onComplete={handleWarmupComplete}
+        onSkipAll={handleSkipAllWarmup}
+      />
+    );
+  }
+
+  // ── Build turns ────────────────────────────────────────────────────────────
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const turns = useMemo(() => buildTurns(exercises), [exercises]);
+
   const totalSets = exercises.reduce((acc, e) => acc + e.sets.length, 0);
   const completedSets = exercises.reduce(
     (acc, e) => acc + e.sets.filter((s) => s.completed).length,
@@ -55,55 +142,99 @@ export default function ActiveWorkout() {
   );
   const progressPercent = totalSets > 0 ? (completedSets / totalSets) * 100 : 0;
 
-  const handleSetUpdate = useCallback(
-    (setIndex: number, field: 'weight' | 'reps', value: number) => {
-      const updated = { ...activeWorkout };
-      const setObj = { ...updated.exercises[currentExerciseIndex].sets[setIndex] };
-      if (field === 'weight') {
-        setObj.completedWeight = value;
-      } else {
-        setObj.completedReps = value;
-      }
-      updated.exercises[currentExerciseIndex].sets[setIndex] = setObj;
-      updateActiveWorkout(updated);
-    },
-    [activeWorkout, currentExerciseIndex, updateActiveWorkout],
-  );
+  const isLastTurn = currentTurnIndex >= turns.length - 1;
+  const currentTurn = turns[currentTurnIndex];
 
-  const handleSetComplete = useCallback(
-    (setIndex: number, weight: number, reps: number) => {
-      const updated = { ...activeWorkout };
-      const set: WorkoutSet = {
-        ...updated.exercises[currentExerciseIndex].sets[setIndex],
-        completedWeight: weight,
-        completedReps: reps,
-        completed: true,
-      };
-      updated.exercises[currentExerciseIndex].sets[setIndex] = set;
-      updateActiveWorkout(updated);
+  if (!currentTurn) {
+    // All turns done but user hasn't tapped "Complete" yet — show complete button
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center gap-4 px-4">
+        <CheckCircle2 className="h-16 w-16 text-[#30D158]" />
+        <p className="text-white text-lg font-bold">All sets done!</p>
+        <Button
+          size="lg"
+          variant="success"
+          onClick={() => handleCompleteWorkout()}
+        >
+          <CheckCircle2 className="h-5 w-5 mr-2" />
+          Complete Workout
+        </Button>
+      </div>
+    );
+  }
 
-      // Start rest timer
-      const restSecs = set.restSeconds ?? 90;
-      startRest(restSecs);
+  const currentExercise = exercises[currentTurn.exerciseIndex];
+  const currentSet = currentExercise?.sets[currentTurn.setIndex];
 
-      toast({ title: `Set ${setIndex + 1} complete`, variant: 'success', duration: 1500 });
-    },
-    [activeWorkout, currentExerciseIndex, updateActiveWorkout, startRest],
-  );
+  // For superset display: find the partner
+  let supersetPartner: WorkoutExercise | undefined;
+  if (currentTurn.isSuperset && currentTurn.supersetGroupId) {
+    supersetPartner = exercises.find(
+      (e) =>
+        e.supersetGroupId === currentTurn.supersetGroupId &&
+        e.exerciseId !== currentExercise?.exerciseId,
+    );
+  }
 
-  const handleNextExercise = () => {
-    skipRest();
-    setCurrentExerciseIndex((i) => Math.min(i + 1, exercises.length - 1));
-  };
+  // Unique exercise count for "Exercise X of Y" counter
+  const exerciseCount = exercises.length;
+  const currentExerciseNumber = currentTurn.exerciseIndex + 1;
+  const setNumber = currentTurn.setIndex + 1;
+  const totalExerciseSets = currentExercise?.sets.length ?? 0;
 
-  const handleSkipExercise = () => {
-    skipRest();
-    if (!isLastExercise) {
-      setCurrentExerciseIndex((i) => i + 1);
+  // ── Event handlers ─────────────────────────────────────────────────────────
+
+  function handleSetUpdate(field: 'weight' | 'reps', value: number) {
+    if (!currentTurn) return;
+    if (!activeWorkout) return;
+    const updated = { ...activeWorkout, exercises: [...(activeWorkout.exercises ?? [])] };
+    const setObj = { ...(updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex] ?? {}) };
+    if (field === 'weight') {
+      setObj.completedWeight = value;
+    } else {
+      setObj.completedReps = value;
     }
-  };
+    if (updated.exercises[currentTurn.exerciseIndex]) {
+      updated.exercises[currentTurn.exerciseIndex] = { ...updated.exercises[currentTurn.exerciseIndex] };
+      updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = setObj as WorkoutSet;
+    }
+    updateActiveWorkout(updated as Workout);
+  }
 
-  const handleCompleteWorkout = async () => {
+  function handleSetComplete(weight: number, reps: number) {
+    if (!currentTurn) return;
+    if (!activeWorkout) return;
+    const updated = { ...activeWorkout, exercises: [...(activeWorkout.exercises ?? [])] };
+    updated.exercises[currentTurn.exerciseIndex] = { ...updated.exercises[currentTurn.exerciseIndex] };
+    const set: WorkoutSet = {
+      ...(updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex] ?? {}),
+      targetReps: updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex]?.targetReps ?? 0,
+      completedWeight: weight,
+      completedReps: reps,
+      completed: true,
+    };
+    updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
+    updateActiveWorkout(updated as Workout);
+
+    const restSecs = set.restSeconds ?? 90;
+    startRest(restSecs);
+
+    toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });
+  }
+
+  function handleNextTurn() {
+    skipRest();
+    setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
+  }
+
+  function handleSkipSet() {
+    skipRest();
+    if (!isLastTurn) {
+      setCurrentTurnIndex((i) => i + 1);
+    }
+  }
+
+  async function handleCompleteWorkout() {
     const durationMinutes = Math.round(elapsed / 60);
     const totalVolume = exercises.reduce((acc, e) => acc + calculateVolume(e.sets), 0);
 
@@ -115,6 +246,7 @@ export default function ActiveWorkout() {
       totalVolume,
     };
 
+    if (!activeWorkout) return;
     try {
       await completeWorkoutMutation.mutateAsync({
         date: activeWorkout.date,
@@ -126,8 +258,8 @@ export default function ActiveWorkout() {
 
     try {
       await updateWorkoutMutation.mutateAsync({
-        date: activeWorkout.date,
-        id: activeWorkout.id,
+        date: activeWorkout?.date ?? '',
+        id: activeWorkout?.id ?? '',
         updates: {
           status: 'completed',
           completedAt: updated.completedAt,
@@ -143,18 +275,20 @@ export default function ActiveWorkout() {
     updateActiveWorkout(updated);
     clearActiveWorkout();
     toast({
-      title: 'Workout Complete!',
+      title: 'Workout Complete! 🎉',
       description: `${exercises.length} exercises · ${durationMinutes}min`,
       variant: 'success',
     });
     navigate('/history');
-  };
+  }
 
-  const handleExit = () => {
+  function handleExit() {
     clearActiveWorkout();
     setShowExitDialog(false);
     navigate('/');
-  };
+  }
+
+  // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col">
@@ -168,11 +302,7 @@ export default function ActiveWorkout() {
             <X className="h-4 w-4" />
           </button>
           <WorkoutTimer elapsed={elapsed} size="default" />
-          <Button
-            size="sm"
-            variant="destructive"
-            onClick={() => setShowExitDialog(true)}
-          >
+          <Button size="sm" variant="destructive" onClick={() => setShowExitDialog(true)}>
             Finish
           </Button>
         </div>
@@ -182,7 +312,8 @@ export default function ActiveWorkout() {
           <Progress value={progressPercent} className="h-1.5" />
           <div className="flex items-center justify-between text-xs text-[#8E8E93]">
             <span>
-              Exercise {currentExerciseIndex + 1} of {exercises.length}
+              Exercise {currentExerciseNumber} of {exerciseCount}
+              {' · '}Set {setNumber}/{totalExerciseSets}
             </span>
             <span>{completedSets}/{totalSets} sets done</span>
           </div>
@@ -191,41 +322,75 @@ export default function ActiveWorkout() {
 
       {/* Main content */}
       <div className="flex-1 px-4 py-4 space-y-4">
-        {/* Current exercise header */}
+        {/* Current exercise card */}
         <AnimatePresence mode="wait">
           <motion.div
-            key={currentExerciseIndex}
+            key={`${currentTurn.exerciseIndex}-${currentTurn.setIndex}`}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -30 }}
             transition={{ duration: 0.2 }}
           >
             <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4">
+              {/* Superset header */}
+              {currentTurn.isSuperset && (
+                <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#38383A]">
+                  <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF]" />
+                  <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
+                    Superset
+                  </span>
+                  <span className="text-xs text-[#8E8E93]">Alternate between exercises</span>
+                </div>
+              )}
+
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
+                  {/* Exercise name(s) */}
                   <h2 className="text-lg font-bold text-white leading-tight">
                     {currentExercise?.exercise.name}
+                    {supersetPartner && (
+                      <span className="text-[#8E8E93] font-normal">
+                        {' / '}
+                        <span className="text-[#8E8E93]">{supersetPartner.exercise.name}</span>
+                      </span>
+                    )}
                   </h2>
-                  <div className="flex items-center gap-2 mt-1.5">
+                  {/* Muscle badges */}
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {currentExercise && (
                       <MuscleGroupBadge muscle={currentExercise.exercise.primaryMuscle} />
+                    )}
+                    {supersetPartner && (
+                      <MuscleGroupBadge muscle={supersetPartner.exercise.primaryMuscle} />
                     )}
                     <span className="text-xs text-[#8E8E93] capitalize">
                       {currentExercise?.exercise.equipment?.replace('-', ' ')}
                     </span>
                   </div>
                 </div>
-                <div className="bg-[#2c2c2e] rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-lg font-bold text-white">
-                    {currentExercise?.sets.length ?? 0}
-                  </p>
-                  <p className="text-[10px] text-[#8E8E93]">sets</p>
+                <div className="bg-[#2c2c2e] rounded-xl px-3 py-1.5 text-center ml-3 flex-shrink-0">
+                  <p className="text-lg font-bold text-white">{setNumber}</p>
+                  <p className="text-[10px] text-[#8E8E93]">of {totalExerciseSets}</p>
                 </div>
               </div>
+
+              {/* Superset: show which exercise this set belongs to */}
+              {currentTurn.isSuperset && (
+                <div className="flex items-center gap-2 mt-2 px-3 py-2 bg-[#0A84FF]/10 rounded-xl">
+                  <span className="text-xs font-semibold text-[#0A84FF]">
+                    Now: {currentExercise?.exercise.name}
+                  </span>
+                  <span className="text-xs text-[#8E8E93]">
+                    (Set {currentTurn.setIndex + 1})
+                  </span>
+                </div>
+              )}
+
               {currentExercise?.progressionNote && (
                 <div className="flex items-center gap-1.5 mt-2 bg-[#30D158]/10 rounded-xl px-3 py-2">
+                  <FontAwesomeIcon icon={faArrowTrendUp} className="text-[#30D158] text-xs mr-1" />
                   <span className="text-[#30D158] text-xs font-medium">
-                    <><FontAwesomeIcon icon={faArrowTrendUp} className="mr-1.5" />{currentExercise.progressionNote}</>
+                    {currentExercise.progressionNote}
                   </span>
                 </div>
               )}
@@ -244,7 +409,7 @@ export default function ActiveWorkout() {
             >
               <RestTimer
                 seconds={restSeconds}
-                totalSeconds={currentExercise?.sets[0]?.restSeconds ?? 90}
+                totalSeconds={currentSet?.restSeconds ?? 90}
                 onSkip={skipRest}
               />
             </motion.div>
@@ -252,17 +417,24 @@ export default function ActiveWorkout() {
         </AnimatePresence>
 
         {/* Sets */}
-        {!isResting && (
+        {!isResting && currentExercise && (
           <div className="space-y-2">
-            {currentExercise?.sets.map((set, si) => (
-              <SetRow
-                key={`${currentExerciseIndex}-${si}`}
-                set={set}
-                isActive={!set.completed}
-                onComplete={(weight, reps) => handleSetComplete(si, weight, reps)}
-                onChange={(field, value) => handleSetUpdate(si, field, value)}
-              />
-            ))}
+            {currentExercise.sets.map((set, si) => {
+              const isCurrent = si === currentTurn.setIndex;
+              return (
+                <SetRow
+                  key={`${currentTurn.exerciseIndex}-${si}`}
+                  set={set}
+                  isActive={isCurrent && !set.completed}
+                  onComplete={(weight, reps) => {
+                    if (isCurrent) handleSetComplete(weight, reps);
+                  }}
+                  onChange={(field, value) => {
+                    if (isCurrent) handleSetUpdate(field, value);
+                  }}
+                />
+              );
+            })}
           </div>
         )}
       </div>
@@ -270,22 +442,17 @@ export default function ActiveWorkout() {
       {/* Bottom actions */}
       <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
         <div className="flex gap-3">
-          {!isLastExercise ? (
+          {!isLastTurn ? (
             <>
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={handleSkipExercise}
-              >
+              <Button variant="outline" className="flex-1" onClick={handleSkipSet}>
                 <SkipForward className="h-4 w-4 mr-2" />
                 Skip
               </Button>
-              <Button
-                className="flex-[2]"
-                onClick={handleNextExercise}
-              >
-                Next Exercise
-                <ChevronRight className="h-4 w-4 ml-2" />
+              <Button className="flex-[2]" onClick={handleNextTurn}>
+                Next Set
+                <span className="ml-2 text-white/70 text-xs">
+                  {currentTurn.isSuperset ? '(Superset)' : ''}
+                </span>
               </Button>
             </>
           ) : (
@@ -320,11 +487,7 @@ export default function ActiveWorkout() {
             >
               Keep Going
             </Button>
-            <Button
-              variant="destructive"
-              className="flex-1"
-              onClick={handleExit}
-            >
+            <Button variant="destructive" className="flex-1" onClick={handleExit}>
               End Workout
             </Button>
           </div>

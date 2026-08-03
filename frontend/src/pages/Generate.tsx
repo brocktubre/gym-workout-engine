@@ -3,8 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faWeightHanging, faArrowTrendUp, faPersonRunning, faFire } from '@fortawesome/free-solid-svg-icons';
+import {
+  faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
+  faArrowRightArrowLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
+import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExerciseItem } from '@/components/workout/ExerciseItem';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -12,7 +16,7 @@ import { useGenerateWorkout, useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { getTodayDate, formatDuration } from '@/lib/utils';
-import type { MuscleGroup, WorkoutGoal, WorkoutExercise } from '@/types';
+import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem } from '@/types';
 import { cn } from '@/lib/utils';
 
 const DURATION_OPTIONS = [30, 45, 60, 90];
@@ -38,9 +42,11 @@ const MUSCLE_OPTIONS: { value: MuscleGroup; label: string }[] = [
 ];
 
 interface GeneratedWorkout {
+  id?: string;
   exercises: WorkoutExercise[];
   goal: WorkoutGoal;
   targetDurationMinutes: number;
+  warmup?: WarmupItem[];
 }
 
 export default function Generate() {
@@ -48,6 +54,8 @@ export default function Generate() {
   const [duration, setDuration] = useState(60);
   const [goal, setGoal] = useState<WorkoutGoal>('hypertrophy');
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>([]);
+  const [includeWarmup, setIncludeWarmup] = useState(true);
+  const [allowSupersets, setAllowSupersets] = useState(true);
   const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);
 
   const generateMutation = useGenerateWorkout();
@@ -66,6 +74,8 @@ export default function Generate() {
         durationMinutes: duration,
         goal,
         targetMuscleGroups: targetMuscles.length > 0 ? targetMuscles : undefined,
+        includeWarmup,
+        allowSupersets,
       });
       setGeneratedWorkout(result.workout);
     } catch (err) {
@@ -82,6 +92,7 @@ export default function Generate() {
 
     try {
       const now = new Date().toISOString();
+      const hasWarmup = (generatedWorkout.warmup?.length ?? 0) > 0;
       const workout = await createWorkoutMutation.mutateAsync({
         date: getTodayDate(),
         createdAt: now,
@@ -89,6 +100,8 @@ export default function Generate() {
         exercises: generatedWorkout.exercises,
         targetDurationMinutes: generatedWorkout.targetDurationMinutes,
         goal: generatedWorkout.goal,
+        warmup: generatedWorkout.warmup,
+        warmupStatus: hasWarmup ? 'pending' : 'skipped',
       });
 
       startWorkout(workout);
@@ -101,6 +114,11 @@ export default function Generate() {
       });
     }
   };
+
+  // Calculate warmup total minutes for preview
+  const totalWarmupMinutes = generatedWorkout?.warmup
+    ? Math.round(generatedWorkout.warmup.reduce((acc, item) => acc + item.durationSeconds, 0) / 60)
+    : 0;
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -157,6 +175,34 @@ export default function Generate() {
           </div>
         </section>
 
+        {/* Warmup toggle */}
+        <section>
+          <div className="flex items-center justify-between py-3 px-4 bg-[#1c1c1e] rounded-2xl border border-[#38383A]">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F] w-4" />
+              <div>
+                <p className="text-sm font-semibold text-white">Include Warmup</p>
+                <p className="text-xs text-[#8E8E93]">5-10 min cardio + stretching</p>
+              </div>
+            </div>
+            <Switch checked={includeWarmup} onCheckedChange={setIncludeWarmup} />
+          </div>
+        </section>
+
+        {/* Supersets toggle */}
+        <section>
+          <div className="flex items-center justify-between py-3 px-4 bg-[#1c1c1e] rounded-2xl border border-[#38383A]">
+            <div className="flex items-center gap-3">
+              <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] w-4" />
+              <div>
+                <p className="text-sm font-semibold text-white">Allow Supersets</p>
+                <p className="text-xs text-[#8E8E93]">Pair antagonist muscles for efficiency</p>
+              </div>
+            </div>
+            <Switch checked={allowSupersets} onCheckedChange={setAllowSupersets} />
+          </div>
+        </section>
+
         {/* Target Muscles (optional) */}
         <section>
           <div className="flex items-center justify-between mb-3">
@@ -179,7 +225,6 @@ export default function Generate() {
                       : 'bg-[#1c1c1e] text-[#8E8E93] border-[#38383A] hover:bg-[#2c2c2e]',
                   )}
                 >
-
                   {m.label}
                 </button>
               );
@@ -239,6 +284,19 @@ export default function Generate() {
                   <span>{generatedWorkout.exercises.length} exercises</span>
                 </div>
               </div>
+
+              {/* Warmup summary (if present) */}
+              {(generatedWorkout.warmup?.length ?? 0) > 0 && (
+                <div className="flex items-center gap-2 px-4 py-3 bg-[#1c1c1e] rounded-2xl border border-[#38383A]">
+                  <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
+                  <span className="text-sm text-white font-medium">
+                    Warmup: {totalWarmupMinutes} min
+                  </span>
+                  <span className="text-xs text-[#8E8E93] ml-1">
+                    ({generatedWorkout.warmup!.length} items)
+                  </span>
+                </div>
+              )}
 
               {/* Exercise list */}
               <div className="space-y-2">

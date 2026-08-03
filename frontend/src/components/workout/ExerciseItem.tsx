@@ -8,6 +8,7 @@ import {
   faArrowUp, faCrosshairs, faWater, faTruckFast, faCube,
   faShirt, faBagShopping, faCircleDot, faPersonBiking,
   faPersonSwimming, faPersonSkiing,
+  faArrowRightArrowLeft,
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
@@ -45,7 +46,7 @@ interface ExerciseItemProps {
 
 export function ExerciseItem({ workoutExercise, index, showProgress = false }: ExerciseItemProps) {
   const [expanded, setExpanded] = useState(false);
-  const { exercise, sets, progressionNote } = workoutExercise;
+  const { exercise, sets, progressionNote, supersetGroupId, supersetOrder } = workoutExercise;
 
   const completedSets = sets.filter((s) => s.completed).length;
   const totalSets = sets.length;
@@ -53,6 +54,24 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false }: E
 
   return (
     <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
+      {/* Superset badge */}
+      {supersetGroupId && supersetOrder === 1 && (
+        <div className="px-4 pt-3 pb-0">
+          <div className="flex items-center gap-1.5 mb-2 px-2 py-1 bg-[#0A84FF]/10 rounded-lg border border-[#0A84FF]/20 w-fit">
+            <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
+            <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">Superset</span>
+          </div>
+        </div>
+      )}
+      {supersetGroupId && supersetOrder === 2 && (
+        <div className="px-4 pt-3 pb-0">
+          <div className="flex items-center gap-1.5 mb-2 px-2 py-1 bg-[#0A84FF]/5 rounded-lg border border-[#0A84FF]/10 w-fit">
+            <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF]/60 text-xs" />
+            <span className="text-xs text-[#0A84FF]/60 uppercase tracking-wider">↳ Paired</span>
+          </div>
+        </div>
+      )}
+
       {/* Main row */}
       <button
         className="w-full text-left p-4"
