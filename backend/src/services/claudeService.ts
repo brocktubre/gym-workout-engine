@@ -4,6 +4,17 @@ import { v4 as uuidv4 } from 'uuid';
 import { WorkoutExercise, UserSettings, Workout, MuscleGroup, WorkoutGoal } from '../types';
 
 // ---------------------------------------------------------------------------
+// Helper: strip markdown code fences Claude sometimes wraps JSON in
+// ---------------------------------------------------------------------------
+function extractJson(text: string): string {
+  const stripped = text.trim();
+  // Match ```json ... ``` or ``` ... ```
+  const fenceMatch = stripped.match(/^```(?:json)?\s*([\s\S]*?)\s*```$/m);
+  if (fenceMatch) return fenceMatch[1].trim();
+  return stripped;
+}
+
+// ---------------------------------------------------------------------------
 // Secrets Manager — cache key after first cold-start fetch
 // ---------------------------------------------------------------------------
 const secretsClient = new SecretsManagerClient({ region: process.env.AWS_REGION || 'us-east-1' });
@@ -99,8 +110,8 @@ Valid goals: strength,hypertrophy,endurance,fat-loss`;
       messages: [{ role: 'user', content: userMessage }],
     });
 
-    const text = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
-    const parsed = JSON.parse(text) as CoachingNoteResponse;
+    const rawText = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+    const parsed = JSON.parse(extractJson(rawText)) as CoachingNoteResponse;
 
     // Validate muscles
     const validMuscles = (parsed.suggestedMuscles ?? []).filter(m =>
@@ -206,14 +217,14 @@ JSON format:
       messages: [{ role: 'user', content: userMessage }],
     });
 
-    const text = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+    const rawText = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
 
     // --- Parse ---
     let claudeResult: ClaudeResponse;
     try {
-      claudeResult = JSON.parse(text);
+      claudeResult = JSON.parse(extractJson(rawText));
     } catch {
-      console.warn('[Claude] Invalid JSON — falling back to rule-engine output. Raw:', text.slice(0, 200));
+      console.warn('[Claude] Invalid JSON — falling back to rule-engine output. Raw:', rawText.slice(0, 200));
       return draftExercises;
     }
 
