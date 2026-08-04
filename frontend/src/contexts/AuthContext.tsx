@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { authService, friendlyAuthError, type AuthUser } from '@/lib/auth';
 import { api } from '@/lib/api';
 
@@ -22,6 +23,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const refreshTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const queryClient = useQueryClient();
 
   const clearRefreshTimer = () => {
     if (refreshTimerRef.current) {
@@ -54,11 +56,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearRefreshTimer();
     authService.signOut();
     setUser(null);
+    // Wipe ALL cached query data so the next user never sees this user's workouts/stats
+    queryClient.clear();
     // Redirect to login using hash router
     if (window.location.hash !== '#/login') {
       window.location.hash = '#/login';
     }
-  }, []);
+  }, [queryClient]);
 
   const startRefreshTimer = useCallback(() => {
     clearRefreshTimer();
@@ -103,6 +107,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string) => {
       try {
         await authService.signIn(email, password);
+        // Invalidate all cached queries so this user's fresh data loads (not the previous user's)
+        queryClient.clear();
         // Set user immediately, then fetch the real profile for this specific account
         setUserFromEmail(email);
         startRefreshTimer();
