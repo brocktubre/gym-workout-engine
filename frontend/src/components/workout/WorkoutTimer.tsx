@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import { useEffect } from 'react';
+import { SkipForward } from 'lucide-react';
 import { formatElapsedTime } from '@/lib/utils';
 
 // ---------------------------------------------------------------------------
@@ -132,9 +133,10 @@ export function RestTimer({ seconds, totalSeconds, onSkip }: RestTimerProps) {
       </div>
       <button
         onClick={onSkip}
-        className="text-xs text-[#8E8E93] hover:text-white transition-colors px-3 py-1"
+        className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#2c2c2e] border border-[#38383A] text-sm font-semibold text-[#8E8E93] hover:text-white hover:border-[#8E8E93] active:scale-95 transition-all touch-manipulation select-none min-w-[140px] justify-center"
       >
-        Skip rest
+        <SkipForward className="h-4 w-4 flex-shrink-0" />
+        Skip Rest
       </button>
     </motion.div>
   );
