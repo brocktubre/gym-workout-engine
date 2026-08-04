@@ -6,6 +6,7 @@ import workoutsRouter from './routes/workouts';
 import settingsRouter from './routes/settings';
 import engineRouter from './routes/engine';
 import coachingRouter from './routes/coaching';
+import authRouter from './routes/auth';
 import { errorHandler } from './middleware/errorHandler';
 import { requireAuth, optionalAuth } from './middleware/auth';
 
@@ -30,6 +31,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Auth: backend-assisted Cognito signup/login (bypasses email verification)
+app.use('/api/auth', authRouter);
+
 // Public: exercises, workout generation, coaching notes
 app.use('/api/exercises', exercisesRouter);
 app.use('/api/engine', engineRouter);
@@ -39,8 +43,9 @@ app.use('/api/coaching', coachingRouter);
 // Attach optionalAuth so GET can personalize responses when a token is present.
 app.use('/api/settings', optionalAuth, settingsRouter);
 
-// Protected: workouts routes require a valid Cognito JWT
-app.use('/api/workouts', requireAuth, workoutsRouter);
+// Workouts: history/stats use optionalAuth (returns empty for anon users);
+// write operations (PUT/POST/DELETE) enforce auth inside the route handlers.
+app.use('/api/workouts', optionalAuth, workoutsRouter);
 
 app.use(errorHandler as express.ErrorRequestHandler);
 

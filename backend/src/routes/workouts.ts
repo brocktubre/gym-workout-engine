@@ -9,13 +9,18 @@ import {
   deleteWorkout,
   ConflictError,
 } from '../services/dynamodbService';
+import { requireAuth } from '../middleware/auth';
 import { Workout } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 const router = Router();
 
-// GET /api/workouts/stats — must come before /:date/:id
+// GET /api/workouts/stats — returns empty stats for anonymous users
 router.get('/stats', async (req: Request, res: Response) => {
+  if (!req.user) {
+    res.json({ stats: { totalWorkouts: 0, currentStreak: 0, longestStreak: 0, totalVolumeKg: 0, averageDurationMinutes: 0, muscleGroupFrequency: {} } });
+    return;
+  }
   try {
     const stats = await getStats();
     res.json({ stats });
@@ -24,8 +29,12 @@ router.get('/stats', async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/workouts/history?start=YYYY-MM-DD&end=YYYY-MM-DD
+// GET /api/workouts/history — returns empty array for anonymous users
 router.get('/history', async (req: Request, res: Response) => {
+  if (!req.user) {
+    res.json({ workouts: [], total: 0 });
+    return;
+  }
   try {
     const { start, end } = req.query;
     if (!start || !end) {
@@ -53,8 +62,8 @@ router.get('/recent', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/workouts
-router.post('/', async (req: Request, res: Response) => {
+// POST /api/workouts — requires auth
+router.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
     const body = req.body;
     const today = new Date().toISOString().split('T')[0];

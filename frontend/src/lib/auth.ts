@@ -2,9 +2,7 @@ import {
   CognitoUserPool,
   CognitoUser,
   AuthenticationDetails,
-  CognitoUserAttribute,
   CognitoUserSession,
-  ISignUpResult,
 } from 'amazon-cognito-identity-js';
 
 const COGNITO_USER_POOL_ID = 'us-east-1_WucFi2sNK';
@@ -65,16 +63,26 @@ export const authService = {
   },
 
   async signUp(email: string, password: string): Promise<AuthTokens> {
-    // Create user
-    await new Promise<ISignUpResult>((resolve, reject) => {
-      const attrs = [new CognitoUserAttribute({ Name: 'email', Value: email })];
-      userPool.signUp(email, password, attrs, [], (err, result) => {
-        if (err || !result) return reject(err ?? new Error('SignUp failed'));
-        resolve(result);
-      });
+    // Use backend route: adminCreateUser + adminSetUserPassword → no email verification required
+    const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
+    const resp = await fetch(`${BASE_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
-    // Immediately attempt sign-in (User Pool is configured with auto-confirm)
-    return authService.signIn(email, password);
+    if (!resp.ok) {
+      const body = await resp.json().catch(() => ({})) as { error?: string };
+      const err = new Error(body.error ?? 'Registration failed');
+      (err as any).code = body.error ?? '';
+      throw err;
+    }
+    const tokens = await resp.json() as { accessToken: string; idToken: string; refreshToken: string };
+    // Store tokens and restore Cognito SDK session so the rest of auth works
+    localStorage.setItem('gym_access_token', tokens.accessToken);
+    localStorage.setItem('gym_id_token', tokens.idToken);
+    localStorage.setItem('gym_refresh_token', tokens.refreshToken);
+    localStorage.setItem('gym_user_email', email);
+    return tokens;
   },
 
   signOut(): void {
