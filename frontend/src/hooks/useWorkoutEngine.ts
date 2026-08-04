@@ -96,10 +96,10 @@ export function useActiveWorkout() {
       localStorage.removeItem(TURN_INDEX_KEY);
       localStorage.removeItem(LEGACY_TIMER_KEY);
       localStorage.removeItem(LEGACY_ELAPSED_KEY);
+      // Remove from DynamoDB so this user's next session starts clean
+      api.deleteActiveWorkout().catch(() => {});
     }
     // Notify all other hook instances in this window (BottomNav, Dashboard, etc.)
-    // localStorage changes don't fire 'storage' events in the same tab natively,
-    // so we dispatch manually — same pattern used by pauseWorkout / resumeFromPause.
     window.dispatchEvent(new StorageEvent('storage', { key: ACTIVE_WORKOUT_KEY }));
   }, []);
 
@@ -128,6 +128,8 @@ export function useActiveWorkout() {
       lastPausedAt: undefined,
     };
     setActiveWorkout(started);
+    // Persist to DynamoDB so this user's session survives device switches
+    api.setActiveWorkout(started, 0, false).catch(() => {});
   }, [setActiveWorkout]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /** Pause: record the pause timestamp in the workout object */
@@ -141,6 +143,8 @@ export function useActiveWorkout() {
       if (!prev) return prev;
       const updated = { ...prev, lastPausedAt: now };
       saveActiveWorkout(updated);
+      // Persist paused state to DynamoDB so user can resume on any device
+      api.setActiveWorkout(updated, turnIndex, true).catch(() => {});
       return updated;
     });
     window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));

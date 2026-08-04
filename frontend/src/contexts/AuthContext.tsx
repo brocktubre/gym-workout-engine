@@ -36,6 +36,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ email, displayName: displayName ?? authService.getCurrentDisplayName() ?? undefined });
   };
 
+  /**
+   * Fetch this user's active workout from DynamoDB and populate localStorage.
+   * Called on sign-in BEFORE setting user state so components never briefly
+   * see another user's workout. Also clears stale data when the user has no
+   * active workout in DynamoDB.
+   */
+  const hydrateActiveWorkoutFromCloud = useCallback(async () => {
+    // Clear any stale workout from localStorage first (previous user's data)
+    localStorage.removeItem('gym_active_workout');
+    localStorage.removeItem('gym_paused_at');
+    localStorage.removeItem('gym_turn_index');
+    try {
+      const { state } = await api.getActiveWorkout();
+      if (state?.workout) {
+        // Restore this user's in-progress workout from DynamoDB
+        localStorage.setItem('gym_active_workout', JSON.stringify(state.workout));
+        localStorage.setItem('gym_turn_index', String(state.turnIndex ?? 0));
+        if (state.isPaused) {
+          localStorage.setItem('gym_paused_at', String(Date.now()));
+        }
+        // Notify useActiveWorkout instances to re-sync from localStorage
+        window.dispatchEvent(new StorageEvent('storage', { key: 'gym_active_workout' }));
+      }
+      // If state is null, localStorage is already cleared above — correct state
+    } catch {
+      // API error or not authenticated yet — keep localStorage cleared
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   /** Fetch this user's profile from the backend and update displayName in state + localStorage.
    *  Always call after sign-in to ensure we show the correct user's name, not a stale localStorage value. */
   const syncProfileFromBackend = useCallback(async (email: string) => {
@@ -107,9 +137,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string) => {
       try {
         await authService.signIn(email, password);
-        // Invalidate all cached queries so this user's fresh data loads (not the previous user's)
+        // Wipe previous user's query cache and localStorage workout state
         queryClient.clear();
-        // Set user immediately, then fetch the real profile for this specific account
+        // Hydrate this user's active workout from DynamoDB before setting user state
+        // so components never briefly see the previous user's workout
+        await hydrateActiveWorkoutFromCloud();
         setUserFromEmail(email);
         startRefreshTimer();
         void syncProfileFromBackend(email);

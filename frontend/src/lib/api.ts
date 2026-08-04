@@ -110,6 +110,22 @@ export const api = {
     return res.workout;
   },
 
+  // ── Active workout state (per-user, persisted in DynamoDB) ────────────────
+  async getActiveWorkout(): Promise<{ state: { workout: Workout; turnIndex: number; isPaused: boolean; savedAt: string } | null }> {
+    return request('/workouts/active');
+  },
+
+  async setActiveWorkout(workout: Workout, turnIndex: number, isPaused: boolean): Promise<void> {
+    await request('/workouts/active', {
+      method: 'PUT',
+      body: JSON.stringify({ workout, turnIndex, isPaused }),
+    });
+  },
+
+  async deleteActiveWorkout(): Promise<void> {
+    await request('/workouts/active', { method: 'DELETE' });
+  },
+
   async deleteWorkout(date: string, id: string): Promise<void> {
     await request<{ success: boolean }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}`, {
       method: 'DELETE',

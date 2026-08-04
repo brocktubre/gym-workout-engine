@@ -280,3 +280,49 @@ export async function saveCoachingNote(note: CachedCoachingNote): Promise<void> 
     },
   }));
 }
+
+// ---------------------------------------------------------------------------
+// Per-user active workout state
+// PK: USER#<sub>  SK: ACTIVE_WORKOUT
+// Stores the full workout + turn index so any device can restore the session.
+// ---------------------------------------------------------------------------
+
+export interface ActiveWorkoutState {
+  workout: import('../types').Workout;
+  turnIndex: number;
+  isPaused: boolean;
+  savedAt: string;
+}
+
+export async function saveActiveWorkoutState(sub: string, state: ActiveWorkoutState): Promise<void> {
+  await client.send(new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: `USER#${sub}`,
+      SK: 'ACTIVE_WORKOUT',
+      entityType: 'ActiveWorkout',
+      ...state,
+    },
+  }));
+}
+
+export async function getActiveWorkoutState(sub: string): Promise<ActiveWorkoutState | null> {
+  try {
+    const result = await client.send(new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { PK: `USER#${sub}`, SK: 'ACTIVE_WORKOUT' },
+    }));
+    if (!result.Item) return null;
+    const { PK, SK, entityType, ...state } = result.Item;
+    return state as ActiveWorkoutState;
+  } catch {
+    return null;
+  }
+}
+
+export async function deleteActiveWorkoutState(sub: string): Promise<void> {
+  await client.send(new DeleteCommand({
+    TableName: TABLE_NAME,
+    Key: { PK: `USER#${sub}`, SK: 'ACTIVE_WORKOUT' },
+  }));
+}

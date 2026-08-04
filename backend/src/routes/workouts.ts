@@ -10,6 +10,11 @@ import {
   ConflictError,
 } from '../services/dynamodbService';
 import { requireAuth } from '../middleware/auth';
+import {
+  saveActiveWorkoutState,
+  getActiveWorkoutState,
+  deleteActiveWorkoutState,
+} from '../services/dynamodbService';
 import { Workout } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -188,6 +193,51 @@ router.delete('/:date/:id', async (req: Request, res: Response) => {
     res.json({ success: true, message: 'Workout deleted' });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to delete workout', details: err.message });
+  }
+});
+
+// ── Per-user active workout state — must come before /:date/:id ─────────────
+
+// GET /api/workouts/active
+router.get('/active', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const state = await getActiveWorkoutState(req.user!.sub);
+    res.json({ state });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to load active workout', details: err.message });
+  }
+});
+
+// PUT /api/workouts/active  — save/update active workout state
+router.put('/active', requireAuth, async (req: Request, res: Response) => {
+  const { workout, turnIndex = 0, isPaused = false } = req.body as {
+    workout?: object; turnIndex?: number; isPaused?: boolean;
+  };
+  if (!workout) {
+    res.status(400).json({ error: 'workout is required' });
+    return;
+  }
+  try {
+    const state = {
+      workout: workout as import('../types').Workout,
+      turnIndex,
+      isPaused,
+      savedAt: new Date().toISOString(),
+    };
+    await saveActiveWorkoutState(req.user!.sub, state);
+    res.json({ state });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to save active workout', details: err.message });
+  }
+});
+
+// DELETE /api/workouts/active — clear active workout (on complete or cancel)
+router.delete('/active', requireAuth, async (req: Request, res: Response) => {
+  try {
+    await deleteActiveWorkoutState(req.user!.sub);
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: 'Failed to delete active workout', details: err.message });
   }
 });
 
