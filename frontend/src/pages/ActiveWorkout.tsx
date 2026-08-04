@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, SkipForward, ChevronLeft, CheckCircle2, ArrowLeftRight, ChevronRight } from 'lucide-react';
+import { X, SkipForward, ChevronLeft, CheckCircle2, ArrowLeftRight, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -102,6 +102,13 @@ export default function ActiveWorkout() {
     () => activeWorkout?.warmupStatus === 'pending' && (activeWorkout?.warmup?.length ?? 0) > 0
   );
   const [showSwapSheet, setShowSwapSheet] = useState(false);
+  const [expandedWarmupItems, setExpandedWarmupItems] = useState<Set<number>>(new Set());
+  const toggleWarmupItem = (i: number) =>
+    setExpandedWarmupItems(prev => {
+      const next = new Set(prev);
+      next.has(i) ? next.delete(i) : next.add(i);
+      return next;
+    });
 
   const handleSwapExercise = (newExercise: Exercise) => {
     if (!activeWorkout || !currentTurn) return;
@@ -215,27 +222,34 @@ export default function ActiveWorkout() {
             const durationLabel = item.durationSeconds >= 60
               ? `${Math.round(item.durationSeconds / 60)} min`
               : `${item.durationSeconds}s`;
+            const isExpanded = expandedWarmupItems.has(i);
             return (
-              <div key={i} className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4">
-                <div className="flex items-start gap-3">
-                  <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border flex-shrink-0 mt-0.5 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
+              <div key={i} className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
+                {/* Tappable header row */}
+                <button
+                  className="w-full flex items-center gap-3 p-4 text-left active:bg-[#2c2c2e] transition-colors"
+                  onClick={() => toggleWarmupItem(i)}
+                >
+                  <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
                     {item.type}
                   </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-semibold text-white">{item.name}</p>
-                      <span className="text-xs text-[#FF375F] font-semibold ml-2 flex-shrink-0">{durationLabel}</span>
-                    </div>
-                    <ul className="space-y-0.5">
-                      {item.instructions.map((instr, j) => (
-                        <li key={j} className="text-xs text-[#8E8E93] flex gap-1.5">
-                          <span className="text-[#48484A] flex-shrink-0">{j + 1}.</span>
-                          <span>{instr}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
+                  <p className="flex-1 text-sm font-semibold text-white text-left">{item.name}</p>
+                  <span className="text-xs text-[#FF375F] font-semibold flex-shrink-0">{durationLabel}</span>
+                  {isExpanded
+                    ? <ChevronUp className="h-4 w-4 text-[#8E8E93] flex-shrink-0" />
+                    : <ChevronDown className="h-4 w-4 text-[#8E8E93] flex-shrink-0" />}
+                </button>
+                {/* Collapsible instructions */}
+                {isExpanded && (
+                  <ul className="px-4 pb-4 space-y-1 border-t border-[#38383A] pt-3">
+                    {item.instructions.map((instr, j) => (
+                      <li key={j} className="text-xs text-[#8E8E93] flex gap-1.5">
+                        <span className="text-[#48484A] flex-shrink-0">{j + 1}.</span>
+                        <span>{instr}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
             );
           })}
