@@ -117,10 +117,17 @@ export default function Generate() {
   const createWorkoutMutation = useCreateWorkout();
   const { startWorkout, hasActiveWorkout, isPaused } = useActiveWorkout();
 
+  const ALL_MUSCLE_VALUES = MUSCLE_OPTIONS.map((m) => m.value);
+  const isFullBodySelected = ALL_MUSCLE_VALUES.every((m) => targetMuscles.includes(m));
+
   const toggleMuscle = (muscle: MuscleGroup) => {
     setTargetMuscles((prev) =>
       prev.includes(muscle) ? prev.filter((m) => m !== muscle) : [...prev, muscle],
     );
+  };
+
+  const toggleFullBody = () => {
+    setTargetMuscles(isFullBodySelected ? [] : [...ALL_MUSCLE_VALUES]);
   };
 
   const handleGenerate = async (excludeIds?: string[]) => {
@@ -292,6 +299,19 @@ export default function Generate() {
             <span className="text-xs text-[#8E8E93]">Optional</span>
           </div>
           <div className="flex flex-wrap gap-2">
+            {/* Full Body shortcut */}
+            <button
+              onClick={toggleFullBody}
+              className={cn(
+                'flex items-center gap-1.5 py-1.5 px-3 rounded-full text-xs font-medium transition-colors border',
+                isFullBodySelected
+                  ? 'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/40'
+                  : 'bg-[#1c1c1e] text-[#8E8E93] border-[#38383A] hover:bg-[#2c2c2e]',
+              )}
+            >
+              Full Body
+            </button>
+
             {MUSCLE_OPTIONS.map((m) => {
               const isSelected = targetMuscles.includes(m.value);
               return (
