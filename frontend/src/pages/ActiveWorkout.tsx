@@ -413,7 +413,6 @@ export default function ActiveWorkout() {
   async function handleCompleteWorkout() {
     if (!activeWorkout) return;
     const durationMinutes = Math.round(elapsed / 60);
-    const totalVolume = exercises.reduce((acc, e) => acc + calculateVolume(e.sets), 0);
 
     try {
       // Mark completed on the server (versioned) — this is the primary call

@@ -89,7 +89,7 @@ export default function Dashboard() {
                   size="sm"
                   variant="outline"
                   className="flex-1 text-xs"
-                  onClick={() => { pauseWorkout(0, 0); }}
+                  onClick={() => { pauseWorkout(0); }}
                 >
                   Pause
                 </Button>
