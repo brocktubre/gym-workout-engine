@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { authService, friendlyAuthError, type AuthUser } from '@/lib/auth';
+import { api } from '@/lib/api';
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -33,6 +34,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser({ email, displayName: displayName ?? authService.getCurrentDisplayName() ?? undefined });
   };
 
+  /** Fetch this user's profile from the backend and update displayName in state + localStorage.
+   *  Always call after sign-in to ensure we show the correct user's name, not a stale localStorage value. */
+  const syncProfileFromBackend = useCallback(async (email: string) => {
+    try {
+      const settings = await api.getSettings();
+      const dn = (settings as unknown as { displayName?: string }).displayName;
+      if (dn) {
+        localStorage.setItem('gym_display_name', dn);
+        setUser(prev => prev ? { ...prev, displayName: dn } : { email, displayName: dn });
+      }
+    } catch {
+      // Non-fatal — user object already set, just won't have displayName until next load
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const handleSignOut = useCallback(() => {
     clearRefreshTimer();
     authService.signOut();
@@ -65,6 +82,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const email = authService.getCurrentEmail() ?? '';
           setUserFromEmail(email, authService.getCurrentDisplayName() ?? undefined);
           startRefreshTimer();
+          // Sync real displayName from backend in background (fixes stale localStorage on account switch)
+          void syncProfileFromBackend(email);
         } else {
           setUser(null);
         }
@@ -84,13 +103,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     async (email: string, password: string) => {
       try {
         await authService.signIn(email, password);
+        // Set user immediately, then fetch the real profile for this specific account
         setUserFromEmail(email);
         startRefreshTimer();
+        void syncProfileFromBackend(email);
       } catch (err) {
         throw new Error(friendlyAuthError(err));
       }
     },
-    [startRefreshTimer],
+    [startRefreshTimer, syncProfileFromBackend],
   );
 
   const signUp = useCallback(

@@ -145,15 +145,24 @@ export async function updateWorkout(
   return merged;
 }
 
-export async function getWorkoutsInRange(startDate: string, endDate: string): Promise<Workout[]> {
+export async function getWorkoutsInRange(startDate: string, endDate: string, userId?: string): Promise<Workout[]> {
   const start = `WORKOUT#${startDate}`;
   const end = `WORKOUT#${endDate}\xff`;
 
+  const filterParts = ['#pk BETWEEN :start AND :end', 'begins_with(#sk, :skPrefix)'];
+  const attrNames: Record<string, string>  = { '#pk': 'PK', '#sk': 'SK' };
+  const attrValues: Record<string, unknown> = { ':start': start, ':end': end, ':skPrefix': 'WORKOUT#' };
+
+  if (userId) {
+    filterParts.push('userId = :userId');
+    attrValues[':userId'] = userId;
+  }
+
   const result = await client.send(new ScanCommand({
     TableName: TABLE_NAME,
-    FilterExpression: '#pk BETWEEN :start AND :end AND begins_with(#sk, :skPrefix)',
-    ExpressionAttributeNames: { '#pk': 'PK', '#sk': 'SK' },
-    ExpressionAttributeValues: { ':start': start, ':end': end, ':skPrefix': 'WORKOUT#' },
+    FilterExpression: filterParts.join(' AND '),
+    ExpressionAttributeNames: attrNames,
+    ExpressionAttributeValues: attrValues,
   }));
 
   return (result.Items || []).map(item => {
@@ -162,16 +171,16 @@ export async function getWorkoutsInRange(startDate: string, endDate: string): Pr
   }).sort((a, b) => b.date.localeCompare(a.date));
 }
 
-export async function getRecentWorkouts(days: number): Promise<Workout[]> {
+export async function getRecentWorkouts(days: number, userId?: string): Promise<Workout[]> {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - days);
   const startDate = cutoff.toISOString().split('T')[0];
   const endDate = new Date().toISOString().split('T')[0];
-  return getWorkoutsInRange(startDate, endDate);
+  return getWorkoutsInRange(startDate, endDate, userId);
 }
 
-export async function getStats(): Promise<WorkoutStats> {
-  const workouts = await getRecentWorkouts(90);
+export async function getStats(userId?: string): Promise<WorkoutStats> {
+  const workouts = await getRecentWorkouts(90, userId);
   const completed = workouts.filter(w => w.status === 'completed');
 
   let totalVolumeKg = 0;

@@ -113,6 +113,8 @@ export interface Workout {
   lastPausedAt?: string;
   /** Optimistic-locking version; incremented on every server write */
   version?: number;
+  /** Cognito sub of the user who created this workout — used to isolate per-user queries */
+  userId?: string;
 }
 
 export interface UserSettings {

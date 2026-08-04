@@ -42,6 +42,8 @@ function clearTokens() {
   localStorage.removeItem(ID_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(EMAIL_KEY);
+  // Clear user-specific data so it doesn't bleed to the next account
+  localStorage.removeItem('gym_display_name');
 }
 
 export const authService = {

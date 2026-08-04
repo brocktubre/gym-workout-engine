@@ -22,7 +22,7 @@ router.get('/stats', async (req: Request, res: Response) => {
     return;
   }
   try {
-    const stats = await getStats();
+    const stats = await getStats(req.user.sub);
     res.json({ stats });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to load stats', details: err.message });
@@ -40,11 +40,11 @@ router.get('/history', async (req: Request, res: Response) => {
     if (!start || !end) {
       const endDate = new Date().toISOString().split('T')[0];
       const startDate = new Date(Date.now() - 30 * 86_400_000).toISOString().split('T')[0];
-      const workouts = await getWorkoutsInRange(startDate, endDate);
+      const workouts = await getWorkoutsInRange(startDate, endDate, req.user.sub);
       res.json({ workouts, total: workouts.length });
       return;
     }
-    const workouts = await getWorkoutsInRange(start as string, end as string);
+    const workouts = await getWorkoutsInRange(start as string, end as string, req.user.sub);
     res.json({ workouts, total: workouts.length });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to load history', details: err.message });
@@ -55,7 +55,7 @@ router.get('/history', async (req: Request, res: Response) => {
 router.get('/recent', async (req: Request, res: Response) => {
   try {
     const days = parseInt(req.query.days as string) || 14;
-    const workouts = await getRecentWorkouts(days);
+    const workouts = await getRecentWorkouts(days, req.user?.sub);
     res.json({ workouts });
   } catch (err: any) {
     res.status(500).json({ error: 'Failed to load recent workouts' });
@@ -79,6 +79,8 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
       // Preserve warmup fields
       ...(body.warmup ? { warmup: body.warmup } : {}),
       ...(body.warmupStatus ? { warmupStatus: body.warmupStatus } : {}),
+      // Stamp the creating user's sub so history queries can filter by user
+      ...(req.user?.sub ? { userId: req.user.sub } : {}),
     };
     await saveWorkout(workout);
     res.status(201).json({ workout });
