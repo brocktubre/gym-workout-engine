@@ -25,53 +25,6 @@
     ]
   },
   {
-    "id": "ex_incline_barbell_bench_press",
-    "name": "Incline Barbell Bench Press",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "shoulders",
-      "triceps"
-    ],
-    "equipment": "barbell",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Set bench to 30-45 degree incline",
-      "Lie back, grip bar wider than shoulder-width",
-      "Lower bar to upper chest with control",
-      "Press back up to lockout"
-    ],
-    "tips": [
-      "Keep elbows at 45-75 degrees to torso",
-      "Upper chest should make contact, not collarbone",
-      "Squeeze chest hard at the top"
-    ]
-  },
-  {
-    "id": "ex_decline_barbell_bench_press",
-    "name": "Decline Barbell Bench Press",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "triceps"
-    ],
-    "equipment": "barbell",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Set bench to 15-30 degree decline, secure feet",
-      "Grip bar slightly wider than shoulder-width",
-      "Lower bar to lower chest with control",
-      "Press back up powerfully"
-    ],
-    "tips": [
-      "Decline reduces shoulder stress",
-      "Great for lower chest development",
-      "Use a spotter — hard to re-rack alone"
-    ]
-  },
-  {
     "id": "ex_dumbbell_bench_press",
     "name": "Dumbbell Bench Press",
     "primaryMuscle": "chest",
@@ -93,30 +46,6 @@
       "Greater range of motion than barbell",
       "Allow slight natural arch in lower back",
       "Neutral or pronated grip both work"
-    ]
-  },
-  {
-    "id": "ex_incline_dumbbell_press",
-    "name": "Incline Dumbbell Press",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "shoulders",
-      "triceps"
-    ],
-    "equipment": "dumbbell",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set bench to 30-45 degrees",
-      "Hold dumbbells at shoulder level, elbows out",
-      "Press up and slightly together",
-      "Lower slowly to full stretch"
-    ],
-    "tips": [
-      "Targets upper chest and front delts",
-      "Don't let dumbbells drift too wide",
-      "Squeeze at top for peak contraction"
     ]
   },
   {
@@ -251,30 +180,6 @@
       "Targets upper chest effectively",
       "Lean slightly forward for better range",
       "Use light-moderate weight for form"
-    ]
-  },
-  {
-    "id": "ex_incline_push_up",
-    "name": "Incline Push-Up",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "triceps",
-      "shoulders"
-    ],
-    "equipment": "bodyweight",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Place hands on elevated surface (bench, box)",
-      "Body in straight line from head to heels",
-      "Lower chest toward surface, elbows at 45 degrees",
-      "Push back to start"
-    ],
-    "tips": [
-      "Easier than standard push-up, good for beginners",
-      "Higher surface = easier variation",
-      "Progress to flat then decline push-ups"
     ]
   },
   {
@@ -465,31 +370,6 @@
       "Underhand grip activates biceps more than pull-up",
       "Supinate wrists at top for peak bicep contraction",
       "Easier than pull-up for most beginners"
-    ]
-  },
-  {
-    "id": "ex_t_bar_row",
-    "name": "T-Bar Row",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "biceps",
-      "shoulders"
-    ],
-    "equipment": "barbell",
-    "category": "compound",
-    "movementType": "pull",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Straddle bar, hinge forward to 45 degrees",
-      "Grip V-handle attachment under bar",
-      "Pull bar to chest, leading with elbows",
-      "Squeeze mid-back at top",
-      "Lower with control"
-    ],
-    "tips": [
-      "Chest-supported version reduces lower back stress",
-      "Great for mid-back thickness",
-      "Keep hips down — don't stand upright"
     ]
   },
   {
@@ -1034,27 +914,6 @@
     ]
   },
   {
-    "id": "ex_incline_dumbbell_curl",
-    "name": "Incline Dumbbell Curl",
-    "primaryMuscle": "biceps",
-    "secondaryMuscles": [],
-    "equipment": "dumbbell",
-    "category": "isolation",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Sit on incline bench (45-60 degrees), dumbbells hanging",
-      "Curl dumbbells up from fully stretched position",
-      "Elbows stay behind body throughout",
-      "Lower to full hang"
-    ],
-    "tips": [
-      "Incline creates maximum stretch on long head of bicep",
-      "Excellent for peaking the bicep",
-      "Don't let elbows come forward — defeats the purpose"
-    ]
-  },
-  {
     "id": "ex_concentration_curl",
     "name": "Concentration Curl",
     "primaryMuscle": "biceps",
@@ -1136,27 +995,6 @@
       "Bench eliminates cheat — pure isolation",
       "Don't lock out completely — keep tension on bicep",
       "Excellent for building bicep peak"
-    ]
-  },
-  {
-    "id": "ex_spider_curl",
-    "name": "Spider Curl",
-    "primaryMuscle": "biceps",
-    "secondaryMuscles": [],
-    "equipment": "dumbbell",
-    "category": "isolation",
-    "movementType": "pull",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Lie face down on incline bench, arms hanging straight down",
-      "Curl dumbbells up to chin level",
-      "Elbows remain perpendicular to floor",
-      "Lower all the way to full extension"
-    ],
-    "tips": [
-      "Elbows positioned in front of body = maximum short head activation",
-      "Great for bicep thickness and peak",
-      "Keep chest on bench throughout"
     ]
   },
   {
@@ -2701,31 +2539,6 @@
       "Targets glute medius and minimus",
       "Foot position affects which fibers are targeted",
       "Great superset with hip adduction machine"
-    ]
-  },
-  {
-    "id": "ex_trap_bar_deadlift",
-    "name": "Trap Bar Deadlift",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "quads",
-      "glutes",
-      "hamstrings"
-    ],
-    "equipment": "barbell",
-    "category": "compound",
-    "movementType": "hinge",
-    "difficulty": "beginner",
-    "instructions": [
-      "Step inside trap bar, feet shoulder-width",
-      "Hinge and grip handles, chest up",
-      "Drive through floor, bar rises along legs",
-      "Stand tall at top, lower with control"
-    ],
-    "tips": [
-      "More quad involvement than conventional deadlift",
-      "Easier to learn than conventional — great for beginners",
-      "Neutral grip reduces wrist strain"
     ]
   },
   {
@@ -4708,30 +4521,6 @@
       "The lighter the weight, the longer you can maintain form",
       "Keep feet elevated to maximise core engagement",
       "Control the rotation — do not just swing arms"
-    ]
-  },
-  {
-    "id": "ex_incline_row",
-    "name": "Incline Row",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "biceps",
-      "shoulders"
-    ],
-    "equipment": "dumbbell",
-    "category": "compound",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set bench to 30-45 degree incline, lie chest down",
-      "Hold dumbbells hanging toward floor",
-      "Row both dumbbells up by driving elbows toward ceiling",
-      "Squeeze shoulder blades at top, lower with control"
-    ],
-    "tips": [
-      "Chest stays on the bench throughout for chest support and strict form",
-      "Elbows should travel back, not flare wide",
-      "Great chest-supported row variation that removes lower back stress"
     ]
   },
   {
