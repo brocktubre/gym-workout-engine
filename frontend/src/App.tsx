@@ -5,11 +5,18 @@ import { api } from '@/lib/api';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from '@/components/ui/toaster';
 import { AppLayout } from '@/components/layout/AppLayout';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import Dashboard from '@/pages/Dashboard';
 import Generate from '@/pages/Generate';
 import ActiveWorkout from '@/pages/ActiveWorkout';
 import History from '@/pages/History';
 import Settings from '@/pages/Settings';
+import Login from '@/pages/auth/Login';
+import Register from '@/pages/auth/Register';
+import ForgotPassword from '@/pages/auth/ForgotPassword';
+import PrivacyPolicy from '@/pages/auth/PrivacyPolicy';
+import TermsOfService from '@/pages/auth/TermsOfService';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -50,19 +57,43 @@ function WorkoutExpiryCheck() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <WorkoutExpiryCheck />
       <HashRouter>
-        <Routes>
-          <Route element={<AppLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="/generate" element={<Generate />} />
-            <Route path="/active" element={<ActiveWorkout />} />
-            <Route path="/history" element={<History />} />
-            <Route path="/settings" element={<Settings />} />
-            {/* Catch-all: redirect to home */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Route>
-        </Routes>
+        <AuthProvider>
+          <WorkoutExpiryCheck />
+          <Routes>
+            {/* Standalone auth routes (no bottom nav) */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+
+            {/* App shell routes */}
+            <Route element={<AppLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="/generate" element={<Generate />} />
+              <Route
+                path="/active"
+                element={
+                  <ProtectedRoute>
+                    <ActiveWorkout />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <History />
+                  </ProtectedRoute>
+                }
+              />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsOfService />} />
+              {/* Catch-all: redirect to home */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Route>
+          </Routes>
+        </AuthProvider>
       </HashRouter>
       <Toaster />
     </QueryClientProvider>

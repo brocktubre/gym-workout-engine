@@ -7,6 +7,7 @@ import settingsRouter from './routes/settings';
 import engineRouter from './routes/engine';
 import coachingRouter from './routes/coaching';
 import { errorHandler } from './middleware/errorHandler';
+import { requireAuth, optionalAuth } from './middleware/auth';
 
 const app = express();
 
@@ -29,11 +30,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Public: exercises, workout generation, coaching notes
 app.use('/api/exercises', exercisesRouter);
-app.use('/api/workouts', workoutsRouter);
-app.use('/api/settings', settingsRouter);
 app.use('/api/engine', engineRouter);
 app.use('/api/coaching', coachingRouter);
+
+// Settings: GET is public (returns defaults for anonymous), PUT requires auth.
+// Attach optionalAuth so GET can personalize responses when a token is present.
+app.use('/api/settings', optionalAuth, settingsRouter);
+
+// Protected: workouts routes require a valid Cognito JWT
+app.use('/api/workouts', requireAuth, workoutsRouter);
 
 app.use(errorHandler as express.ErrorRequestHandler);
 

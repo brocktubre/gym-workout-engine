@@ -1,0 +1,100 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: |
+  Gym Workout Engine — Cognito User Pool for authentication.
+
+  NOTE: This stack was originally provisioned via the AWS CLI. The template
+  below documents the deployed configuration for IaC completeness. If you
+  need to redeploy, first import the existing pool with:
+
+    aws cloudformation create-change-set \
+      --stack-name gym-workout-engine-auth \
+      --change-set-type IMPORT \
+      --resources-to-import '[{"ResourceType":"AWS::Cognito::UserPool","LogicalResourceId":"UserPool","ResourceIdentifier":{"UserPoolId":"us-east-1_WucFi2sNK"}}]' \
+      --template-body file://06-auth.yaml
+
+  Deployed User Pool ID:  us-east-1_WucFi2sNK
+  Deployed App Client ID: 3i724l9g6bb4qffde95n7u5sgm
+  Region:                 us-east-1
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: gym-workout-engine
+  Stage:
+    Type: String
+    Default: prod
+
+Resources:
+  # ---------------------------------------------------------------------------
+  # User pool — email as the username, auto-confirms new sign-ups so users
+  # can start training immediately after registering. Passwords must be at
+  # least 8 characters with upper, lower, and number.
+  # ---------------------------------------------------------------------------
+  UserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolName: !Sub '${ProjectName}-${Stage}-users'
+      UsernameAttributes:
+        - email
+      AutoVerifiedAttributes:
+        - email
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 8
+          RequireLowercase: true
+          RequireUppercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+      Schema:
+        - Name: email
+          AttributeDataType: String
+          Mutable: true
+          Required: true
+      # Auto-confirm sign-ups (email verification handled out-of-band by SES)
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+      MfaConfiguration: 'OFF'
+      AccountRecoverySetting:
+        RecoveryMechanisms:
+          - Name: verified_email
+            Priority: 1
+
+  # ---------------------------------------------------------------------------
+  # App client — used by the SPA. No client secret (public client).
+  # Enables USER_PASSWORD_AUTH for amazon-cognito-identity-js.
+  # ---------------------------------------------------------------------------
+  UserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref UserPool
+      ClientName: !Sub '${ProjectName}-${Stage}-web'
+      GenerateSecret: false
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+      RefreshTokenValidity: 30      # days
+      AccessTokenValidity: 60       # minutes
+      IdTokenValidity: 60           # minutes
+      TokenValidityUnits:
+        AccessToken: minutes
+        IdToken: minutes
+        RefreshToken: days
+      PreventUserExistenceErrors: ENABLED
+
+Outputs:
+  UserPoolId:
+    Description: Cognito User Pool ID
+    Value: !Ref UserPool
+    Export:
+      Name: !Sub '${ProjectName}-${Stage}-user-pool-id'
+  UserPoolClientId:
+    Description: Cognito User Pool App Client ID
+    Value: !Ref UserPoolClient
+    Export:
+      Name: !Sub '${ProjectName}-${Stage}-user-pool-client-id'
+  UserPoolArn:
+    Description: Cognito User Pool ARN
+    Value: !GetAtt UserPool.Arn
+    Export:
+      Name: !Sub '${ProjectName}-${Stage}-user-pool-arn'

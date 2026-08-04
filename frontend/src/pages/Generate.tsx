@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, RefreshCw, Play, Clock, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { Zap, RefreshCw, Play, Clock, ChevronRight, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { useAuth } from '@/contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
@@ -72,6 +74,8 @@ export default function Generate() {
   const [allowSupersets, setAllowSupersets] = useState(settings?.allowSupersets ?? true);
   const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);
   const [swapTarget, setSwapTarget] = useState<WorkoutExercise | null>(null);
+  const [signInPromptOpen, setSignInPromptOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   // Sync goal + toggles from settings once they load (only if user hasn't
   // already changed them and no AI suggestion was provided)
@@ -157,6 +161,12 @@ export default function Generate() {
 
   const handleStartWorkout = async () => {
     if (!generatedWorkout) return;
+
+    // Anonymous users must sign in before starting a workout
+    if (!isAuthenticated) {
+      setSignInPromptOpen(true);
+      return;
+    }
 
     try {
       const now = new Date().toISOString();
@@ -500,6 +510,50 @@ export default function Generate() {
           onClose={() => setSwapTarget(null)}
         />
       )}
+
+      {/* Sign-in prompt for anonymous users */}
+      <Dialog open={signInPromptOpen} onOpenChange={setSignInPromptOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Sign in to Start Training</DialogTitle>
+            <DialogDescription>Create a free account to:</DialogDescription>
+          </DialogHeader>
+          <ul className="space-y-2 py-1">
+            {[
+              'Start workouts',
+              'Track your progress',
+              'Save workout history',
+              'Sync across devices',
+            ].map((benefit) => (
+              <li key={benefit} className="flex items-center gap-2.5 text-sm text-white">
+                <Check className="h-4 w-4 text-[#30D158] flex-shrink-0" />
+                <span>{benefit}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="flex gap-3 pt-2">
+            <Button
+              variant="outline"
+              className="flex-1"
+              onClick={() => {
+                setSignInPromptOpen(false);
+                navigate('/login', { state: { returnUrl: '/generate' } });
+              }}
+            >
+              Sign In
+            </Button>
+            <Button
+              className="flex-1"
+              onClick={() => {
+                setSignInPromptOpen(false);
+                navigate('/register');
+              }}
+            >
+              Create Account
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -1,6 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, FormEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Save, Target, BarChart2, Clock, RefreshCw } from 'lucide-react';
+import { Save, Target, BarChart2, Clock, RefreshCw, User, LogOut, KeyRound, ChevronRight } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Input } from '@/components/ui/input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
@@ -95,11 +98,46 @@ function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }
 }
 
 export default function Settings() {
+  const navigate = useNavigate();
   const { data: serverSettings, isLoading } = useSettings();
   const updateMutation = useUpdateSettings();
+  const { user, isAuthenticated, signOut, changePassword } = useAuth();
 
   const [form, setForm] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isDirty, setIsDirty] = useState(false);
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [displayName, setDisplayName] = useState('');
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+
+  const handleChangePassword = async (e: FormEvent) => {
+    e.preventDefault();
+    setPasswordError(null);
+    if (newPassword !== confirmNewPassword) {
+      setPasswordError('New passwords do not match');
+      return;
+    }
+    if (newPassword.length < 8) {
+      setPasswordError('New password must be at least 8 characters');
+      return;
+    }
+    setPasswordLoading(true);
+    try {
+      await changePassword(oldPassword, newPassword);
+      setOldPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
+      setShowChangePassword(false);
+      toast({ title: 'Password updated', variant: 'success' });
+    } catch (err) {
+      setPasswordError(err instanceof Error ? err.message : 'Change failed');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
 
   useEffect(() => {
     if (serverSettings) {
@@ -109,9 +147,18 @@ export default function Settings() {
           ? serverSettings.availableEquipment
           : DEFAULT_SETTINGS.availableEquipment,
       });
+      const rawDisplayName = (serverSettings as unknown as { displayName?: string }).displayName;
+      setDisplayName(rawDisplayName ?? '');
       setIsDirty(false);
     }
   }, [serverSettings]);
+
+  useEffect(() => {
+    // Default displayName to email prefix when user first signs in
+    if (isAuthenticated && user?.email && !displayName) {
+      setDisplayName(user.email.split('@')[0] ?? '');
+    }
+  }, [isAuthenticated, user, displayName]);
 
   function update<K extends keyof UserSettings>(key: K, value: UserSettings[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -127,7 +174,10 @@ export default function Settings() {
   const handleSave = async () => {
     try {
       // Strip any undefined values before sending
-      const payload = JSON.parse(JSON.stringify(form)) as UserSettings;
+      const payload = JSON.parse(JSON.stringify(form)) as UserSettings & { displayName?: string };
+      if (isAuthenticated && displayName.trim()) {
+        payload.displayName = displayName.trim();
+      }
       await updateMutation.mutateAsync(payload);
       setIsDirty(false);
       toast({ title: 'Settings saved!', variant: 'success' });
@@ -175,6 +225,140 @@ export default function Settings() {
       />
 
       <div className="px-4 space-y-6 pb-8">
+        {/* Account */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <SectionHeader icon={<User className="h-full w-full" />} title="Account" />
+          {isAuthenticated && user ? (
+            <div className="space-y-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                  Display Name
+                </label>
+                <Input
+                  placeholder="Your name"
+                  value={displayName}
+                  onChange={(e) => {
+                    setDisplayName(e.target.value);
+                    setIsDirty(true);
+                  }}
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                  Email
+                </label>
+                <div className="text-sm text-white bg-[#2c2c2e] border border-[#38383A] rounded-xl px-3 py-2.5">
+                  {user.email}
+                </div>
+              </div>
+
+              {!showChangePassword ? (
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => setShowChangePassword(true)}
+                  >
+                    <KeyRound className="h-4 w-4 mr-1.5" />
+                    Change Password
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    className="flex-1"
+                    onClick={signOut}
+                  >
+                    <LogOut className="h-4 w-4 mr-1.5" />
+                    Sign Out
+                  </Button>
+                </div>
+              ) : (
+                <form onSubmit={handleChangePassword} className="space-y-3 pt-1">
+                  <Input
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder="Current password"
+                    value={oldPassword}
+                    onChange={(e) => setOldPassword(e.target.value)}
+                    required
+                  />
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    placeholder="New password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                  />
+                  <Input
+                    type="password"
+                    autoComplete="new-password"
+                    placeholder="Confirm new password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    required
+                  />
+                  {passwordError && (
+                    <div className="text-sm text-red-400 bg-red-600/10 border border-red-600/30 rounded-xl px-3 py-2">
+                      {passwordError}
+                    </div>
+                  )}
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => {
+                        setShowChangePassword(false);
+                        setPasswordError(null);
+                        setOldPassword('');
+                        setNewPassword('');
+                        setConfirmNewPassword('');
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button type="submit" size="sm" className="flex-1" disabled={passwordLoading}>
+                      {passwordLoading ? (
+                        <RefreshCw className="h-4 w-4 mr-1.5 animate-spin" />
+                      ) : (
+                        <Save className="h-4 w-4 mr-1.5" />
+                      )}
+                      Save
+                    </Button>
+                  </div>
+                </form>
+              )}
+            </div>
+          ) : (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="lg"
+                className="flex-1"
+                onClick={() => navigate('/login')}
+              >
+                Sign In
+              </Button>
+              <Button
+                size="lg"
+                className="flex-1"
+                onClick={() => navigate('/register')}
+              >
+                Create Account
+              </Button>
+            </div>
+          )}
+        </motion.section>
+
+        <Separator className="bg-[#38383A]" />
+
         {/* Equipment */}
         <motion.section
           initial={{ opacity: 0, y: 16 }}
@@ -470,6 +654,30 @@ export default function Settings() {
             )}
           </Button>
         </motion.div>
+
+        {/* Legal + version footer */}
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="pt-4 space-y-1"
+        >
+          <button
+            onClick={() => navigate('/privacy')}
+            className="w-full flex items-center justify-between py-3 px-4 bg-[#1c1c1e] rounded-2xl border border-[#38383A] text-left"
+          >
+            <span className="text-sm text-white">Privacy Policy</span>
+            <ChevronRight className="h-4 w-4 text-[#8E8E93]" />
+          </button>
+          <button
+            onClick={() => navigate('/terms')}
+            className="w-full flex items-center justify-between py-3 px-4 bg-[#1c1c1e] rounded-2xl border border-[#38383A] text-left"
+          >
+            <span className="text-sm text-white">Terms of Service</span>
+            <ChevronRight className="h-4 w-4 text-[#8E8E93]" />
+          </button>
+          <p className="text-center text-xs text-[#636366] pt-3">App Version: 1.0.0</p>
+        </motion.section>
       </div>
     </div>
   );
