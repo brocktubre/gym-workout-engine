@@ -92,16 +92,56 @@ const WARMUP_STRETCHES: Partial<Record<MuscleGroup, WarmupItem[]>> = {
   ],
 };
 
-// Cardio warmup options mapped to available equipment
+// ---------------------------------------------------------------------------
+// Cardio interval options
+// ---------------------------------------------------------------------------
 const CARDIO_WARMUP_OPTIONS = [
-  { equipment: 'echo-bike' as const, name: 'Echo Bike Warmup', instructions: ['Set resistance to light', 'Ride at conversational pace', 'Build intensity gradually in final 2 min'] },
-  { equipment: 'rower'     as const, name: 'Row Erg Warmup',   instructions: ['Set damper to 3-5', 'Row at steady 70% effort', 'Focus on smooth catch and drive'] },
-  { equipment: 'ski-erg'   as const, name: 'SkiErg Warmup',    instructions: ['Easy pull rhythm', 'Focus on hip hinge and arm extension', 'Build pace in final minute'] },
-  { equipment: 'bodyweight'as const, name: 'Dynamic Warmup',   instructions: ['Jumping jacks 30s', 'High knees 30s', 'Arm circles 20s each direction', 'Repeat x2'] },
+  { equipment: 'echo-bike' as const, name: 'Echo Bike',   shortName: 'Echo Bike',  instructions: ['Set resistance to light', 'Ride at conversational pace', 'Build intensity slightly each round'] },
+  { equipment: 'rower'     as const, name: 'Row Erg',     shortName: 'Row Erg',    instructions: ['Set damper to 3-5', 'Row at steady 70% effort', 'Focus on smooth catch and drive'] },
+  { equipment: 'ski-erg'   as const, name: 'SkiErg',      shortName: 'SkiErg',     instructions: ['Easy pull rhythm', 'Focus on hip hinge and arm extension', 'Build pace each round'] },
+  { equipment: 'bodyweight'as const, name: 'Dynamic Cardio', shortName: 'Cardio', instructions: ['Jumping jacks 30s', 'High knees 30s', 'Arm circles 20s each direction'] },
 ];
 
 // ---------------------------------------------------------------------------
-// Build warmup phase
+// Hip-circle and resistance-band activation circuits
+// ---------------------------------------------------------------------------
+const HIP_CIRCLE_ACTIVATIONS: WarmupItem[] = [
+  { name: 'Hip Circle Lateral Band Walk', type: 'activation', durationSeconds: 40, targetMuscles: ['glutes'],
+    equipment: 'hip-circle-band', instructions: ['Band above knees, sit into mini-squat', 'Step laterally 10 steps each direction', 'Keep constant tension against band', 'Stay low throughout'] },
+  { name: 'Hip Circle Monster Walk', type: 'activation', durationSeconds: 40, targetMuscles: ['glutes'],
+    equipment: 'hip-circle-band', instructions: ['Band above knees, slight squat', 'Step forward diagonally outward', 'Walk 10 steps forward, 10 back', 'Maintain knee-out pressure throughout'] },
+  { name: 'Hip Circle Fire Hydrant', type: 'activation', durationSeconds: 40, targetMuscles: ['glutes'],
+    equipment: 'hip-circle-band', instructions: ['All fours, band above knees', 'Raise knee out to side like a fire hydrant', '12-15 reps each side', 'Squeeze glute hard at the top'] },
+  { name: 'Hip Circle Squat Activation', type: 'activation', durationSeconds: 45, targetMuscles: ['glutes', 'quads'],
+    equipment: 'hip-circle-band', instructions: ['Band above knees, feet shoulder-width', 'Push knees out against band throughout', '15 bodyweight squats focusing on glute engagement', 'Pause 1s at bottom of each rep'] },
+  { name: 'Hip Circle Glute Bridge', type: 'activation', durationSeconds: 40, targetMuscles: ['glutes', 'hamstrings'],
+    equipment: 'hip-circle-band', instructions: ['Lie on back, band above knees, feet flat', 'Push knees slightly apart against band', 'Drive hips up squeezing glutes hard', '12-15 reps with 2s hold at top'] },
+  { name: 'Hip Circle Standing Hip Abduction', type: 'activation', durationSeconds: 40, targetMuscles: ['glutes'],
+    equipment: 'hip-circle-band', instructions: ['Band above knees, stand on one leg', 'Slowly raise working leg out to side against band', '12 reps each side', 'Keep standing leg slightly bent'] },
+];
+
+const RESISTANCE_BAND_ACTIVATIONS: WarmupItem[] = [
+  { name: 'Band Pull-Apart', type: 'activation', durationSeconds: 35, targetMuscles: ['shoulders', 'back'],
+    equipment: 'resistance-band', instructions: ['Hold band shoulder-width, arms extended in front', 'Pull band apart until arms straight out to sides', '15-20 reps', 'Pinch shoulder blades at end range'] },
+  { name: 'Banded Good Morning', type: 'activation', durationSeconds: 40, targetMuscles: ['hamstrings', 'back'],
+    equipment: 'resistance-band', instructions: ['Stand on band, loop over shoulders or neck', 'Hinge forward at hips keeping back neutral', '12-15 slow reps', 'Feel hamstring stretch at bottom'] },
+  { name: 'Banded Hip Hinge Activation', type: 'activation', durationSeconds: 35, targetMuscles: ['glutes', 'hamstrings'],
+    equipment: 'resistance-band', instructions: ['Band around hips anchored behind', 'Drive hips back against band tension', '12 reps focusing on glute engagement', 'Full hip extension at the top'] },
+  { name: 'Lateral Band Walk', type: 'activation', durationSeconds: 35, targetMuscles: ['glutes'],
+    equipment: 'resistance-band', instructions: ['Band above knees, slight squat position', 'Step side to side 10-12 steps each way', 'Keep toes forward', 'Maintain band tension throughout'] },
+];
+
+const BODYWEIGHT_ACTIVATIONS: WarmupItem[] = [
+  { name: 'Glute Bridge Activation', type: 'activation', durationSeconds: 35, targetMuscles: ['glutes'],
+    equipment: 'bodyweight', instructions: ['Lie on back, feet flat', 'Drive hips up squeezing glutes hard', '15 reps with 2s hold at top', 'Full hip extension each rep'] },
+  { name: 'Fire Hydrant', type: 'activation', durationSeconds: 35, targetMuscles: ['glutes'],
+    equipment: 'bodyweight', instructions: ['All fours, raise knee out to side', '15 reps each side', 'Squeeze glute at top', 'Keep hips square'] },
+];
+
+// ---------------------------------------------------------------------------
+// Build warmup phase — 3-round circuit + targeted static stretches
+// Structure: Opening cardio → 3 rounds of (cardio interval + activation + mobility) → static stretches
+// Target: ~15-20 minutes
 // ---------------------------------------------------------------------------
 function buildWarmup(
   targetMuscles: MuscleGroup[],
@@ -109,32 +149,112 @@ function buildWarmup(
   durationMinutes: number,
 ): WarmupItem[] {
   const warmup: WarmupItem[] = [];
-  let budgetSeconds = durationMinutes * 60;
 
-  // 1. Cardio machine (7 min minimum, up to 8 min)
-  const cardioDuration = Math.min(480, Math.max(420, Math.floor(budgetSeconds * 0.65)));
+  // Pick the best cardio machine available
   const cardioOption = CARDIO_WARMUP_OPTIONS.find(o => availableEquipment.includes(o.equipment))
     ?? CARDIO_WARMUP_OPTIONS[CARDIO_WARMUP_OPTIONS.length - 1];
 
+  // Pick activation exercises based on available equipment
+  const activationPool: WarmupItem[] =
+    availableEquipment.includes('hip-circle-band')  ? HIP_CIRCLE_ACTIVATIONS
+    : availableEquipment.includes('resistance-band') ? RESISTANCE_BAND_ACTIVATIONS
+    : BODYWEIGHT_ACTIVATIONS;
+
+  // Shuffle pool so each workout gets variety
+  const shuffled = [...activationPool].sort(() => Math.random() - 0.5);
+
+  // ── Phase 1: Opening cardio (5 min) ─────────────────────────────────────
   warmup.push({
-    name: cardioOption.name,
+    name: `${cardioOption.name} Warmup — 5 min`,
     type: 'cardio',
-    durationSeconds: cardioDuration,
+    durationSeconds: 300,
     targetMuscles: ['cardio' as MuscleGroup],
     equipment: cardioOption.equipment,
-    instructions: cardioOption.instructions,
+    instructions: [
+      ...cardioOption.instructions,
+      'Start easy for first 2 min, build to moderate pace',
+    ],
   });
-  budgetSeconds -= cardioDuration;
 
-  // 2. Mobility/stretches for target muscles (remaining time, max 3 items)
+  // ── Phase 2: 3-round circuit ─────────────────────────────────────────────
+  // Build a pool of mobility/stretches for circuit rounds
+  const mobilityCircuit: WarmupItem[] = [
+    { name: 'Leg Swing (Forward/Back)', type: 'mobility', durationSeconds: 35, targetMuscles: ['quads', 'hamstrings'],
+      equipment: 'bodyweight', instructions: ['Hold wall for balance', 'Swing one leg forward and back 12 times', 'Gradually increase range', 'Switch legs'] },
+    { name: 'Hip Circle Rotation', type: 'mobility', durationSeconds: 35, targetMuscles: ['glutes', 'core'],
+      equipment: 'bodyweight', instructions: ['Stand feet shoulder-width', 'Draw large circles with hips — 10 clockwise, 10 counter-clockwise', 'Gradually increase size of circles', 'Keep feet flat on floor'] },
+    { name: 'World\'s Greatest Stretch', type: 'mobility', durationSeconds: 45, targetMuscles: ['core', 'quads', 'back'],
+      equipment: 'bodyweight', instructions: ['Lunge forward, plant same-side hand on floor', 'Open opposite arm toward ceiling, rotating thorax', 'Hold 2s, return and switch sides', '5 reps each side'] },
+    { name: 'Inchworm', type: 'mobility', durationSeconds: 40, targetMuscles: ['hamstrings', 'back'],
+      equipment: 'bodyweight', instructions: ['Hinge forward and walk hands out to plank position', 'Walk feet back to hands', '5 slow reps', 'Feel the hamstring stretch each time'] },
+    { name: 'Lateral Leg Swing', type: 'mobility', durationSeconds: 35, targetMuscles: ['glutes', 'hamstrings'],
+      equipment: 'bodyweight', instructions: ['Hold wall, swing leg side to side across body', '12 swings each leg', 'Gradually increase range of motion', 'Keep core stable'] },
+    { name: 'Hip 90/90 Transition', type: 'mobility', durationSeconds: 40, targetMuscles: ['glutes', 'hamstrings'],
+      equipment: 'bodyweight', instructions: ['Sit in 90/90 position on floor', 'Rotate hips to switch 90/90 side to side', '8-10 transitions each direction', 'Work through any hip tightness'] },
+  ].sort(() => Math.random() - 0.5);
+
+  const NUM_ROUNDS = 3;
+  for (let r = 0; r < NUM_ROUNDS; r++) {
+    const roundLabel = `Round ${r + 1} of ${NUM_ROUNDS}`;
+
+    // 60s cardio interval
+    warmup.push({
+      name: `${cardioOption.shortName} Interval — ${roundLabel}`,
+      type: 'cardio',
+      durationSeconds: 60,
+      targetMuscles: ['cardio' as MuscleGroup],
+      equipment: cardioOption.equipment,
+      instructions: [
+        r === 0 ? 'Moderate pace — get your heart rate up' :
+        r === 1 ? 'Push slightly harder than round 1' :
+                  'Give it 85-90% effort for this final interval',
+        'Breathe rhythmically',
+        cardioOption.instructions[1] ?? '',
+      ].filter(Boolean),
+    });
+
+    // Banded / bodyweight activation
+    const activation = shuffled[r % shuffled.length];
+    if (activation) {
+      warmup.push({ ...activation });
+    }
+
+    // Dynamic mobility
+    const mobility = mobilityCircuit[r % mobilityCircuit.length];
+    if (mobility) {
+      warmup.push({ ...mobility });
+    }
+  }
+
+  // ── Phase 3: Targeted static stretches (5-7 based on muscle groups) ───────
   const stretched = new Set<MuscleGroup>();
-  for (const muscle of targetMuscles) {
-    if (budgetSeconds < 20 || stretched.size >= 4) break;
+
+  // Always add some universal lower-body/hip stretches
+  const universalStretches: WarmupItem[] = [
+    { name: 'Hip Flexor Lunge Stretch', type: 'stretch', durationSeconds: 40, targetMuscles: ['quads', 'glutes'],
+      equipment: 'bodyweight', instructions: ['Step into a deep lunge', 'Lower back knee to floor, drive hips forward', 'Hold 20s each side', 'Keep torso upright'] },
+    { name: 'Hip 90/90 Static Stretch', type: 'stretch', durationSeconds: 45, targetMuscles: ['glutes'],
+      equipment: 'bodyweight', instructions: ['Sit with both legs at 90-degree angles on floor', 'Lean forward slowly over front leg', 'Hold 20s each side', 'Breathe into the stretch'] },
+    { name: 'Standing Figure-4 Stretch', type: 'stretch', durationSeconds: 40, targetMuscles: ['glutes'],
+      equipment: 'bodyweight', instructions: ['Stand, cross one ankle over opposite knee', 'Sit back into single-leg squat until stretch felt in glute', 'Hold 20s each side', 'Use wall if needed for balance'] },
+  ];
+
+  // Add up to 2 universal stretches
+  for (let i = 0; i < Math.min(2, universalStretches.length); i++) {
+    warmup.push(universalStretches[i]);
+  }
+
+  // Add muscle-specific stretches for target muscles (up to 4 more)
+  const allMuscles = [...targetMuscles];
+  for (const muscle of allMuscles) {
+    if (stretched.size >= 4) break;
     const options = WARMUP_STRETCHES[muscle];
     if (!options?.length) continue;
-    const item = options[0];
-    warmup.push(item);
-    budgetSeconds -= item.durationSeconds;
+    // Pick both options if available (variety)
+    for (const item of options) {
+      if (stretched.size >= 4) break;
+      warmup.push(item);
+    }
     stretched.add(muscle);
   }
 
@@ -228,7 +348,7 @@ export async function generateWorkout(context: {
   // Note: allowSupersets is handled by Claude's enhancement step (claudeService.ts)
 
   // Warmup duration: 5 min default, 10 if workout ≥ 60 min
-  const warmupMinutes = includeWarmup ? 12 : 0; // Always 10-12 min: ~7 min cardio + ~3 min stretching
+  const warmupMinutes = includeWarmup ? 20 : 0; // 3-round circuit + stretches ≈ 15-20 min
 
   // Warmup is ADDITIONAL time — 1h workout = 10min warmup + 1h of exercises
   let budget = targetMinutes;

@@ -1952,6 +1952,182 @@
     ]
   },
   {
+    "id": "ex_hip_circle_squat",
+    "name": "Hip Circle Squat",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": ["quads", "core"],
+    "equipment": "hip-circle-band",
+    "category": "compound",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Place hip circle band just above knees",
+      "Stand feet shoulder-width, toes slightly out",
+      "Push knees out against band as you squat down",
+      "Descend until thighs parallel to floor, keep knees tracking toes",
+      "Drive through heels to stand, maintain outward knee pressure"
+    ],
+    "tips": [
+      "The band cues glute activation and prevents knee cave",
+      "Keep constant tension against the band throughout",
+      "Great pre-squat glute activation drill"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_lateral_walk",
+    "name": "Hip Circle Lateral Band Walk",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Place band just above knees, feet shoulder-width",
+      "Sit into a slight squat, hands on hips",
+      "Step laterally 10-15 steps to the right maintaining tension",
+      "Return 10-15 steps to the left",
+      "Keep toes forward and core braced throughout"
+    ],
+    "tips": [
+      "Never let the band go slack — maintain constant glute tension",
+      "Stay low in the mini-squat the entire time",
+      "Great for activating the glute medius before lower body work"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_monster_walk",
+    "name": "Hip Circle Monster Walk",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": ["quads"],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Band above knees, slight squat position",
+      "Step forward and diagonally outward with right foot",
+      "Follow with left foot, stepping outward to maintain tension",
+      "Walk forward 10 steps, then backward 10 steps",
+      "Keep hips level and core engaged throughout"
+    ],
+    "tips": [
+      "Move like a monster — exaggerated outward stride",
+      "Activates glute med and hip abductors simultaneously",
+      "Excellent pre-leg day warmup"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_fire_hydrant",
+    "name": "Hip Circle Fire Hydrant",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Band just above knees, start on all fours",
+      "Keeping knee bent, raise one leg out to side like a fire hydrant",
+      "Lift until thigh is parallel to floor, feeling glute contract",
+      "Lower slowly with control and repeat",
+      "Complete all reps on one side before switching"
+    ],
+    "tips": [
+      "Band adds external resistance and forces glute engagement",
+      "Keep hips square — don't let them tilt or rotate",
+      "Squeeze glute hard at top of each rep"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_glute_bridge",
+    "name": "Hip Circle Glute Bridge",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": ["hamstrings", "core"],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "hinge",
+    "difficulty": "beginner",
+    "instructions": [
+      "Band above knees, lie on back with feet flat",
+      "Push knees slightly apart against band",
+      "Drive hips up by squeezing glutes hard",
+      "Hold at top 2-3 seconds, maintaining outward knee pressure",
+      "Lower slowly and repeat"
+    ],
+    "tips": [
+      "The band dramatically increases glute activation vs. plain bridge",
+      "Don't let knees cave in — push against band throughout",
+      "Full hip extension at top for maximum glute engagement"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_standing_abduction",
+    "name": "Hip Circle Standing Hip Abduction",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Band above knees, stand on one leg holding wall for balance",
+      "Slowly raise working leg directly out to side against band",
+      "Raise until you feel strong glute contraction",
+      "Lower slowly back to start with control",
+      "Complete all reps each side"
+    ],
+    "tips": [
+      "Keep the standing leg slightly bent",
+      "Don't lean body to compensate — move only the leg",
+      "Targets glute medius essential for hip stability"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_donkey_kick",
+    "name": "Hip Circle Donkey Kick",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": ["hamstrings"],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Band just above knees, start on all fours",
+      "Keeping knee bent 90 degrees, kick one leg back and up",
+      "Push sole of foot toward ceiling, squeezing glute at top",
+      "Lower with control without touching down between reps",
+      "Maintain neutral spine throughout"
+    ],
+    "tips": [
+      "Band adds constant load through the full range of motion",
+      "Focus on the glute contraction, not how high you kick",
+      "Progress by pausing 1-2s at the top"
+    ]
+  },
+  {
+    "id": "ex_hip_circle_seated_abduction",
+    "name": "Hip Circle Seated Abduction",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "hip-circle-band",
+    "category": "isolation",
+    "movementType": "legs",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit on bench or box, band above knees, feet flat on floor",
+      "Push knees outward against band as far as comfortable",
+      "Hold at maximum abduction 1-2 seconds",
+      "Slowly return knees to neutral",
+      "Repeat for reps"
+    ],
+    "tips": [
+      "Sit upright with good posture",
+      "Great for targeting outer glutes and abductors",
+      "Easy to do between other exercises as a glute activator"
+    ]
+  },
+  {
     "id": "ex_reverse_hyperextension",
     "name": "Reverse Hyperextension",
     "primaryMuscle": "glutes",

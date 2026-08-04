@@ -23,7 +23,7 @@ const DEFAULT_SETTINGS: UserSettings = {
     'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
     'rings', 'pull-up-bar', 'resistance-band',
     'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
-    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
+    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg', 'hip-circle-band',
   ],
   goal: 'hypertrophy',
   fitnessLevel: 'intermediate',

@@ -12,9 +12,10 @@ interface WarmupPhaseProps {
 }
 
 const TYPE_STYLES: Record<string, { label: string; bg: string; text: string; ring: string }> = {
-  cardio:   { label: 'Cardio',   bg: 'bg-[#FF375F]/10',  text: 'text-[#FF375F]',  ring: '#FF375F' },
-  stretch:  { label: 'Stretch',  bg: 'bg-[#0A84FF]/10',  text: 'text-[#0A84FF]',  ring: '#0A84FF' },
-  mobility: { label: 'Mobility', bg: 'bg-[#BF5AF2]/10',  text: 'text-[#BF5AF2]',  ring: '#BF5AF2' },
+  cardio:     { label: 'Cardio',     bg: 'bg-[#FF375F]/10',  text: 'text-[#FF375F]',  ring: '#FF375F' },
+  stretch:    { label: 'Stretch',    bg: 'bg-[#0A84FF]/10',  text: 'text-[#0A84FF]',  ring: '#0A84FF' },
+  mobility:   { label: 'Mobility',   bg: 'bg-[#BF5AF2]/10',  text: 'text-[#BF5AF2]',  ring: '#BF5AF2' },
+  activation: { label: 'Activation', bg: 'bg-[#30D158]/10',  text: 'text-[#30D158]',  ring: '#30D158' },
 };
 
 export function WarmupPhase({ warmup, onComplete, onSkipAll }: WarmupPhaseProps) {

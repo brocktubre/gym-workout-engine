@@ -46,6 +46,7 @@ const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNod
   { value: 'machine', label: 'Machine', icon: <FontAwesomeIcon icon={faCog} />, category: 'Other' },
   { value: 'cable', label: 'Cable', icon: <FontAwesomeIcon icon={faLink} />, category: 'Other' },
   { value: 'resistance-band', label: 'Bands', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
+  { value: 'hip-circle-band', label: 'Hip Circle Bands', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
   { value: 'ez-bar', label: 'EZ Bar', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
 ];
 
@@ -76,6 +77,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   fitnessLevel: 'intermediate',
   defaultDurationMinutes: 60,
   restBetweenSetsSeconds: 90,
+  // Note: hip-circle-band is listed separately; users opt-in via equipment selection
   fatigueWindowHours: 48,
   exerciseVarietyDays: 7,
   preferCompound: true,

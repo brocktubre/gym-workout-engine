@@ -19,6 +19,7 @@ export type Equipment =
   | 'rings'
   | 'pull-up-bar'
   | 'resistance-band'
+  | 'hip-circle-band'
   | 'battle-rope'
   | 'sled'
   | 'plyometric-box'
@@ -81,7 +82,7 @@ export interface WorkoutExercise {
 
 export interface WarmupItem {
   name: string;
-  type: 'cardio' | 'stretch' | 'mobility';
+  type: 'cardio' | 'stretch' | 'mobility' | 'activation';
   durationSeconds: number;
   targetMuscles: MuscleGroup[];
   equipment?: Equipment;

@@ -137,6 +137,26 @@
     "notes": "Loop bands, mini bands, mobility bands"
   },
   {
+    "id": "hip-circle-band",
+    "name": "Hip Circle Bands",
+    "category": "Resistance Equipment",
+    "enabled": true,
+    "tags": [
+      "glutes",
+      "mobility",
+      "warmup",
+      "activation",
+      "hip-health"
+    ],
+    "exerciseTypes": [
+      "Warmup",
+      "Glute Activation",
+      "Hip Mobility",
+      "Accessory"
+    ],
+    "notes": "Fabric loop bands worn above knees for glute activation and hip mobility"
+  },
+  {
     "id": "battle-rope",
     "name": "Battle Rope",
     "category": "Functional Training",

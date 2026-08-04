@@ -207,9 +207,10 @@ export default function ActiveWorkout() {
         <div className="flex-1 px-4 py-4 space-y-2 pb-[160px]">
           {warmupItems.map((item, i) => {
             const typeColors: Record<string, string> = {
-              cardio: 'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/30',
-              stretch: 'bg-[#0A84FF]/20 text-[#0A84FF] border-[#0A84FF]/30',
-              mobility: 'bg-[#BF5AF2]/20 text-[#BF5AF2] border-[#BF5AF2]/30',
+              cardio:     'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/30',
+              stretch:    'bg-[#0A84FF]/20 text-[#0A84FF] border-[#0A84FF]/30',
+              mobility:   'bg-[#BF5AF2]/20 text-[#BF5AF2] border-[#BF5AF2]/30',
+              activation: 'bg-[#30D158]/20 text-[#30D158] border-[#30D158]/30',
             };
             const durationLabel = item.durationSeconds >= 60
               ? `${Math.round(item.durationSeconds / 60)} min`
