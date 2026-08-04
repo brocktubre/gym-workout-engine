@@ -97,6 +97,10 @@ export function useActiveWorkout() {
       localStorage.removeItem(LEGACY_TIMER_KEY);
       localStorage.removeItem(LEGACY_ELAPSED_KEY);
     }
+    // Notify all other hook instances in this window (BottomNav, Dashboard, etc.)
+    // localStorage changes don't fire 'storage' events in the same tab natively,
+    // so we dispatch manually — same pattern used by pauseWorkout / resumeFromPause.
+    window.dispatchEvent(new StorageEvent('storage', { key: ACTIVE_WORKOUT_KEY }));
   }, []);
 
   const updateActiveWorkout = useCallback((updates: Partial<Workout>) => {
