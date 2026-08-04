@@ -397,14 +397,20 @@ export default function Generate() {
 
               {/* Exercise list */}
               <div className="space-y-2">
-                {generatedWorkout.exercises.map((we, i) => (
-                  <ExerciseItem
-                    key={we.exerciseId}
-                    workoutExercise={we}
-                    index={i}
-                    onSwap={() => setSwapTarget(we)}
-                  />
-                ))}
+                {generatedWorkout.exercises.map((we, i) => {
+                  const memberCount = we.supersetGroupId
+                    ? generatedWorkout.exercises.filter(e => e.supersetGroupId === we.supersetGroupId).length
+                    : undefined;
+                  return (
+                    <ExerciseItem
+                      key={we.exerciseId}
+                      workoutExercise={we}
+                      index={i}
+                      supersetMemberCount={memberCount}
+                      onSwap={() => setSwapTarget(we)}
+                    />
+                  );
+                })}
               </div>
 
               {/* Action buttons */}

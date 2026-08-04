@@ -41,35 +41,63 @@ interface ExerciseItemProps {
   workoutExercise: WorkoutExercise;
   index?: number;
   showProgress?: boolean;
+  /** Total number of exercises sharing this superset group (2, 3, or 4) */
+  supersetMemberCount?: number;
   /** When provided, shows a swap button and calls this on tap */
   onSwap?: () => void;
 }
 
-export function ExerciseItem({ workoutExercise, index, showProgress = false, onSwap }: ExerciseItemProps) {
+/** Derive the superset type label from member count */
+function supersetLabel(count: number) {
+  if (count === 3) return 'Tri-Set';
+  if (count >= 4) return 'Giant Set';
+  return 'Superset';
+}
+
+export function ExerciseItem({ workoutExercise, index, showProgress = false, supersetMemberCount, onSwap }: ExerciseItemProps) {
   const [expanded, setExpanded] = useState(false);
   const { exercise, sets, progressionNote, supersetGroupId, supersetOrder } = workoutExercise;
 
   const completedSets = sets.filter((s) => s.completed).length;
   const totalSets = sets.length;
   const isFullyDone = completedSets === totalSets && totalSets > 0;
+  const memberCount = supersetMemberCount ?? 2;
+  // Letter for this exercise in the superset: A, B, C, D
+  const supersetLetter = supersetGroupId && supersetOrder
+    ? String.fromCharCode(64 + supersetOrder)
+    : '';
 
   return (
     <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
-      {/* Superset badge */}
-      {supersetGroupId && supersetOrder === 1 && (
+      {/* Superset / Tri-Set / Giant Set badge — shown for ALL positions (A, B, C, D) */}
+      {supersetGroupId && supersetOrder !== undefined && (
         <div className="px-4 pt-3 pb-0">
-          <div className="flex items-center gap-1.5 mb-2 px-2 py-1 bg-[#0A84FF]/10 rounded-lg border border-[#0A84FF]/20 w-fit">
-            <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
-            <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">Superset</span>
-          </div>
-        </div>
-      )}
-      {supersetGroupId && supersetOrder === 2 && (
-        <div className="px-4 pt-3 pb-0">
-          <div className="flex items-center gap-1.5 mb-2 px-2 py-1 bg-[#0A84FF]/5 rounded-lg border border-[#0A84FF]/10 w-fit">
-            <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF]/60 text-xs" />
-            <span className="text-xs text-[#0A84FF]/60 uppercase tracking-wider">↳ Paired</span>
-          </div>
+          {supersetOrder === 1 ? (
+            // First member: show type name + full sequence  A → B → C ...
+            <div className="flex items-center gap-2 mb-2 px-2 py-1 bg-[#0A84FF]/10 rounded-lg border border-[#0A84FF]/20 w-fit">
+              <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
+              <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
+                {supersetLabel(memberCount)}
+              </span>
+              {/* Sequence pills A → B → C → D */}
+              <div className="flex items-center gap-0.5 ml-1">
+                {Array.from({ length: memberCount }, (_, i) => (
+                  <span key={i} className="text-[10px] font-bold text-[#0A84FF]/80">
+                    {i > 0 && <span className="text-[#0A84FF]/40 mx-0.5">→</span>}
+                    {String.fromCharCode(65 + i)}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : (
+            // Subsequent members (B, C, D): show their letter
+            <div className="flex items-center gap-1.5 mb-2 px-2 py-1 bg-[#0A84FF]/5 rounded-lg border border-[#0A84FF]/10 w-fit">
+              <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF]/60 text-xs" />
+              <span className="text-xs text-[#0A84FF]/70 font-bold tracking-wider">
+                ↳ {supersetLetter}
+              </span>
+            </div>
+          )}
         </div>
       )}
 
@@ -97,8 +125,10 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, onS
               <div className="flex items-center gap-2 mt-1 flex-wrap">
                 <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
                 <span className="text-[#8E8E93] text-xs">
-                  {totalSets} × {sets[0]?.targetReps ?? '?'} reps
-                  {sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}
+                  {totalSets} × 
+                  {sets[0]?.targetHoldSeconds !== undefined
+                    ? `Hold ${sets[0].targetHoldSeconds}s`
+                    : `${sets[0]?.targetReps ?? '?'} reps${sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}`}
                 </span>
               </div>
               {progressionNote && (
