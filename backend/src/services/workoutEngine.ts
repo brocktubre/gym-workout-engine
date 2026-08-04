@@ -427,6 +427,7 @@ export async function generateWorkout(context: {
   const pickExercise = (muscle: MuscleGroup, preferCompound: boolean, excludeIds: Set<string>) => {
     const pool = shuffle(available.filter(e =>
       e.primaryMuscle === muscle &&
+      e.category !== 'mobility' && // never auto-select stretches for workout sets
       !recentIds.has(e.id) &&
       !excludeIds.has(e.id) &&
       !exclude.has(e.id)

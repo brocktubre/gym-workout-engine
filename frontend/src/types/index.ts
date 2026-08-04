@@ -33,7 +33,7 @@ export type Equipment =
   | 'cable'
   | 'ez-bar';
 
-export type MovementType = 'push' | 'pull' | 'legs' | 'hinge' | 'core' | 'cardio';
+export type MovementType = 'push' | 'pull' | 'legs' | 'hinge' | 'core' | 'cardio' | 'mobility';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';
 export type WorkoutGoal = 'strength' | 'hypertrophy' | 'endurance' | 'fat-loss';
 
@@ -43,7 +43,7 @@ export interface Exercise {
   primaryMuscle: MuscleGroup;
   secondaryMuscles: MuscleGroup[];
   equipment: Equipment;
-  category: 'compound' | 'isolation' | 'cardio';
+  category: 'compound' | 'isolation' | 'cardio' | 'mobility';
   movementType: MovementType;
   difficulty: Difficulty;
   instructions: string[];
