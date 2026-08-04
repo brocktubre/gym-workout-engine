@@ -316,15 +316,15 @@ export default function Settings() {
             </span>
           </div>
           <Slider
-            value={[form.restBetweenSetsSeconds]}
+            value={[Math.min(90, Math.max(5, form.restBetweenSetsSeconds))]}
             onValueChange={([v]) => v !== undefined && update('restBetweenSetsSeconds', v)}
-            min={30}
-            max={300}
-            step={15}
+            min={5}
+            max={90}
+            step={5}
           />
           <div className="flex justify-between text-xs text-[#8E8E93] mt-2">
-            <span>30s</span>
-            <span>5:00</span>
+            <span>5s</span>
+            <span>90s</span>
           </div>
         </motion.section>
 

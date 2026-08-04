@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, SkipForward, CheckCircle2, ArrowLeftRight, ChevronRight } from 'lucide-react';
+import { X, SkipForward, ChevronLeft, CheckCircle2, ArrowLeftRight, ChevronRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -316,15 +316,18 @@ export default function ActiveWorkout() {
 
   // ── Event handlers ─────────────────────────────────────────────────────────
 
-  function handleSetUpdate(field: 'weight' | 'reps', value: number) {
+  function handleSetUpdate(field: 'weight' | 'reps' | 'hold', value: number) {
     if (!currentTurn) return;
     if (!activeWorkout) return;
     const updated = { ...activeWorkout, exercises: [...(activeWorkout.exercises ?? [])] };
     const setObj = { ...(updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex] ?? {}) };
     if (field === 'weight') {
       setObj.completedWeight = value;
-    } else {
+    } else if (field === 'reps') {
       setObj.completedReps = value;
+    } else {
+      // 'hold' — update the target hold duration
+      setObj.targetHoldSeconds = value;
     }
     if (updated.exercises[currentTurn.exerciseIndex]) {
       updated.exercises[currentTurn.exerciseIndex] = { ...updated.exercises[currentTurn.exerciseIndex] };
@@ -338,12 +341,17 @@ export default function ActiveWorkout() {
     if (!activeWorkout) return;
     const updated = { ...activeWorkout, exercises: [...(activeWorkout.exercises ?? [])] };
     updated.exercises[currentTurn.exerciseIndex] = { ...updated.exercises[currentTurn.exerciseIndex] };
+    const existingSet = updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex];
     const set: WorkoutSet = {
-      ...(updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex] ?? {}),
-      targetReps: updated.exercises[currentTurn.exerciseIndex]?.sets[currentTurn.setIndex]?.targetReps ?? 0,
+      ...(existingSet ?? {}),
+      targetReps: existingSet?.targetReps ?? 0,
       completedWeight: weight,
       completedReps: reps,
       completed: true,
+      // For hold exercises, record the actual hold duration
+      ...(existingSet?.targetHoldSeconds !== undefined
+        ? { completedHoldSeconds: existingSet.targetHoldSeconds }
+        : {}),
     };
     updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
     updateActiveWorkout(updated as Workout);
@@ -374,6 +382,32 @@ export default function ActiveWorkout() {
     if (!isLastTurn) {
       setCurrentTurnIndex((i) => i + 1);
     }
+  }
+
+  function handleGoBack() {
+    if (currentTurnIndex === 0) return;
+    const prevTurn = turns[currentTurnIndex - 1];
+    if (!prevTurn || !activeWorkout) return;
+
+    // Un-complete the previous set so the user can adjust and redo it
+    const updated = { ...activeWorkout, exercises: [...activeWorkout.exercises] };
+    updated.exercises[prevTurn.exerciseIndex] = { ...updated.exercises[prevTurn.exerciseIndex] };
+    const prevSets = [...updated.exercises[prevTurn.exerciseIndex].sets];
+    prevSets[prevTurn.setIndex] = {
+      ...prevSets[prevTurn.setIndex],
+      completed: false,
+      completedReps: undefined,
+      completedWeight: undefined,
+      completedHoldSeconds: undefined,
+    };
+    updated.exercises[prevTurn.exerciseIndex] = {
+      ...updated.exercises[prevTurn.exerciseIndex],
+      sets: prevSets,
+    };
+
+    skipRest(); // cancel any active rest timer
+    updateActiveWorkout(updated as Workout);
+    setCurrentTurnIndex((i) => i - 1);
   }
 
   async function handleCompleteWorkout() {
@@ -791,15 +825,27 @@ export default function ActiveWorkout() {
       {/* Bottom actions — hidden during rest (RestTimer has its own skip control) */}
       {!isResting && (
         <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
-          <div className="flex gap-3">
+          <div className="flex gap-2">
+            {/* Go Back — only available after the first turn */}
+            {currentTurnIndex > 0 && (
+              <Button variant="outline" className="flex-1" onClick={handleGoBack}>
+                <ChevronLeft className="h-4 w-4 mr-1" />
+                Back
+              </Button>
+            )}
+
             {!isLastTurn ? (
-              <Button variant="outline" className="w-full" onClick={handleSkipSet}>
+              <Button
+                variant="outline"
+                className={currentTurnIndex > 0 ? 'flex-1' : 'w-full'}
+                onClick={handleSkipSet}
+              >
                 <SkipForward className="h-4 w-4 mr-2" />
                 Skip
               </Button>
             ) : (
               <Button
-                className="w-full"
+                className={currentTurnIndex > 0 ? 'flex-1' : 'w-full'}
                 size="lg"
                 variant="success"
                 onClick={handleCompleteWorkout}

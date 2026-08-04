@@ -179,7 +179,8 @@ function applyFallbackSupersets(exercises: WorkoutExercise[]): WorkoutExercise[]
         processed.add(partner.exerciseId);
         const groupId = uuidv4();
         const baseRest = ex.sets[0]?.restSeconds ?? 90;
-        const supersetRest = Math.max(30, Math.round(baseRest * 0.5));
+        // Use user's full configured rest for superset rounds
+        const supersetRest = baseRest;
         result.push({ ...ex,      sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),      supersetGroupId: groupId, supersetOrder: 1 });
         result.push({ ...partner, sets: partner.sets.map(s => ({ ...s, restSeconds: supersetRest })), supersetGroupId: groupId, supersetOrder: 2 });
         paired = true;
@@ -348,8 +349,8 @@ JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4
 
         const groupId = uuidv4();
         const baseRest = safeMembers[0].sets[0]?.restSeconds ?? 90;
-        // Rest after completing a full round of the superset
-        const supersetRest = Math.max(45, Math.round(baseRest * 0.6));
+        // Use the user's full configured rest — rest fires once per round, not per movement
+        const supersetRest = baseRest;
 
         safeMembers.forEach((ex, i) => {
           result.push({

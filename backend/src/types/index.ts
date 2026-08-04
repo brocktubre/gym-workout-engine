@@ -47,6 +47,10 @@ export interface Exercise {
   difficulty: Difficulty;
   instructions: string[];
   tips: string[];
+  /** True when this exercise is a timed static hold (plank, dead hang, etc.) */
+  isHold?: boolean;
+  /** Default hold duration in seconds for isHold exercises */
+  holdSeconds?: number;
 }
 
 export interface WorkoutSet {
@@ -57,6 +61,10 @@ export interface WorkoutSet {
   completedWeight?: number;
   completed: boolean;
   restSeconds: number;
+  /** For isHold exercises: target hold duration in seconds */
+  targetHoldSeconds?: number;
+  /** For isHold exercises: actual hold duration completed */
+  completedHoldSeconds?: number;
 }
 
 export interface WorkoutExercise {

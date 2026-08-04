@@ -1986,6 +1986,8 @@
     "category": "isolation",
     "movementType": "core",
     "difficulty": "beginner",
+    "isHold": true,
+    "holdSeconds": 30,
     "instructions": [
       "Forearms on floor, elbows under shoulders",
       "Body forms straight line from head to heels",
@@ -2007,6 +2009,8 @@
     "category": "isolation",
     "movementType": "core",
     "difficulty": "beginner",
+    "isHold": true,
+    "holdSeconds": 30,
     "instructions": [
       "Lie on side, forearm on floor under shoulder",
       "Feet stacked, lift hips to form straight line",
@@ -2028,6 +2032,8 @@
     "category": "isolation",
     "movementType": "core",
     "difficulty": "intermediate",
+    "isHold": true,
+    "holdSeconds": 45,
     "instructions": [
       "Lie on back, press lower back into floor",
       "Raise shoulders and legs slightly off floor",
@@ -2733,6 +2739,8 @@
     "category": "isolation",
     "movementType": "core",
     "difficulty": "intermediate",
+    "isHold": true,
+    "holdSeconds": 45,
     "instructions": [
       "Support bodyweight on rings with arms fully extended",
       "Turn rings out to 45 degrees externally",
@@ -2968,6 +2976,8 @@
     "category": "isolation",
     "movementType": "pull",
     "difficulty": "beginner",
+    "isHold": true,
+    "holdSeconds": 30,
     "instructions": [
       "Grip bar with overhand or neutral grip",
       "Hang with arms fully extended, feet off floor",

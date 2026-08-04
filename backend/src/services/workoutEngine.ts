@@ -33,7 +33,7 @@ const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, numbe
   quads:      { barbell: 185, machine: 135, sled: 185,    'plyometric-box': 0, kettlebell: 53, sandbag: 65 },
   hamstrings: { barbell: 135, machine: 90,  kettlebell: 53, sled: 135 },
   glutes:     { barbell: 185, machine: 110, sled: 185,    kettlebell: 53 },
-  core:       { 'medicine-ball': 20, sandbag: 45, rings: 0 },
+  core:       { 'medicine-ball': 20, sandbag: 45, rings: 0, kettlebell: 35 },
 };
 
 // ---------------------------------------------------------------------------
@@ -151,6 +151,18 @@ function buildSets(
   restSeconds: number,
   recentWorkouts: Workout[],
 ): { sets: WorkoutSet[]; progressionNote?: string } {
+  // ── Static hold exercises (plank, dead hang, ring support hold, etc.) ──────
+  if (exercise.isHold && exercise.holdSeconds) {
+    const sets: WorkoutSet[] = Array.from({ length: config.sets }, (_, i) => ({
+      setNumber: i + 1,
+      targetReps: 1,
+      targetHoldSeconds: exercise.holdSeconds,
+      completed: false,
+      restSeconds,
+    }));
+    return { sets };
+  }
+
   const reps = Math.floor(Math.random() * (config.maxReps - config.minReps + 1)) + config.minReps;
   let progressionNote: string | undefined;
   let suggestedWeight: number | undefined;
