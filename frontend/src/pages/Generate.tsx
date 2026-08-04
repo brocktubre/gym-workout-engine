@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, RefreshCw, Play, Clock, ChevronRight } from 'lucide-react';
+import { Zap, RefreshCw, Play, Clock, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
@@ -386,36 +386,65 @@ export default function Generate() {
               </div>
 
               {/* Warmup list (if present) */}
-              {(generatedWorkout.warmup?.length ?? 0) > 0 && (
-                <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#38383A]">
-                    <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
-                    <span className="text-sm font-semibold text-white">Warmup</span>
-                    <span className="text-xs text-[#8E8E93] ml-auto">{totalWarmupMinutes} min total</span>
+{/* Warmup preview with expandable instructions */}
+              {(generatedWorkout.warmup?.length ?? 0) > 0 && (() => {
+                const [expandedWarmup, setExpandedWarmup] = React.useState<Set<number>>(new Set());
+                const toggleWarmupPreview = (i: number) =>
+                  setExpandedWarmup(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
+                return (
+                  <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
+                    <div className="flex items-center gap-2 px-4 py-3 border-b border-[#38383A]">
+                      <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
+                      <span className="text-sm font-semibold text-white">Warmup</span>
+                      <span className="text-xs text-[#8E8E93] ml-auto">{totalWarmupMinutes} min total</span>
+                    </div>
+                    <div className="divide-y divide-[#38383A]">
+                      {generatedWorkout.warmup!.map((item, i) => {
+                        const typeColors: Record<string, string> = {
+                          cardio: 'bg-[#FF375F]/20 text-[#FF375F]',
+                          stretch: 'bg-[#0A84FF]/20 text-[#0A84FF]',
+                          mobility: 'bg-[#BF5AF2]/20 text-[#BF5AF2]',
+                          activation: 'bg-[#30D158]/20 text-[#30D158]',
+                        };
+                        const durationLabel = item.durationSeconds >= 60
+                          ? `${Math.round(item.durationSeconds / 60)} min`
+                          : `${item.durationSeconds}s`;
+                        const isExpanded = expandedWarmup.has(i);
+                        const hasInstructions = item.instructions?.length > 0;
+                        return (
+                          <div key={i}>
+                            <button
+                              className="w-full flex items-center gap-3 px-4 py-3 text-left active:bg-[#2c2c2e] transition-colors"
+                              onClick={() => hasInstructions && toggleWarmupPreview(i)}
+                            >
+                              <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
+                                {item.type}
+                              </span>
+                              <span className="text-sm text-white flex-1">{item.name}</span>
+                              <span className="text-xs text-[#8E8E93] flex-shrink-0 mr-1">{durationLabel}</span>
+                              {hasInstructions && (
+                                isExpanded
+                                  ? <ChevronUp className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
+                                  : <ChevronDown className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
+                              )}
+                            </button>
+                            {isExpanded && hasInstructions && (
+                              <ul className="px-4 pb-3 space-y-1 border-t border-[#2c2c2e]">
+                                {item.instructions.map((instr, j) => (
+                                  <li key={j} className="text-xs text-[#8E8E93] flex gap-1.5 pt-1">
+                                    <span className="text-[#48484A] flex-shrink-0">{j + 1}.</span>
+                                    <span>{instr}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-                  <div className="divide-y divide-[#38383A]">
-                    {generatedWorkout.warmup!.map((item, i) => {
-                      const typeColors: Record<string, string> = {
-                        cardio: 'bg-[#FF375F]/20 text-[#FF375F]',
-                        stretch: 'bg-[#0A84FF]/20 text-[#0A84FF]',
-                        mobility: 'bg-[#BF5AF2]/20 text-[#BF5AF2]',
-                      };
-                      const durationLabel = item.durationSeconds >= 60
-                        ? `${Math.round(item.durationSeconds / 60)} min`
-                        : `${item.durationSeconds}s`;
-                      return (
-                        <div key={i} className="flex items-center gap-3 px-4 py-3">
-                          <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
-                            {item.type}
-                          </span>
-                          <span className="text-sm text-white flex-1">{item.name}</span>
-                          <span className="text-xs text-[#8E8E93] flex-shrink-0">{durationLabel}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
+                );
+              })()}
 
               {/* Exercise list */}
               <div className="space-y-2">

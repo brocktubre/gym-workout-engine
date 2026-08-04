@@ -99,8 +99,43 @@ const CARDIO_WARMUP_OPTIONS = [
   { equipment: 'echo-bike' as const, name: 'Echo Bike',   shortName: 'Echo Bike',  instructions: ['Set resistance to light', 'Ride at conversational pace', 'Build intensity slightly each round'] },
   { equipment: 'rower'     as const, name: 'Row Erg',     shortName: 'Row Erg',    instructions: ['Set damper to 3-5', 'Row at steady 70% effort', 'Focus on smooth catch and drive'] },
   { equipment: 'ski-erg'   as const, name: 'SkiErg',      shortName: 'SkiErg',     instructions: ['Easy pull rhythm', 'Focus on hip hinge and arm extension', 'Build pace each round'] },
-  { equipment: 'bodyweight'as const, name: 'Dynamic Cardio', shortName: 'Cardio', instructions: ['Jumping jacks 30s', 'High knees 30s', 'Arm circles 20s each direction'] },
+  { equipment: 'bodyweight' as const, name: 'Dynamic Cardio', shortName: 'Cardio', instructions: [] }, // instructions built dynamically
 ];
+
+// ---------------------------------------------------------------------------
+// Dynamic bodyweight cardio movement pool — randomly assembled each generation
+// ---------------------------------------------------------------------------
+const DYNAMIC_CARDIO_POOL: string[] = [
+  'Jumping jacks 30s',
+  'High knees 30s',
+  'Butt kicks 30s',
+  'Mountain climbers 30s',
+  'Side shuffles 30s each direction',
+  'Lateral bounds 30s',
+  'Inchworm walkouts × 5 reps',
+  'Arm circles 20s each direction',
+  'Hip circles 20s each direction',
+  'Torso twists 30s',
+  'Alternating forward leg swings 20s each leg',
+  'Alternating lateral leg swings 20s each leg',
+  'Shoulder rolls forward & back 20s',
+  'March in place with high knees 30s',
+  'Squat jumps 30s',
+  'Bear crawl 5 steps forward, 5 steps back',
+  'Standing hip rotations 20s each side',
+  'Calf raises 30s',
+  'Alternating reverse lunges 30s',
+  'Speed skaters 30s',
+];
+
+/** Pick 5 random movements from the pool, returned as instruction strings */
+function buildDynamicCardioInstructions(): string[] {
+  const shuffled = [...DYNAMIC_CARDIO_POOL].sort(() => Math.random() - 0.5);
+  return [
+    ...shuffled.slice(0, 5),
+    'Repeat — build intensity with each round',
+  ];
+}
 
 // ---------------------------------------------------------------------------
 // Hip-circle and resistance-band activation circuits
@@ -179,16 +214,17 @@ function buildWarmup(
   const shuffled = [...activationPool].sort(() => Math.random() - 0.5);
 
   // ── Phase 1: Opening cardio (5 min) ─────────────────────────────────────
+  const openingInstructions = openingCardio.equipment === 'bodyweight'
+    ? buildDynamicCardioInstructions()
+    : [...openingCardio.instructions, 'Start easy for first 2 min, build to moderate pace'];
+
   warmup.push({
     name: `${openingCardio.name} Warmup — 5 min`,
     type: 'cardio',
     durationSeconds: 300,
     targetMuscles: ['cardio' as MuscleGroup],
     equipment: openingCardio.equipment,
-    instructions: [
-      ...openingCardio.instructions,
-      'Start easy for first 2 min, build to moderate pace',
-    ],
+    instructions: openingInstructions,
   });
 
   // ── Phase 2: 3-round circuit ─────────────────────────────────────────────
@@ -222,13 +258,15 @@ function buildWarmup(
       durationSeconds: 60,
       targetMuscles: ['cardio' as MuscleGroup],
       equipment: roundCardio.equipment,
-      instructions: [
-        r === 0 ? 'Moderate pace — get your heart rate up' :
-        r === 1 ? 'Push slightly harder than round 1' :
-                  'Give it 85-90% effort for this final interval',
-        'Breathe rhythmically',
-        roundCardio.instructions[1] ?? '',
-      ].filter(Boolean),
+      instructions: roundCardio.equipment === 'bodyweight'
+        ? buildDynamicCardioInstructions()
+        : [
+            r === 0 ? 'Moderate pace — get your heart rate up' :
+            r === 1 ? 'Push slightly harder than round 1' :
+                      'Give it 85-90% effort for this final interval',
+            'Breathe rhythmically',
+            roundCardio.instructions[1] ?? '',
+          ].filter(Boolean),
     });
 
     // Banded / bodyweight activation
