@@ -1,28 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtHeader, SigningKeyCallback } from 'jsonwebtoken';
-import jwksClient from 'jwks-rsa';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
 
-const COGNITO_REGION = process.env.COGNITO_REGION || 'us-east-1';
 const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID || 'us-east-1_WucFi2sNK';
+const COGNITO_CLIENT_ID    = process.env.COGNITO_CLIENT_ID    || '3i724l9g6bb4qffde95n7u5sgm';
 
-const issuer = `https://cognito-idp.${COGNITO_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}`;
-const jwksUri = `${issuer}/.well-known/jwks.json`;
-
-const client = jwksClient({
-  jwksUri,
-  cache: true,
-  cacheMaxAge: 600_000, // 10 minutes
-  rateLimit: true,
-  jwksRequestsPerMinute: 10,
+// Verifier caches the JWKS automatically; CJS-compatible (unlike jwks-rsa v4)
+const verifier = CognitoJwtVerifier.create({
+  userPoolId: COGNITO_USER_POOL_ID,
+  tokenUse: 'id',           // we send the ID token (carries email)
+  clientId: COGNITO_CLIENT_ID,
 });
-
-function getKey(header: JwtHeader, callback: SigningKeyCallback) {
-  if (!header.kid) return callback(new Error('Missing kid header'));
-  client.getSigningKey(header.kid, (err, key) => {
-    if (err || !key) return callback(err ?? new Error('Signing key not found'));
-    callback(null, key.getPublicKey());
-  });
-}
 
 export interface AuthUser {
   sub: string;
@@ -46,28 +33,12 @@ function extractToken(req: Request): string | null {
   return token;
 }
 
-function verifyToken(token: string): Promise<AuthUser> {
-  return new Promise((resolve, reject) => {
-    jwt.verify(
-      token,
-      getKey,
-      {
-        issuer,
-        algorithms: ['RS256'],
-      },
-      (err, decoded) => {
-        if (err || !decoded || typeof decoded === 'string') {
-          return reject(err ?? new Error('Invalid token'));
-        }
-        const payload = decoded as jwt.JwtPayload;
-        const sub = payload.sub;
-        const email = (payload.email as string | undefined) ?? (payload['cognito:username'] as string | undefined) ?? '';
-        if (!sub) return reject(new Error('Token missing sub'));
-        // Both Access and ID tokens are accepted here — ID tokens carry email.
-        resolve({ sub, email });
-      },
-    );
-  });
+async function verifyToken(token: string): Promise<AuthUser> {
+  const payload = await verifier.verify(token);
+  const sub   = payload.sub;
+  const email = (payload.email as string | undefined) ?? '';
+  if (!sub) throw new Error('Token missing sub');
+  return { sub, email };
 }
 
 export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
@@ -84,13 +55,13 @@ export async function requireAuth(req: Request, res: Response, next: NextFunctio
   }
 }
 
-export async function optionalAuth(req: Request, _res: Response, next: NextFunction) {
+export async function optionalAuth(req: Request, _res: Response, next: NextFunction): Promise<void> {
   const token = extractToken(req);
-  if (!token) return next();
+  if (!token) { next(); return; }
   try {
     req.user = await verifyToken(token);
   } catch {
-    // Invalid token on an optional-auth route: fall through as anonymous
+    // Invalid token on optional-auth route — continue as anonymous
   }
   next();
 }
