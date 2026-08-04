@@ -92,6 +92,12 @@ export const authService = {
     const currentUser = userPool.getCurrentUser();
     if (currentUser) currentUser.signOut();
     clearTokens();
+    // Clear active workout state so the next user never inherits it from localStorage
+    localStorage.removeItem('gym_active_workout');
+    localStorage.removeItem('gym_paused_at');
+    localStorage.removeItem('gym_turn_index');
+    localStorage.removeItem('gym_timer_start');   // legacy
+    localStorage.removeItem('gym_elapsed_offset'); // legacy
   },
 
   forgotPassword(email: string): Promise<void> {
