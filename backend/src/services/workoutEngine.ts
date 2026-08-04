@@ -47,7 +47,7 @@ const WARMUP_STRETCHES: Partial<Record<MuscleGroup, WarmupItem[]>> = {
       equipment: 'bodyweight', instructions: ['Stand in plank position on rings or doorway', 'Allow chest to drop forward between arms', 'Hold stretch 30 seconds'] },
   ],
   back: [
-    { name: 'Cat-Cow', type: 'mobility', durationSeconds: 45, targetMuscles: ['back', 'core'],
+    { name: 'Cat-Cow', type: 'mobility' as const, durationSeconds: 45, targetMuscles: ['back', 'core'],
       equipment: 'bodyweight', instructions: ['On all fours, alternate arching and rounding spine', 'Move slowly through full range', 'Breathe out on cat, in on cow'] },
     { name: 'Lat Hang', type: 'stretch', durationSeconds: 30, targetMuscles: ['back'],
       equipment: 'pull-up-bar', instructions: ['Hang from pull-up bar, arms fully extended', 'Let shoulders unpack and lats stretch', 'Hold 30 seconds'] },
@@ -55,7 +55,7 @@ const WARMUP_STRETCHES: Partial<Record<MuscleGroup, WarmupItem[]>> = {
   shoulders: [
     { name: 'Cross-Body Shoulder Stretch', type: 'stretch', durationSeconds: 30, targetMuscles: ['shoulders'],
       equipment: 'bodyweight', instructions: ['Pull one arm across chest with opposite hand', 'Hold 15s each side', 'Keep shoulders down'] },
-    { name: 'Band Shoulder Circles', type: 'mobility', durationSeconds: 45, targetMuscles: ['shoulders'],
+    { name: 'Band Shoulder Circles', type: 'mobility' as const, durationSeconds: 45, targetMuscles: ['shoulders'],
       equipment: 'resistance-band', instructions: ['Hold band with wide grip in front', 'Circle overhead and behind back', 'Narrow grip as mobility improves'] },
   ],
   biceps: [
@@ -69,11 +69,11 @@ const WARMUP_STRETCHES: Partial<Record<MuscleGroup, WarmupItem[]>> = {
   quads: [
     { name: 'Standing Quad Stretch', type: 'stretch', durationSeconds: 30, targetMuscles: ['quads'],
       equipment: 'bodyweight', instructions: ['Stand on one leg, pull heel toward glute', 'Keep knees together', 'Hold 15s each side'] },
-    { name: 'Leg Swing (forward/back)', type: 'mobility', durationSeconds: 40, targetMuscles: ['quads', 'hamstrings'],
+    { name: 'Leg Swing (forward/back)', type: 'mobility' as const, durationSeconds: 40, targetMuscles: ['quads', 'hamstrings'],
       equipment: 'bodyweight', instructions: ['Hold wall for balance', 'Swing leg forward and back 10 times each side', 'Increase range progressively'] },
   ],
   hamstrings: [
-    { name: 'Inchworm', type: 'mobility', durationSeconds: 45, targetMuscles: ['hamstrings', 'back'],
+    { name: 'Inchworm', type: 'mobility' as const, durationSeconds: 45, targetMuscles: ['hamstrings', 'back'],
       equipment: 'bodyweight', instructions: ['Stand, hinge forward and walk hands out to plank', 'Walk feet back to hands', 'Repeat 5 times'] },
     { name: 'Standing Hamstring Stretch', type: 'stretch', durationSeconds: 30, targetMuscles: ['hamstrings'],
       equipment: 'bodyweight', instructions: ['Place heel on low surface', 'Hinge forward at hips with straight back', 'Hold 15s each side'] },
@@ -81,13 +81,13 @@ const WARMUP_STRETCHES: Partial<Record<MuscleGroup, WarmupItem[]>> = {
   glutes: [
     { name: 'Hip 90/90 Stretch', type: 'stretch', durationSeconds: 45, targetMuscles: ['glutes'],
       equipment: 'bodyweight', instructions: ['Sit with both legs at 90-degree angles', 'Lean forward over front leg', 'Hold 20s each side'] },
-    { name: 'Glute Bridge Hold', type: 'mobility', durationSeconds: 30, targetMuscles: ['glutes', 'hamstrings'],
+    { name: 'Glute Bridge Hold', type: 'mobility' as const, durationSeconds: 30, targetMuscles: ['glutes', 'hamstrings'],
       equipment: 'bodyweight', instructions: ['Lie on back, feet flat', 'Drive hips up and hold', 'Focus on glute squeeze'] },
   ],
   core: [
-    { name: 'World\'s Greatest Stretch', type: 'mobility', durationSeconds: 60, targetMuscles: ['core', 'quads', 'back'],
+    { name: 'World\'s Greatest Stretch', type: 'mobility' as const, durationSeconds: 60, targetMuscles: ['core', 'quads', 'back'],
       equipment: 'bodyweight', instructions: ['Lunge forward, place same-side hand down', 'Open arm toward ceiling, rotating thorax', 'Return and repeat 5 each side'] },
-    { name: 'Dead Bug Hold', type: 'mobility', durationSeconds: 30, targetMuscles: ['core'],
+    { name: 'Dead Bug Hold', type: 'mobility' as const, durationSeconds: 30, targetMuscles: ['core'],
       equipment: 'bodyweight', instructions: ['Lie on back, arms and legs up', 'Press lower back into floor', 'Hold the position, breathing steadily'] },
   ],
 };
@@ -178,20 +178,21 @@ function buildWarmup(
 
   // ── Phase 2: 3-round circuit ─────────────────────────────────────────────
   // Build a pool of mobility/stretches for circuit rounds
-  const mobilityCircuit: WarmupItem[] = [
-    { name: 'Leg Swing (Forward/Back)', type: 'mobility', durationSeconds: 35, targetMuscles: ['quads', 'hamstrings'],
+  const mobilityCircuitPool: WarmupItem[] = [
+    { name: 'Leg Swing (Forward/Back)', type: 'mobility' as const, durationSeconds: 35, targetMuscles: ['quads', 'hamstrings'],
       equipment: 'bodyweight', instructions: ['Hold wall for balance', 'Swing one leg forward and back 12 times', 'Gradually increase range', 'Switch legs'] },
-    { name: 'Hip Circle Rotation', type: 'mobility', durationSeconds: 35, targetMuscles: ['glutes', 'core'],
+    { name: 'Hip Circle Rotation', type: 'mobility' as const, durationSeconds: 35, targetMuscles: ['glutes', 'core'],
       equipment: 'bodyweight', instructions: ['Stand feet shoulder-width', 'Draw large circles with hips — 10 clockwise, 10 counter-clockwise', 'Gradually increase size of circles', 'Keep feet flat on floor'] },
-    { name: 'World\'s Greatest Stretch', type: 'mobility', durationSeconds: 45, targetMuscles: ['core', 'quads', 'back'],
+    { name: 'World\'s Greatest Stretch', type: 'mobility' as const, durationSeconds: 45, targetMuscles: ['core', 'quads', 'back'],
       equipment: 'bodyweight', instructions: ['Lunge forward, plant same-side hand on floor', 'Open opposite arm toward ceiling, rotating thorax', 'Hold 2s, return and switch sides', '5 reps each side'] },
-    { name: 'Inchworm', type: 'mobility', durationSeconds: 40, targetMuscles: ['hamstrings', 'back'],
+    { name: 'Inchworm', type: 'mobility' as const, durationSeconds: 40, targetMuscles: ['hamstrings', 'back'],
       equipment: 'bodyweight', instructions: ['Hinge forward and walk hands out to plank position', 'Walk feet back to hands', '5 slow reps', 'Feel the hamstring stretch each time'] },
-    { name: 'Lateral Leg Swing', type: 'mobility', durationSeconds: 35, targetMuscles: ['glutes', 'hamstrings'],
+    { name: 'Lateral Leg Swing', type: 'mobility' as const, durationSeconds: 35, targetMuscles: ['glutes', 'hamstrings'],
       equipment: 'bodyweight', instructions: ['Hold wall, swing leg side to side across body', '12 swings each leg', 'Gradually increase range of motion', 'Keep core stable'] },
-    { name: 'Hip 90/90 Transition', type: 'mobility', durationSeconds: 40, targetMuscles: ['glutes', 'hamstrings'],
+    { name: 'Hip 90/90 Transition', type: 'mobility' as const, durationSeconds: 40, targetMuscles: ['glutes', 'hamstrings'],
       equipment: 'bodyweight', instructions: ['Sit in 90/90 position on floor', 'Rotate hips to switch 90/90 side to side', '8-10 transitions each direction', 'Work through any hip tightness'] },
-  ].sort(() => Math.random() - 0.5);
+  ];
+  const mobilityCircuit = [...mobilityCircuitPool].sort(() => Math.random() - 0.5);
 
   const NUM_ROUNDS = 3;
   for (let r = 0; r < NUM_ROUNDS; r++) {
