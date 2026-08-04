@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, SkipForward, ChevronLeft, CheckCircle2, ArrowLeftRight, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
+import { X, SkipForward, ChevronLeft, Check, CheckCircle2, ArrowLeftRight, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowTrendUp, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
@@ -109,6 +109,12 @@ export default function ActiveWorkout() {
       next.has(i) ? next.delete(i) : next.add(i);
       return next;
     });
+
+  function handleToggleWarmupItem(index: number) {
+    const items = [...(activeWorkout?.warmup ?? [])];
+    items[index] = { ...items[index], completed: !items[index].completed };
+    updateActiveWorkout({ warmup: items });
+  }
 
   const handleSwapExercise = (newExercise: Exercise) => {
     if (!activeWorkout || !currentTurn) return;
@@ -223,22 +229,48 @@ export default function ActiveWorkout() {
               ? `${Math.round(item.durationSeconds / 60)} min`
               : `${item.durationSeconds}s`;
             const isExpanded = expandedWarmupItems.has(i);
+            const isDone = item.completed === true;
             return (
-              <div key={i} className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
-                {/* Tappable header row */}
-                <button
-                  className="w-full flex items-center gap-3 p-4 text-left active:bg-[#2c2c2e] transition-colors"
-                  onClick={() => toggleWarmupItem(i)}
-                >
+              <div
+                key={i}
+                className={`rounded-2xl border overflow-hidden transition-colors ${
+                  isDone ? 'bg-[#30D158]/8 border-[#30D158]/30' : 'bg-[#1c1c1e] border-[#38383A]'
+                }`}
+              >
+                {/* Header row: expand area + standalone check button */}
+                <div className="flex items-center gap-3 p-4">
+                  {/* Type badge */}
                   <span className={`text-[10px] font-bold uppercase px-2 py-1 rounded-full border flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
                     {item.type}
                   </span>
-                  <p className="flex-1 text-sm font-semibold text-white text-left">{item.name}</p>
-                  <span className="text-xs text-[#FF375F] font-semibold flex-shrink-0">{durationLabel}</span>
-                  {isExpanded
-                    ? <ChevronUp className="h-4 w-4 text-[#8E8E93] flex-shrink-0" />
-                    : <ChevronDown className="h-4 w-4 text-[#8E8E93] flex-shrink-0" />}
-                </button>
+                  {/* Name + duration + chevron — tappable to expand */}
+                  <button
+                    className="flex-1 flex items-center justify-between text-left min-w-0"
+                    onClick={() => toggleWarmupItem(i)}
+                  >
+                    <p className={`text-sm font-semibold truncate mr-2 ${
+                      isDone ? 'text-[#30D158]' : 'text-white'
+                    }`}>{item.name}</p>
+                    <div className="flex items-center gap-1.5 flex-shrink-0">
+                      <span className={`text-xs font-semibold ${isDone ? 'text-[#30D158]' : 'text-[#FF375F]'}`}>{durationLabel}</span>
+                      {isExpanded
+                        ? <ChevronUp className="h-4 w-4 text-[#8E8E93]" />
+                        : <ChevronDown className="h-4 w-4 text-[#8E8E93]" />}
+                    </div>
+                  </button>
+                  {/* Checkmark — separate tap target */}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleWarmupItem(i)}
+                    className={`h-9 w-9 rounded-full flex items-center justify-center flex-shrink-0 touch-manipulation active:scale-90 transition-all ${
+                      isDone
+                        ? 'bg-[#30D158] text-white'
+                        : 'bg-[#38383A] text-[#8E8E93] hover:bg-[#30D158]/20 hover:text-[#30D158]'
+                    }`}
+                  >
+                    <Check className="h-4 w-4" />
+                  </button>
+                </div>
                 {/* Collapsible instructions */}
                 {isExpanded && (
                   <ul className="px-4 pb-4 space-y-1 border-t border-[#38383A] pt-3">
