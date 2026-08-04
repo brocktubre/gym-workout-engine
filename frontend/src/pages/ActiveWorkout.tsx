@@ -19,7 +19,7 @@ import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/use
 import { ApiError } from '@/lib/api';
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
-import { calculateVolume } from '@/lib/utils';
+
 import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout, Exercise } from '@/types';
 import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
 
