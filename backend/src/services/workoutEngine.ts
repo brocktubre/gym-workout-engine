@@ -150,9 +150,24 @@ function buildWarmup(
 ): WarmupItem[] {
   const warmup: WarmupItem[] = [];
 
-  // Pick the best cardio machine available
-  const cardioOption = CARDIO_WARMUP_OPTIONS.find(o => availableEquipment.includes(o.equipment))
-    ?? CARDIO_WARMUP_OPTIONS[CARDIO_WARMUP_OPTIONS.length - 1];
+  // Build pool of ALL available cardio machines (not just the first match)
+  const availableCardioPool = CARDIO_WARMUP_OPTIONS.filter(o =>
+    availableEquipment.includes(o.equipment),
+  );
+  // Always have at least the bodyweight fallback
+  const cardioPool = availableCardioPool.length > 0
+    ? availableCardioPool
+    : [CARDIO_WARMUP_OPTIONS[CARDIO_WARMUP_OPTIONS.length - 1]];
+
+  // Shuffle so the opening machine is random each generation
+  const shuffledCardio = [...cardioPool].sort(() => Math.random() - 0.5);
+
+  // Helper: pick machine by position, cycling through the pool
+  // This ensures each round uses a different machine when 2-3 are available
+  const getCardioForIndex = (i: number) => shuffledCardio[i % shuffledCardio.length];
+
+  // Opening cardio uses index 0; rounds 1-3 use indices 1, 2, 3 (wrapping as needed)
+  const openingCardio = getCardioForIndex(0);
 
   // Pick activation exercises based on available equipment
   const activationPool: WarmupItem[] =
@@ -165,13 +180,13 @@ function buildWarmup(
 
   // ── Phase 1: Opening cardio (5 min) ─────────────────────────────────────
   warmup.push({
-    name: `${cardioOption.name} Warmup — 5 min`,
+    name: `${openingCardio.name} Warmup — 5 min`,
     type: 'cardio',
     durationSeconds: 300,
     targetMuscles: ['cardio' as MuscleGroup],
-    equipment: cardioOption.equipment,
+    equipment: openingCardio.equipment,
     instructions: [
-      ...cardioOption.instructions,
+      ...openingCardio.instructions,
       'Start easy for first 2 min, build to moderate pace',
     ],
   });
@@ -197,20 +212,22 @@ function buildWarmup(
   const NUM_ROUNDS = 3;
   for (let r = 0; r < NUM_ROUNDS; r++) {
     const roundLabel = `Round ${r + 1}`;
+    // Each round rotates to the next machine in the pool (indices 1, 2, 3 — cycling)
+    const roundCardio = getCardioForIndex(r + 1);
 
     // 60s cardio interval
     warmup.push({
-      name: `${cardioOption.shortName} — ${roundLabel}`,
+      name: `${roundCardio.shortName} — ${roundLabel}`,
       type: 'cardio',
       durationSeconds: 60,
       targetMuscles: ['cardio' as MuscleGroup],
-      equipment: cardioOption.equipment,
+      equipment: roundCardio.equipment,
       instructions: [
         r === 0 ? 'Moderate pace — get your heart rate up' :
         r === 1 ? 'Push slightly harder than round 1' :
                   'Give it 85-90% effort for this final interval',
         'Breathe rhythmically',
-        cardioOption.instructions[1] ?? '',
+        roundCardio.instructions[1] ?? '',
       ].filter(Boolean),
     });
 
