@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BottomNav } from './BottomNav';
+import { useAuth } from '@/contexts/AuthContext';
 
 // AnimatePresence mode="wait" was removed — it held the exiting page until its
 // exit animation finished before mounting the new page, leaving a black-screen
@@ -9,6 +10,7 @@ import { BottomNav } from './BottomNav';
 // still fades in smoothly with the enter animation below.
 export function AppLayout() {
   const location = useLocation();
+  const { isAuthenticated } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
@@ -17,11 +19,13 @@ export function AppLayout() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.18, ease: 'easeOut' }}
-        className="min-h-screen pb-[100px]"
+        // Only add bottom padding when the nav bar is visible
+        className={isAuthenticated ? 'min-h-screen pb-[100px]' : 'min-h-screen'}
       >
         <Outlet />
       </motion.main>
-      <BottomNav />
+      {/* Bottom nav only shown to authenticated users */}
+      {isAuthenticated && <BottomNav />}
     </div>
   );
 }
