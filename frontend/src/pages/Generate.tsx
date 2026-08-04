@@ -153,6 +153,8 @@ export default function Generate() {
         date: getTodayDate(),
         createdAt: now,
         status: 'in-progress',
+        startedAt: now,       // anchors the elapsed timer accurately
+        totalPausedMs: 0,
         exercises: generatedWorkout.exercises,
         targetDurationMinutes: generatedWorkout.targetDurationMinutes,
         goal: generatedWorkout.goal,

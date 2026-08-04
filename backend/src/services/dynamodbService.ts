@@ -1,5 +1,13 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand, QueryCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+
+/** Thrown when an optimistic-lock condition fails (another device modified the record first) */
+export class ConflictError extends Error {
+  constructor(message = 'Workout was modified by another device. Please refresh.') {
+    super(message);
+    this.name = 'ConflictError';
+  }
+}
 import { Workout, UserSettings, WorkoutStats, MuscleGroup } from '../types';
 
 const TABLE_NAME = process.env.TABLE_NAME || 'gym-workout-engine-prod';
@@ -79,11 +87,61 @@ export async function getWorkout(date: string, id: string): Promise<Workout | nu
   return workout as Workout;
 }
 
-export async function updateWorkout(date: string, id: string, updates: Partial<Workout>): Promise<Workout> {
+/**
+ * Versioned update with optimistic locking.
+ * @param expectedVersion  The version the caller believes is current.
+ *   If supplied and it does not match the DDB record, throws ConflictError.
+ *   If omitted, only the DDB condition expression (TOCTOU guard) applies.
+ */
+export async function updateWorkout(
+  date: string,
+  id: string,
+  updates: Partial<Workout>,
+  expectedVersion?: number,
+): Promise<Workout> {
   const existing = await getWorkout(date, id);
   if (!existing) throw new Error(`Workout ${id} not found`);
-  const merged = { ...existing, ...updates };
-  await saveWorkout(merged);
+
+  // Application-level version check (catches stale-client scenarios)
+  if (
+    expectedVersion !== undefined &&
+    existing.version !== undefined &&
+    expectedVersion !== existing.version
+  ) {
+    throw new ConflictError();
+  }
+
+  const currentVersion = existing.version ?? 0;
+  const newVersion = currentVersion + 1;
+  // Strip client-supplied version from updates so we control it
+  const { version: _v, ...safeUpdates } = updates as Workout;
+  const merged: Workout = { ...existing, ...safeUpdates, version: newVersion };
+
+  const item = {
+    PK: `WORKOUT#${date}`,
+    SK: `WORKOUT#${id}`,
+    GSI1PK: 'WORKOUT',
+    GSI1SK: merged.createdAt,
+    entityType: 'Workout',
+    ...merged,
+  };
+
+  try {
+    await client.send(new PutCommand({
+      TableName: TABLE_NAME,
+      Item: item,
+      // Condition: either no version exists yet (first update) or version matches
+      ConditionExpression: 'attribute_not_exists(#ver) OR #ver = :expected',
+      ExpressionAttributeNames: { '#ver': 'version' },
+      ExpressionAttributeValues: { ':expected': currentVersion },
+    }));
+  } catch (err: any) {
+    if (err?.name === 'ConditionalCheckFailedException') {
+      throw new ConflictError();
+    }
+    throw err;
+  }
+
   return merged;
 }
 

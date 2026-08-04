@@ -104,6 +104,14 @@ export interface Workout {
   totalVolume?: number;
   warmup?: WarmupItem[];
   warmupStatus?: 'pending' | 'in-progress' | 'completed' | 'skipped';
+  /** ISO timestamp when the workout was actually started (not generated) */
+  startedAt?: string;
+  /** Accumulated pause time in milliseconds across all pause/resume cycles */
+  totalPausedMs?: number;
+  /** ISO timestamp of the most recent pause start; cleared on resume */
+  lastPausedAt?: string;
+  /** Optimistic-locking version; incremented on every server write */
+  version?: number;
 }
 
 export interface UserSettings {

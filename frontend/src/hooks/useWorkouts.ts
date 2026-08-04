@@ -72,8 +72,8 @@ export function useCompleteWorkout() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ date, id }: { date: string; id: string }) =>
-      api.completeWorkout(date, id),
+    mutationFn: ({ date, id, version }: { date: string; id: string; version?: number }) =>
+      api.completeWorkout(date, id, version),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: workoutKeys.all });
     },

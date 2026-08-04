@@ -18,7 +18,7 @@ export interface CoachingNote {
 
 const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
@@ -113,9 +113,10 @@ export const api = {
     });
   },
 
-  async completeWorkout(date: string, id: string): Promise<Workout> {
+  async completeWorkout(date: string, id: string, version?: number): Promise<Workout> {
     const res = await request<{ workout: Workout }>(`/workouts/${encodeURIComponent(date)}/${encodeURIComponent(id)}/complete`, {
       method: 'POST',
+      body: version !== undefined ? JSON.stringify({ version }) : undefined,
     });
     return res.workout;
   },

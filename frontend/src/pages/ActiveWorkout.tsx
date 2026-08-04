@@ -16,6 +16,7 @@ import { SetRow } from '@/components/workout/SetRow';
 import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
+import { ApiError } from '@/lib/api';
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { toast } from '@/components/ui/use-toast';
 import { calculateVolume } from '@/lib/utils';
@@ -93,7 +94,7 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
-  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedElapsed, getSavedTurnIndex, isPaused } = useActiveWorkout();
+  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedTurnIndex, isPaused } = useActiveWorkout();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
   // Local state drives warmup visibility — immediate sync update avoids black screen on transition
@@ -128,19 +129,18 @@ export default function ActiveWorkout() {
     toast({ title: `Swapped to ${newExercise.name}`, variant: 'success', duration: 2000 });
   };
 
-  const { elapsed } = useWorkoutTimer(activeWorkout !== null && !isPaused, isPaused ? getSavedElapsed() : undefined);
+  // Timer is anchored to workout.startedAt — accurate across devices and restarts
+  const { elapsed } = useWorkoutTimer(activeWorkout, isPaused);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
   const wasRestingRef = useRef(false);
   // Track the total rest seconds the current timer was started with (for the progress arc)
   const restTotalRef = useRef(90);
 
-  // If workout was paused, resume the timer on mount
+  // On mount: if workout was paused on this device, resume the timer
   useEffect(() => {
-    if (isPaused) {
-      resumeFromPause();
-    }
+    if (isPaused) resumeFromPause();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Only run on mount
+  }, []);
 
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
@@ -411,44 +411,45 @@ export default function ActiveWorkout() {
   }
 
   async function handleCompleteWorkout() {
+    if (!activeWorkout) return;
     const durationMinutes = Math.round(elapsed / 60);
     const totalVolume = exercises.reduce((acc, e) => acc + calculateVolume(e.sets), 0);
 
-    const updated = {
-      ...activeWorkout,
-      status: 'completed' as const,
-      completedAt: new Date().toISOString(),
-      actualDurationMinutes: durationMinutes,
-      totalVolume,
-    };
-
-    if (!activeWorkout) return;
     try {
+      // Mark completed on the server (versioned) — this is the primary call
       await completeWorkoutMutation.mutateAsync({
         date: activeWorkout.date,
         id: activeWorkout.id,
+        version: activeWorkout.version,
       });
-    } catch {
-      // If API fails, still save locally
+    } catch (err) {
+      if (err instanceof ApiError && (err.status === 409 || err.status === 404)) {
+        handleStaleWorkout(err.message);
+        return;
+      }
+      // Non-conflict error: still save locally and continue
     }
 
     try {
+      // Sync the full exercise state (sets completed, weights, etc.)
       await updateWorkoutMutation.mutateAsync({
-        date: activeWorkout?.date ?? '',
-        id: activeWorkout?.id ?? '',
+        date: activeWorkout.date,
+        id: activeWorkout.id,
         updates: {
-          status: 'completed',
-          completedAt: updated.completedAt,
-          actualDurationMinutes: durationMinutes,
-          totalVolume,
           exercises: activeWorkout.exercises,
+          startedAt: activeWorkout.startedAt,
+          totalPausedMs: activeWorkout.totalPausedMs,
+          // version is handled server-side; don't send after complete already bumped it
         },
       });
-    } catch {
-      // ignore
+    } catch (err) {
+      if (err instanceof ApiError && (err.status === 409 || err.status === 404)) {
+        handleStaleWorkout(err.message);
+        return;
+      }
+      // ignore other update errors — workout was already completed
     }
 
-    updateActiveWorkout(updated);
     clearActiveWorkout();
     toast({
       title: 'Workout Complete! 🎉',
@@ -486,12 +487,21 @@ export default function ActiveWorkout() {
   }
 
   function handlePauseLater() {
-    // Save current position and elapsed time — workout stays in DB
-    pauseWorkout(currentTurnIndex, elapsed);
+    pauseWorkout(currentTurnIndex); // saves lastPausedAt in workout object
     setShowExitDialog(false);
-    // Delay navigation slightly so the dialog's close animation completes
-    // before the route changes — prevents the black-screen flash on iOS/Android.
     setTimeout(() => navigate('/'), 150);
+  }
+
+  /** Called when a 409 (conflict) or 404 (deleted) response comes back from the API */
+  function handleStaleWorkout(msg?: string) {
+    clearActiveWorkout();
+    toast({
+      title: 'Data is stale — refreshing',
+      description: msg ?? 'This workout was updated from another device.',
+      variant: 'error',
+      duration: 4000,
+    });
+    navigate('/');
   }
 
   async function handleCancelWorkout() {

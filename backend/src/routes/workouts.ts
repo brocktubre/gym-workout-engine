@@ -7,6 +7,7 @@ import {
   getStats,
   getRecentWorkouts,
   deleteWorkout,
+  ConflictError,
 } from '../services/dynamodbService';
 import { Workout } from '../types';
 import { v4 as uuidv4 } from 'uuid';
@@ -96,9 +97,17 @@ router.get('/:date/:id', async (req: Request, res: Response) => {
 router.put('/:date/:id', async (req: Request, res: Response) => {
   try {
     const { date, id } = req.params;
-    const workout = await updateWorkout(date, id, req.body);
+    // Extract the client's expected version from the request body
+    const expectedVersion: number | undefined = typeof req.body.version === 'number'
+      ? req.body.version
+      : undefined;
+    const workout = await updateWorkout(date, id, req.body, expectedVersion);
     res.json({ workout });
   } catch (err: any) {
+    if (err instanceof ConflictError) {
+      res.status(409).json({ error: 'STALE_WORKOUT', message: err.message });
+      return;
+    }
     if (err.message?.includes('not found')) {
       res.status(404).json({ error: 'Workout not found' });
       return;
@@ -117,9 +126,21 @@ router.post('/:date/:id/complete', async (req: Request, res: Response) => {
       return;
     }
 
+    // Client may send its expected version to detect conflicts
+    const expectedVersion: number | undefined = typeof req.body?.version === 'number'
+      ? req.body.version
+      : undefined;
+
     const completedAt = new Date().toISOString();
-    const startTime = existing.createdAt ? new Date(existing.createdAt).getTime() : Date.now();
-    const actualDurationMinutes = Math.round((Date.now() - startTime) / 60_000);
+    // Use startedAt if available (accurate), fall back to createdAt, then now
+    const startTime = existing.startedAt
+      ? new Date(existing.startedAt).getTime()
+      : existing.createdAt
+      ? new Date(existing.createdAt).getTime()
+      : Date.now();
+    const pausedMs = existing.totalPausedMs ?? 0;
+    const activeMs = Math.max(0, Date.now() - startTime - pausedMs);
+    const actualDurationMinutes = Math.round(activeMs / 60_000);
 
     // Calculate total volume
     let totalVolume = 0;
@@ -136,10 +157,14 @@ router.post('/:date/:id/complete', async (req: Request, res: Response) => {
       completedAt,
       actualDurationMinutes,
       totalVolume: Math.round(totalVolume),
-    });
+    }, expectedVersion);
 
     res.json({ workout: updated });
   } catch (err: any) {
+    if (err instanceof ConflictError) {
+      res.status(409).json({ error: 'STALE_WORKOUT', message: err.message });
+      return;
+    }
     res.status(500).json({ error: 'Failed to complete workout', details: err.message });
   }
 });

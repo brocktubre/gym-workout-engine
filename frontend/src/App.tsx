@@ -38,7 +38,8 @@ function WorkoutExpiryCheck() {
       } catch { /* ignore */ }
       // Clear local state regardless
       localStorage.removeItem('gym_active_workout');
-      localStorage.removeItem('gym_timer_start');
+      localStorage.removeItem('gym_timer_start');   // legacy
+      localStorage.removeItem('gym_elapsed_offset'); // legacy
       localStorage.removeItem('gym_paused_at');
       localStorage.removeItem('gym_turn_index');
     }

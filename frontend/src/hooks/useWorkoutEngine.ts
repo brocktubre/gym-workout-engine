@@ -4,10 +4,12 @@ import { api } from '@/lib/api';
 import type { GenerateWorkoutRequest, Workout } from '@/types';
 
 const ACTIVE_WORKOUT_KEY = 'gym_active_workout';
-const TIMER_START_KEY = 'gym_timer_start';
-const PAUSED_AT_KEY = 'gym_paused_at';
-const TURN_INDEX_KEY = 'gym_turn_index';
-const ELAPSED_OFFSET_KEY = 'gym_elapsed_offset';
+const PAUSED_AT_KEY      = 'gym_paused_at';
+const TURN_INDEX_KEY     = 'gym_turn_index';
+
+// Legacy keys — only used for migration of stale localStorage state
+const LEGACY_TIMER_KEY   = 'gym_timer_start';
+const LEGACY_ELAPSED_KEY = 'gym_elapsed_offset';
 
 export const WORKOUT_EXPIRE_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -26,11 +28,45 @@ function loadActiveWorkout(): Workout | null {
     const raw = localStorage.getItem(ACTIVE_WORKOUT_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as Workout;
-    // Validate required fields — clear stale/corrupted entries
     if (!parsed?.id || !parsed?.goal || !parsed?.status || !Array.isArray(parsed?.exercises)) {
       localStorage.removeItem(ACTIVE_WORKOUT_KEY);
       return null;
     }
+
+    // ── Migration: move legacy timer keys into the workout object ──
+    if (!parsed.startedAt) {
+      const legacyTimerRaw = localStorage.getItem(LEGACY_TIMER_KEY);
+      const legacyElapsedRaw = localStorage.getItem(LEGACY_ELAPSED_KEY);
+      const legacyTimer = legacyTimerRaw ? parseInt(legacyTimerRaw, 10) : null;
+
+      if (legacyTimer && !isNaN(legacyTimer)) {
+        const age = Date.now() - legacyTimer;
+        if (age > 0 && age < WORKOUT_EXPIRE_MS) {
+          // Reasonable timer: use it as the effective start
+          parsed.startedAt = new Date(legacyTimer).toISOString();
+          parsed.totalPausedMs = 0;
+        } else {
+          // Stale / garbage — reset to now so elapsed shows 0:00 not 951:55
+          parsed.startedAt = new Date().toISOString();
+          parsed.totalPausedMs = 0;
+        }
+      } else if (legacyElapsedRaw) {
+        // Had a pause offset but no timer key — reconstruct from offset
+        const offsetMs = parseInt(legacyElapsedRaw, 10) * 1000;
+        parsed.startedAt = new Date(Date.now() - offsetMs).toISOString();
+        parsed.totalPausedMs = 0;
+      } else {
+        // No legacy data at all — fresh start
+        parsed.startedAt = new Date().toISOString();
+        parsed.totalPausedMs = 0;
+      }
+
+      // Persist the migrated state and clean up legacy keys
+      saveActiveWorkout(parsed);
+      localStorage.removeItem(LEGACY_TIMER_KEY);
+      localStorage.removeItem(LEGACY_ELAPSED_KEY);
+    }
+
     return parsed;
   } catch {
     localStorage.removeItem(ACTIVE_WORKOUT_KEY);
@@ -46,21 +82,6 @@ function saveActiveWorkout(workout: Workout | null) {
   }
 }
 
-function loadTimerStart(): number | null {
-  const raw = localStorage.getItem(TIMER_START_KEY);
-  if (!raw) return null;
-  const n = parseInt(raw, 10);
-  return isNaN(n) ? null : n;
-}
-
-function saveTimerStart(ts: number | null) {
-  if (ts !== null) {
-    localStorage.setItem(TIMER_START_KEY, String(ts));
-  } else {
-    localStorage.removeItem(TIMER_START_KEY);
-  }
-}
-
 export function useActiveWorkout() {
   const [activeWorkout, setActiveWorkoutState] = useState<Workout | null>(
     () => loadActiveWorkout(),
@@ -70,62 +91,13 @@ export function useActiveWorkout() {
     setActiveWorkoutState(workout);
     saveActiveWorkout(workout);
     if (!workout) {
-      saveTimerStart(null);
+      // Clean up all related localStorage keys
       localStorage.removeItem(PAUSED_AT_KEY);
       localStorage.removeItem(TURN_INDEX_KEY);
-      localStorage.removeItem(ELAPSED_OFFSET_KEY);
+      localStorage.removeItem(LEGACY_TIMER_KEY);
+      localStorage.removeItem(LEGACY_ELAPSED_KEY);
     }
   }, []);
-
-  const startWorkout = useCallback((workout: Workout) => {
-    localStorage.removeItem(PAUSED_AT_KEY);
-    localStorage.removeItem(TURN_INDEX_KEY);
-    localStorage.removeItem(ELAPSED_OFFSET_KEY);
-    saveTimerStart(Date.now());
-    setIsPaused(false);
-    setActiveWorkout({ ...workout, status: 'in-progress' });
-  }, [setActiveWorkout]);
-
-  /** Pause and save current turn index so user can resume later */
-  const pauseWorkout = useCallback((turnIndex: number, elapsedSeconds: number) => {
-    localStorage.setItem(PAUSED_AT_KEY, String(Date.now()));
-    localStorage.setItem(TURN_INDEX_KEY, String(turnIndex));
-    localStorage.setItem(ELAPSED_OFFSET_KEY, String(elapsedSeconds));
-    setIsPaused(true);
-    // Dispatch storage event so other hook instances (Dashboard) re-sync
-    window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));
-  }, []);
-
-  /** Return the saved turn index (0 if none) */
-  const getSavedTurnIndex = useCallback((): number => {
-    const raw = localStorage.getItem(TURN_INDEX_KEY);
-    const n = raw ? parseInt(raw, 10) : 0;
-    return isNaN(n) ? 0 : n;
-  }, []);
-
-  /** Restore timer to saved elapsed offset and unpause */
-  const resumeFromPause = useCallback(() => {
-    const offsetRaw = localStorage.getItem(ELAPSED_OFFSET_KEY);
-    const offsetSeconds = offsetRaw ? parseInt(offsetRaw, 10) : 0;
-    // Set timer start so elapsed reads correctly
-    saveTimerStart(Date.now() - offsetSeconds * 1000);
-    localStorage.removeItem(PAUSED_AT_KEY);
-    localStorage.removeItem(ELAPSED_OFFSET_KEY);
-    setIsPaused(false);
-    window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));
-  }, []);
-
-  /** Get saved elapsed offset in seconds (used to initialize timer display when paused) */
-  const getSavedElapsed = useCallback((): number => {
-    const raw = localStorage.getItem(ELAPSED_OFFSET_KEY);
-    const n = raw ? parseInt(raw, 10) : 0;
-    return isNaN(n) ? 0 : n;
-  }, []);
-
-  /** Whether the workout is currently paused (saved, not actively running) */
-  const [isPaused, setIsPaused] = useState<boolean>(
-    () => localStorage.getItem(PAUSED_AT_KEY) !== null
-  );
 
   const updateActiveWorkout = useCallback((updates: Partial<Workout>) => {
     setActiveWorkoutState((prev) => {
@@ -136,17 +108,82 @@ export function useActiveWorkout() {
     });
   }, []);
 
+  const startWorkout = useCallback((workout: Workout) => {
+    localStorage.removeItem(PAUSED_AT_KEY);
+    localStorage.removeItem(TURN_INDEX_KEY);
+    localStorage.removeItem(LEGACY_TIMER_KEY);
+    localStorage.removeItem(LEGACY_ELAPSED_KEY);
+
+    const now = new Date().toISOString();
+    setIsPaused(false);
+    const started: Workout = {
+      ...workout,
+      status: 'in-progress',
+      startedAt: workout.startedAt ?? now, // preserve if already set by server
+      totalPausedMs: 0,
+      lastPausedAt: undefined,
+    };
+    setActiveWorkout(started);
+  }, [setActiveWorkout]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  /** Pause: record the pause timestamp in the workout object */
+  const pauseWorkout = useCallback((turnIndex: number) => {
+    const now = new Date().toISOString();
+    localStorage.setItem(PAUSED_AT_KEY, String(Date.now()));
+    localStorage.setItem(TURN_INDEX_KEY, String(turnIndex));
+    setIsPaused(true);
+    // Store lastPausedAt in the workout object so elapsed stays frozen
+    setActiveWorkoutState((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, lastPausedAt: now };
+      saveActiveWorkout(updated);
+      return updated;
+    });
+    window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));
+  }, []);
+
+  /** Resume: accumulate pause duration into totalPausedMs, clear lastPausedAt */
+  const resumeFromPause = useCallback(() => {
+    const now = Date.now();
+    setActiveWorkoutState((prev) => {
+      if (!prev) return prev;
+      const additionalPausedMs = prev.lastPausedAt
+        ? Math.max(0, now - new Date(prev.lastPausedAt).getTime())
+        : 0;
+      const updated: Workout = {
+        ...prev,
+        totalPausedMs: (prev.totalPausedMs ?? 0) + additionalPausedMs,
+        lastPausedAt: undefined,
+      };
+      saveActiveWorkout(updated);
+      return updated;
+    });
+    localStorage.removeItem(PAUSED_AT_KEY);
+    setIsPaused(false);
+    window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));
+  }, []);
+
+  /** Return the saved turn index (0 if none) */
+  const getSavedTurnIndex = useCallback((): number => {
+    const raw = localStorage.getItem(TURN_INDEX_KEY);
+    const n = raw ? parseInt(raw, 10) : 0;
+    return isNaN(n) ? 0 : n;
+  }, []);
+
+  const [isPaused, setIsPaused] = useState<boolean>(
+    () => localStorage.getItem(PAUSED_AT_KEY) !== null,
+  );
+
   const clearActiveWorkout = useCallback(() => {
     setActiveWorkout(null);
     setIsPaused(false);
   }, [setActiveWorkout]);
 
-  // Sync isPaused across all hook instances via storage events
+  // Sync isPaused and workout state across hook instances via storage events
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key === PAUSED_AT_KEY || e.key === ACTIVE_WORKOUT_KEY) {
         setIsPaused(localStorage.getItem(PAUSED_AT_KEY) !== null);
-        // Also re-sync activeWorkout in case another instance cleared it
         const latest = loadActiveWorkout();
         setActiveWorkoutState(latest);
       }
@@ -161,7 +198,6 @@ export function useActiveWorkout() {
     pauseWorkout,
     resumeFromPause,
     getSavedTurnIndex,
-    getSavedElapsed,
     updateActiveWorkout,
     clearActiveWorkout,
     hasActiveWorkout: activeWorkout !== null,
@@ -169,64 +205,37 @@ export function useActiveWorkout() {
   };
 }
 
-// ── Timer ────────────────────────────────────────────────────────────────────
+// ── Timer — anchored to workout.startedAt ────────────────────────────────────
+//
+// elapsed = (now - startedAt) - totalPausedMs
+// When paused, frozen at (lastPausedAt - startedAt) - totalPausedMs
+//
+export function useWorkoutTimer(workout: Workout | null, isPaused: boolean) {
+  const getElapsed = useCallback((): number => {
+    if (!workout?.startedAt) return 0;
+    const startMs = new Date(workout.startedAt).getTime();
+    const pausedMs = workout.totalPausedMs ?? 0;
+    if (isPaused && workout.lastPausedAt) {
+      // Frozen at the moment the user paused
+      return Math.max(0, Math.floor(
+        (new Date(workout.lastPausedAt).getTime() - startMs - pausedMs) / 1000,
+      ));
+    }
+    return Math.max(0, Math.floor((Date.now() - startMs - pausedMs) / 1000));
+  }, [workout?.startedAt, workout?.totalPausedMs, workout?.lastPausedAt, isPaused]);
 
-export function useWorkoutTimer(running: boolean, initialElapsed?: number) {
-  const [elapsed, setElapsed] = useState<number>(() => {
-    if (initialElapsed !== undefined) return initialElapsed;
-    const start = loadTimerStart();
-    if (!start) return 0;
-    return Math.floor((Date.now() - start) / 1000);
-  });
-
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [elapsed, setElapsed] = useState(getElapsed);
 
   useEffect(() => {
-    if (!running) {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-      return;
-    }
+    setElapsed(getElapsed()); // sync immediately when inputs change
 
-    // Ensure timer start is stored
-    let start = loadTimerStart();
-    if (!start) {
-      start = Date.now() - elapsed * 1000;
-      saveTimerStart(start);
-    }
+    if (isPaused || !workout?.startedAt) return; // don't tick while paused
 
-    const tick = () => {
-      const s = loadTimerStart();
-      if (s) {
-        setElapsed(Math.floor((Date.now() - s) / 1000));
-      }
-    };
+    const timer = setInterval(() => setElapsed(getElapsed()), 1000);
+    return () => clearInterval(timer);
+  }, [getElapsed]);
 
-    intervalRef.current = setInterval(tick, 1000);
-    tick(); // immediate first tick
-
-    // Persist on page unload
-    const handleUnload = () => {
-      // timer start already stored; nothing extra needed
-    };
-    window.addEventListener('beforeunload', handleUnload);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-      window.removeEventListener('beforeunload', handleUnload);
-    };
-  }, [running, elapsed]);
-
-  const resetTimer = useCallback(() => {
-    saveTimerStart(Date.now());
-    setElapsed(0);
-  }, []);
-
-  return { elapsed, resetTimer };
+  return { elapsed };
 }
 
 // ── Rest countdown ────────────────────────────────────────────────────────────
