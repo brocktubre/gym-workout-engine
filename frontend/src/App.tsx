@@ -68,29 +68,18 @@ export default function App() {
 
             {/* App shell routes */}
             <Route element={<AppLayout />}>
-              <Route index element={<Dashboard />} />
+              {/* Home, History, Settings — require auth */}
+              <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+              <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />
+              <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+              {/* Active workout — requires auth */}
+              <Route path="/active" element={<ProtectedRoute><ActiveWorkout /></ProtectedRoute>} />
+              {/* Generate — public; anon users can generate but not start */}
               <Route path="/generate" element={<Generate />} />
-              <Route
-                path="/active"
-                element={
-                  <ProtectedRoute>
-                    <ActiveWorkout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/history"
-                element={
-                  <ProtectedRoute>
-                    <History />
-                  </ProtectedRoute>
-                }
-              />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsOfService />} />
-              {/* Catch-all: redirect to home */}
-              <Route path="*" element={<Navigate to="/" replace />} />
+              {/* Catch-all: anon → generate, auth → home */}
+              <Route path="*" element={<Navigate to="/generate" replace />} />
             </Route>
           </Routes>
         </AuthProvider>

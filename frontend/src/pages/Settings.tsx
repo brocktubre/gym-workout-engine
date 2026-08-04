@@ -234,18 +234,24 @@ export default function Settings() {
           <SectionHeader icon={<User className="h-full w-full" />} title="Account" />
           {isAuthenticated && user ? (
             <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
-                  Display Name
-                </label>
-                <Input
-                  placeholder="Your name"
-                  value={displayName}
-                  onChange={(e) => {
-                    setDisplayName(e.target.value);
-                    setIsDirty(true);
-                  }}
-                />
+              {/* Name fields — read-only (set at registration) */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                    First Name
+                  </label>
+                  <div className="text-sm text-white bg-[#2c2c2e] border border-[#38383A] rounded-xl px-3 py-2.5">
+                    {user.displayName?.split(' ')[0] ?? '—'}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                    Last Name
+                  </label>
+                  <div className="text-sm text-white bg-[#2c2c2e] border border-[#38383A] rounded-xl px-3 py-2.5">
+                    {user.displayName?.split(' ').slice(1).join(' ') || '—'}
+                  </div>
+                </div>
               </div>
               <div>
                 <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">

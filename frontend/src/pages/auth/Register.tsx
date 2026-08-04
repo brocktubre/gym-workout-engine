@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Dumbbell, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export default function Register() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const restoredWorkout = (location.state as { restoredWorkout?: unknown } | null)?.restoredWorkout;
   const { signUp } = useAuth();
 
   const [firstName, setFirstName] = useState('');
@@ -39,7 +41,12 @@ export default function Register() {
     setIsLoading(true);
     try {
       await signUp(email.trim().toLowerCase(), password, displayName);
-      navigate('/', { replace: true });
+      if (restoredWorkout) {
+        // Send user back to Generate with their previously generated workout
+        navigate('/generate', { replace: true, state: { restoredWorkout } });
+      } else {
+        navigate('/', { replace: true });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed');
     } finally {

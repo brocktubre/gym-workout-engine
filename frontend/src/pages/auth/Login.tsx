@@ -16,7 +16,9 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const returnUrl = (location.state as { returnUrl?: string } | null)?.returnUrl ?? '/';
+  const locationState = (location.state as { returnUrl?: string; restoredWorkout?: unknown } | null);
+  const returnUrl = locationState?.returnUrl ?? '/';
+  const restoredWorkout = locationState?.restoredWorkout;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -24,7 +26,7 @@ export default function Login() {
     setIsLoading(true);
     try {
       await signIn(email.trim().toLowerCase(), password);
-      navigate(returnUrl, { replace: true });
+      navigate(returnUrl, { replace: true, state: restoredWorkout ? { restoredWorkout } : undefined });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign in failed');
     } finally {
@@ -108,7 +110,17 @@ export default function Login() {
           </p>
         </div>
 
-        <div className="mt-8 flex items-center justify-center gap-4 text-xs text-[#636366]">
+        {/* Generate without signing in */}
+        <div className="mt-6 text-center">
+          <Link
+            to="/generate"
+            className="text-sm text-[#8E8E93] hover:text-white transition-colors"
+          >
+            Try generating a workout without an account →
+          </Link>
+        </div>
+
+        <div className="mt-6 flex items-center justify-center gap-4 text-xs text-[#636366]">
           <Link to="/privacy" className="hover:text-[#8E8E93]">Privacy</Link>
           <span>·</span>
           <Link to="/terms" className="hover:text-[#8E8E93]">Terms</Link>

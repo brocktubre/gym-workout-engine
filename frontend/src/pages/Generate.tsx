@@ -56,6 +56,8 @@ interface GeneratedWorkout {
 interface GenerateLocationState {
   suggestedMuscles?: MuscleGroup[];
   suggestedGoal?: WorkoutGoal;
+  /** Workout passed back after account creation so the user can start it immediately */
+  restoredWorkout?: GeneratedWorkout;
 }
 
 export default function Generate() {
@@ -72,7 +74,10 @@ export default function Generate() {
   const [targetMuscles, setTargetMuscles] = useState<MuscleGroup[]>(locationState.suggestedMuscles ?? []);
   const [includeWarmup, setIncludeWarmup] = useState(settings?.includeWarmup ?? true);
   const [allowSupersets, setAllowSupersets] = useState(settings?.allowSupersets ?? true);
-  const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(null);
+  // Restore a workout that was saved before redirecting to register/login
+  const [generatedWorkout, setGeneratedWorkout] = useState<GeneratedWorkout | null>(
+    locationState.restoredWorkout ?? null,
+  );
   const [swapTarget, setSwapTarget] = useState<WorkoutExercise | null>(null);
   const [signInPromptOpen, setSignInPromptOpen] = useState(false);
   const { isAuthenticated } = useAuth();
@@ -537,7 +542,7 @@ export default function Generate() {
               className="flex-1"
               onClick={() => {
                 setSignInPromptOpen(false);
-                navigate('/login', { state: { returnUrl: '/generate' } });
+                navigate('/login', { state: { returnUrl: '/generate', restoredWorkout: generatedWorkout } });
               }}
             >
               Sign In
@@ -546,7 +551,8 @@ export default function Generate() {
               className="flex-1"
               onClick={() => {
                 setSignInPromptOpen(false);
-                navigate('/register');
+                // Pass the generated workout so Register can send the user back here after signup
+                navigate('/register', { state: { restoredWorkout: generatedWorkout } });
               }}
             >
               Create Account
