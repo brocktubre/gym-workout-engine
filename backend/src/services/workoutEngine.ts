@@ -196,11 +196,11 @@ function buildWarmup(
 
   const NUM_ROUNDS = 3;
   for (let r = 0; r < NUM_ROUNDS; r++) {
-    const roundLabel = `Round ${r + 1} of ${NUM_ROUNDS}`;
+    const roundLabel = `Round ${r + 1}`;
 
     // 60s cardio interval
     warmup.push({
-      name: `${cardioOption.shortName} Interval — ${roundLabel}`,
+      name: `${cardioOption.shortName} — ${roundLabel}`,
       type: 'cardio',
       durationSeconds: 60,
       targetMuscles: ['cardio' as MuscleGroup],
