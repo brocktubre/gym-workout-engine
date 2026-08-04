@@ -882,11 +882,19 @@ export default function ActiveWorkout() {
       {!isResting && (
         <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
           <div className="flex gap-2">
-            {/* Go Back — only available after the first turn */}
-            {currentTurnIndex > 0 && (
-              <Button variant="outline" className="flex-1" onClick={handleGoBack}>
+            {/* Go Back — previous set, or back to warmup from set 1 */}
+            {(currentTurnIndex > 0 || (activeWorkout?.warmup?.length ?? 0) > 0) && (
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={
+                  currentTurnIndex > 0
+                    ? handleGoBack
+                    : () => setShowWarmup(true)
+                }
+              >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                Back
+                {currentTurnIndex === 0 ? 'Warmup' : 'Back'}
               </Button>
             )}
 
