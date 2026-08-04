@@ -207,9 +207,15 @@ export default function ActiveWorkout() {
         {/* Header */}
         <div className="sticky top-0 bg-[#0a0a0a]/95 backdrop-blur-xl z-40 px-4 pt-14 pb-4 border-b border-[#38383A]">
           <div className="flex items-center justify-between">
-            <div>
+            <button
+              className="h-9 w-9 rounded-full bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-white transition-colors"
+              onClick={() => setShowExitDialog(true)}
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <div className="text-center">
               <h1 className="text-xl font-bold text-white">Warmup</h1>
-              <p className="text-sm text-[#8E8E93]">
+              <p className="text-xs text-[#8E8E93]">
                 {Math.round(warmupItems.reduce((s, i) => s + i.durationSeconds, 0) / 60)} min before your workout
               </p>
             </div>
@@ -302,6 +308,32 @@ export default function ActiveWorkout() {
             </Button>
           </div>
         </div>
+
+        {/* Exit dialog — same as in the main workout screen */}
+        <Dialog open={showExitDialog} onOpenChange={setShowExitDialog}>
+          <DialogContent className="max-w-xs mx-auto">
+            <DialogHeader>
+              <DialogTitle className="text-center">Pause or End?</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-2 mt-2">
+              <Button size="lg" className="w-full" onClick={() => setShowExitDialog(false)}>
+                Continue Warmup
+              </Button>
+              <Button size="lg" variant="outline" className="w-full" onClick={handlePauseLater}>
+                Resume Later
+              </Button>
+              <Button
+                size="lg"
+                variant="destructive"
+                className="w-full"
+                onClick={handleCancelWorkout}
+                disabled={deleteWorkoutMutation.isPending}
+              >
+                {deleteWorkoutMutation.isPending ? 'Deleting...' : 'Delete Workout'}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     );
   }
