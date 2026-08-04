@@ -4,7 +4,7 @@ import { Search, Zap, List, CheckCircle2 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faDumbbell, faPersonWalking, faCog,
-  faLink, faMinus, faBell, faRing, faArrowUp, faCrosshairs,
+  faLink, faMinus, faBell, faRing, faArrowUp,
   faWater, faTruckFast, faCube, faShirt, faBagShopping,
   faCircleDot, faPersonBiking, faPersonSwimming, faPersonSkiing,
   type IconDefinition,
@@ -37,7 +37,6 @@ const equipmentIcons: Record<string, IconDefinition> = {
   'ez-bar': faMinus,
   rings: faRing,
   'pull-up-bar': faArrowUp,
-  landmine: faCrosshairs,
   'battle-rope': faWater,
   sled: faTruckFast,
   'plyometric-box': faCube,

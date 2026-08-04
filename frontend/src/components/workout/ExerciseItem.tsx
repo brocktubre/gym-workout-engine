@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faDumbbell, faPersonWalking, faCog,
   faLink, faRing, faBell, faMinus,
-  faArrowUp, faCrosshairs, faWater, faTruckFast, faCube,
+  faArrowUp, faWater, faTruckFast, faCube,
   faShirt, faBagShopping, faCircleDot, faPersonBiking,
   faPersonSwimming, faPersonSkiing,
   faArrowRightArrowLeft,
@@ -26,7 +26,6 @@ const equipmentIcons: Record<string, IconDefinition> = {
   'ez-bar': faMinus,
   rings: faRing,
   'pull-up-bar': faArrowUp,
-  landmine: faCrosshairs,
   'battle-rope': faWater,
   sled: faTruckFast,
   'plyometric-box': faCube,

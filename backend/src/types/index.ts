@@ -18,7 +18,6 @@ export type Equipment =
   | 'bodyweight'
   | 'rings'
   | 'pull-up-bar'
-  | 'landmine'
   | 'resistance-band'
   | 'battle-rope'
   | 'sled'

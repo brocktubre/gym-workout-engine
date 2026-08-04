@@ -251,7 +251,7 @@ export default function ActiveWorkout() {
               onClick={() => handleWarmupComplete(warmupItems.map(item => ({ ...item, completed: true })))}
             >
               <CheckCircle2 className="h-5 w-5 mr-2" />
-              Warmup Done — Start Training
+              Warmup Done
             </Button>
           </div>
         </div>
@@ -350,11 +350,6 @@ export default function ActiveWorkout() {
     toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });
   }
 
-  function handleNextTurn() {
-    skipRest();
-    setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
-  }
-
   function handleSkipSet() {
     skipRest();
     if (!isLastTurn) {
@@ -441,7 +436,9 @@ export default function ActiveWorkout() {
     // Save current position and elapsed time — workout stays in DB
     pauseWorkout(currentTurnIndex, elapsed);
     setShowExitDialog(false);
-    navigate('/');
+    // Delay navigation slightly so the dialog's close animation completes
+    // before the route changes — prevents the black-screen flash on iOS/Android.
+    setTimeout(() => navigate('/'), 150);
   }
 
   async function handleCancelWorkout() {
@@ -718,36 +715,30 @@ export default function ActiveWorkout() {
         )}
       </div>
 
-      {/* Bottom actions */}
-      <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
-        <div className="flex gap-3">
-          {!isLastTurn ? (
-            <>
-              <Button variant="outline" className="flex-1" onClick={handleSkipSet}>
+      {/* Bottom actions — hidden during rest (RestTimer has its own skip control) */}
+      {!isResting && (
+        <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
+          <div className="flex gap-3">
+            {!isLastTurn ? (
+              <Button variant="outline" className="w-full" onClick={handleSkipSet}>
                 <SkipForward className="h-4 w-4 mr-2" />
                 Skip
               </Button>
-              <Button className="flex-[2]" onClick={handleNextTurn}>
-                Next Set
-                <span className="ml-2 text-white/70 text-xs">
-                  {currentTurn.isSuperset ? '(Superset)' : ''}
-                </span>
+            ) : (
+              <Button
+                className="w-full"
+                size="lg"
+                variant="success"
+                onClick={handleCompleteWorkout}
+                disabled={completeWorkoutMutation.isPending || updateWorkoutMutation.isPending}
+              >
+                <CheckCircle2 className="h-5 w-5 mr-2" />
+                {completeWorkoutMutation.isPending ? 'Saving...' : 'Complete Workout'}
               </Button>
-            </>
-          ) : (
-            <Button
-              className="w-full"
-              size="lg"
-              variant="success"
-              onClick={handleCompleteWorkout}
-              disabled={completeWorkoutMutation.isPending || updateWorkoutMutation.isPending}
-            >
-              <CheckCircle2 className="h-5 w-5 mr-2" />
-              {completeWorkoutMutation.isPending ? 'Saving...' : 'Complete Workout'}
-            </Button>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Swap exercise sheet */}
       {currentExercise && showSwapSheet && (

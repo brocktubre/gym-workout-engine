@@ -302,30 +302,6 @@
     ]
   },
   {
-    "id": "ex_landmine_press",
-    "name": "Landmine Press",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "shoulders",
-      "triceps"
-    ],
-    "equipment": "barbell",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Anchor one end of barbell in landmine attachment or corner",
-      "Kneel or stand, hold end of bar at shoulder",
-      "Press bar up and forward in arc",
-      "Lower with control"
-    ],
-    "tips": [
-      "Great for shoulder-friendly pressing",
-      "Works upper chest at unique angle",
-      "Can be done single or double arm"
-    ]
-  },
-  {
     "id": "ex_high_cable_flye",
     "name": "High Cable Flye",
     "primaryMuscle": "chest",
