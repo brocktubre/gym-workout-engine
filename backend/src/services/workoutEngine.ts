@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import {
   Exercise, Workout, WorkoutExercise, WorkoutSet,
   WorkoutGoal, MuscleGroup, UserSettings, GenerateWorkoutRequest,
@@ -36,17 +35,6 @@ const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, numbe
   glutes:     { barbell: 185, machine: 110, sled: 185,    kettlebell: 53 },
   core:       { 'medicine-ball': 20, sandbag: 45, rings: 0 },
 };
-
-// ---------------------------------------------------------------------------
-// Antagonist pairs for supersets (push/pull, bis/tris, quads/hams)
-// ---------------------------------------------------------------------------
-const SUPERSET_PAIRS: [MuscleGroup, MuscleGroup][] = [
-  ['chest',   'back'],
-  ['biceps',  'triceps'],
-  ['quads',   'hamstrings'],
-  ['shoulders', 'back'],
-  ['chest',   'shoulders'],
-];
 
 // ---------------------------------------------------------------------------
 // Warmup stretches by muscle group
@@ -225,7 +213,7 @@ export async function generateWorkout(context: {
   const restSeconds = settings.restBetweenSetsSeconds ?? config.restSeconds;
   const targetMinutes = request.durationMinutes;
   const includeWarmup = request.includeWarmup ?? settings.includeWarmup ?? true;
-  const allowSupersets = request.allowSupersets ?? settings.allowSupersets ?? true;
+  // Note: allowSupersets is handled by Claude's enhancement step (claudeService.ts)
 
   // Warmup duration: 5 min default, 10 if workout ≥ 60 min
   const warmupMinutes = includeWarmup ? 12 : 0; // Always 10-12 min: ~7 min cardio + ~3 min stretching
@@ -236,9 +224,6 @@ export async function generateWorkout(context: {
 
   // Minutes per standard exercise
   const minsPerExercise = minutesForExercise(config.sets, restSeconds);
-  // Supersets are faster: two exercises share rest time (rest once between pairs)
-  const minsPerSuperset = minutesForExercise(config.sets, restSeconds) * 1.6; // ~60% overhead vs 2x standalone
-
   // 1. Equipment filter
   const available = getExercisesForEquipment(settings.availableEquipment);
 
@@ -296,17 +281,7 @@ export async function generateWorkout(context: {
     ? buildWarmup(targetMuscles, settings.availableEquipment as string[], warmupMinutes)
     : [];
 
-  // 6. Identify superset opportunities
-  const supersetPairs: Set<string> = new Set();
-  if (allowSupersets) {
-    for (const [a, b] of SUPERSET_PAIRS) {
-      if (targetMuscles.includes(a) && targetMuscles.includes(b)) {
-        supersetPairs.add(`${a}+${b}`);
-      }
-    }
-  }
-
-  // 7. Build exercise list
+  // 6. Build exercise list
   const result: WorkoutExercise[] = [];
   const exclude = new Set(request.excludeExerciseIds || []);
   const processedMuscles = new Set<MuscleGroup>();
@@ -337,63 +312,17 @@ export async function generateWorkout(context: {
     const muscle = remainingMuscles.shift()!;
     if (processedMuscles.has(muscle)) continue;
 
-    // Check if this muscle has a superset partner in remaining muscles
-    let supersetPartner: MuscleGroup | undefined;
-    if (allowSupersets && budget > minsPerSuperset) {
-      for (const [a, b] of SUPERSET_PAIRS) {
-        const partner = muscle === a ? b : muscle === b ? a : undefined;
-        if (partner && remainingMuscles.includes(partner)) {
-          supersetPartner = partner;
-          break;
-        }
-      }
-    }
-
     const usedIds = new Set<string>(exclude);
     const primaryEx = pickExercise(muscle, settings.preferCompound, usedIds);
     if (!primaryEx) continue;
 
-    if (supersetPartner) {
-      // === SUPERSET ===
-      usedIds.add(primaryEx.id);
-      const partnerEx = pickExercise(supersetPartner, settings.preferCompound, usedIds);
-      // Never superset two barbell movements — user only has 1 barbell set up at a time
-      const bothBarbell = primaryEx.equipment === 'barbell' && partnerEx?.equipment === 'barbell';
-      if (partnerEx && !bothBarbell) {
-        const groupId = uuidv4();
-        // In a superset rest is shared — shorter rest per individual exercise
-        // Superset rest: half of normal rest, never less than 30s
-        const supersetRest = Math.max(30, Math.round(restSeconds * 0.5));
-
-        const { sets: setsA, progressionNote: noteA } = buildSets(primaryEx, goal, config, supersetRest, recentWorkouts);
-        const { sets: setsB, progressionNote: noteB } = buildSets(partnerEx, goal, config, supersetRest, recentWorkouts);
-
-        result.push({
-          exerciseId: primaryEx.id, exercise: primaryEx,
-          sets: setsA, progressionNote: noteA,
-          supersetGroupId: groupId, supersetOrder: 1,
-        });
-        result.push({
-          exerciseId: partnerEx.id, exercise: partnerEx,
-          sets: setsB, progressionNote: noteB,
-          supersetGroupId: groupId, supersetOrder: 2,
-        });
-
-        budget -= minsPerSuperset;
-        processedMuscles.add(muscle);
-        processedMuscles.add(supersetPartner);
-        remainingMuscles.splice(remainingMuscles.indexOf(supersetPartner), 1);
-        continue;
-      }
-    }
-
-    // === STANDARD EXERCISE ===
+    // === STANDARD EXERCISE (Claude will assign supersets later) ===
     const { sets, progressionNote } = buildSets(primaryEx, goal, config, restSeconds, recentWorkouts);
     result.push({ exerciseId: primaryEx.id, exercise: primaryEx, sets, progressionNote });
     budget -= minsPerExercise;
     processedMuscles.add(muscle);
 
-    // Isolation accessory if time remains (not for supersets)
+    // Optional isolation accessory for this muscle group
     if (budget > minsPerExercise * 0.9) {
       const isoPool = available.filter(e =>
         e.primaryMuscle === muscle &&

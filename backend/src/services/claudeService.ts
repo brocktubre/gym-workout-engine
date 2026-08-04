@@ -32,15 +32,28 @@ async function getAnthropicApiKey(): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
-// Types for Claude's JSON response
+// Antagonist pairs used for the deterministic superset fallback
 // ---------------------------------------------------------------------------
-interface ClaudeExerciseChoice {
-  id: string;
-  supersetWith?: string | null;
+const FALLBACK_SUPERSET_PAIRS: [MuscleGroup, MuscleGroup][] = [
+  ['chest',     'back'],
+  ['biceps',    'triceps'],
+  ['quads',     'hamstrings'],
+  ['shoulders', 'back'],
+  ['chest',     'shoulders'],
+];
+
+// ---------------------------------------------------------------------------
+// Types for Claude's JSON response (superset grouping format)
+// ---------------------------------------------------------------------------
+interface SupersetGroup {
+  /** 'superset' = 2-4 exercises back-to-back; 'standalone' = normal rest */
+  type: 'superset' | 'standalone';
+  /** Ordered list of exercise IDs */
+  exercises: string[];
 }
 
-interface ClaudeResponse {
-  exercises: ClaudeExerciseChoice[];
+interface ClaudeGroupResponse {
+  groups: SupersetGroup[];
   reasoning?: string;
 }
 
@@ -138,7 +151,52 @@ Valid goals: strength,hypertrophy,endurance,fat-loss`;
 }
 
 // ---------------------------------------------------------------------------
+// Fallback: deterministic 2-exercise superset pairing when Claude is unavailable
+// ---------------------------------------------------------------------------
+function applyFallbackSupersets(exercises: WorkoutExercise[]): WorkoutExercise[] {
+  const result: WorkoutExercise[] = [];
+  const processed = new Set<string>();
+
+  for (const ex of exercises) {
+    if (processed.has(ex.exerciseId)) continue;
+    processed.add(ex.exerciseId);
+
+    // Try to find a complementary pairing
+    let paired = false;
+    for (const [a, b] of FALLBACK_SUPERSET_PAIRS) {
+      const primaryMuscle = ex.exercise.primaryMuscle;
+      const partnerMuscle = primaryMuscle === a ? b : primaryMuscle === b ? a : undefined;
+      if (!partnerMuscle) continue;
+
+      const partnerIdx = exercises.findIndex(e =>
+        !processed.has(e.exerciseId) &&
+        e.exercise.primaryMuscle === partnerMuscle &&
+        !(ex.exercise.equipment === 'barbell' && e.exercise.equipment === 'barbell'),
+      );
+
+      if (partnerIdx !== -1) {
+        const partner = exercises[partnerIdx];
+        processed.add(partner.exerciseId);
+        const groupId = uuidv4();
+        const baseRest = ex.sets[0]?.restSeconds ?? 90;
+        const supersetRest = Math.max(30, Math.round(baseRest * 0.5));
+        result.push({ ...ex,      sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),      supersetGroupId: groupId, supersetOrder: 1 });
+        result.push({ ...partner, sets: partner.sets.map(s => ({ ...s, restSeconds: supersetRest })), supersetGroupId: groupId, supersetOrder: 2 });
+        paired = true;
+        break;
+      }
+    }
+
+    if (!paired) {
+      result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
+    }
+  }
+  return result;
+}
+
+// ---------------------------------------------------------------------------
 // Hybrid enhancement: rule engine generates, Claude refines order + supersets
+// Claude can create 2-4 exercise supersets (pairs, tri-sets, giant sets)
 // ---------------------------------------------------------------------------
 export async function enhanceWorkoutWithClaude(
   draftExercises: WorkoutExercise[],
@@ -147,7 +205,7 @@ export async function enhanceWorkoutWithClaude(
 ): Promise<WorkoutExercise[]> {
   try {
     const apiKey = await getAnthropicApiKey();
-    const client = new Anthropic({ apiKey, timeout: 12_000 }); // 12s hard cap
+    const client = new Anthropic({ apiKey, timeout: 15_000 });
 
     // --- Build compact fatigue summary ---
     const now = Date.now();
@@ -168,153 +226,160 @@ export async function enhanceWorkoutWithClaude(
       }
     }
 
-    // --- Compact draft for the prompt (keep tokens low) ---
-    const draftCompact = draftExercises.map(we => ({
-      id: we.exerciseId,
-      name: we.exercise.name,
-      muscle: we.exercise.primaryMuscle,
+    // --- Compact exercise list for the prompt ---
+    const exerciseList = draftExercises.map(we => ({
+      id:        we.exerciseId,
+      name:      we.exercise.name,
+      muscle:    we.exercise.primaryMuscle,
       secondary: we.exercise.secondaryMuscles,
-      category: we.exercise.category,
+      category:  we.exercise.category,
       equipment: we.exercise.equipment,
-      currentSuperset: draftExercises.find(
-        o => o.supersetGroupId === we.supersetGroupId &&
-             we.supersetGroupId !== undefined &&
-             o.exerciseId !== we.exerciseId,
-      )?.exerciseId ?? null,
     }));
 
     // ---------------------------------------------------------------------------
-    // System prompt — strict rules to keep Claude from hallucinating exercise IDs
+    // System prompt: Claude creates 2-4 exercise superset groups
     // ---------------------------------------------------------------------------
-    const systemPrompt = `You are an expert personal trainer reviewing a rule-generated workout.
-Your job: reorder the given exercises and adjust superset pairings for optimal results.
+    const systemPrompt = `You are an expert personal trainer organizing a workout into optimal superset groups.
+
+SUPERSET DEFINITIONS:
+- Superset  (2 movements): back-to-back with short rest between rounds
+- Tri-set   (3 movements): three movements back-to-back, rest only between rounds
+- Giant set (4 movements): four movements back-to-back, rest only between full rounds
+
+YOUR TASK:
+Given the exercise list, decide which exercises should be grouped into supersets and which should be standalone.
+Return them in an optimal workout order.
 
 STRICT RULES:
-1. Return EXACTLY the same exercise IDs provided — do NOT add, remove, or rename any
-2. Never pair two barbell exercises as a superset (user only has one barbell loaded at a time)
-3. Only superset antagonist muscle pairs: chest↔back, biceps↔triceps, quads↔hamstrings, shoulders↔back
-4. List each ID exactly ONCE in your response — no duplicates
-5. Compound movements should come before isolation movements for the same muscle group
-6. Avoid leading the workout with muscles listed in recentFatigue
-7. Return ONLY valid JSON — no markdown, no code fences, no extra text
+1. Each exercise ID must appear EXACTLY ONCE across all groups
+2. Superset groups must contain 2, 3, or 4 exercises — never 1, never more than 4
+3. NEVER put two barbell exercises in the same superset group (only one barbell can be loaded)
+4. Heavy compound barbell lifts (squats, deadlifts, bench press) are usually better as standalone
+5. Isolation exercises group well into supersets
+6. Good superset pairings (antagonist muscles work best):
+   - chest ↔ back
+   - biceps ↔ triceps
+   - quads ↔ hamstrings
+   - shoulders ↔ back
+   - Tri-set example: biceps + triceps + rear delts
+   - Tri-set example: quads + hamstrings + glutes
+7. Compound movements should appear before isolation for the same muscle group
+8. Avoid leading with muscles in recentFatigue
+9. Return ONLY valid JSON — no markdown, no code fences
 
-JSON format:
-{"exercises":[{"id":"exact-id-here","supersetWith":"partner-id-or-null"}],"reasoning":"1–2 sentences"}`;
+JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4):
+{"groups":[{"type":"superset","exercises":["id1","id2","id3"]},{"type":"standalone","exercises":["id4"]}],"reasoning":"1-2 sentences"}`;
 
     const userMessage = JSON.stringify({
       goal: settings.goal,
       fitnessLevel: settings.fitnessLevel,
-      preferCompound: settings.preferCompound,
       allowSupersets: settings.allowSupersets ?? true,
       recentFatigue,
-      exercises: draftCompact,
+      exercises: exerciseList,
     });
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 600,
+      max_tokens: 800,
       system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }],
     });
 
     const rawText = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
 
-    // --- Parse ---
-    let claudeResult: ClaudeResponse;
+    let claudeResult: ClaudeGroupResponse;
     try {
       claudeResult = JSON.parse(extractJson(rawText));
     } catch {
-      console.warn('[Claude] Invalid JSON — falling back to rule-engine output. Raw:', rawText.slice(0, 200));
-      return draftExercises;
+      console.warn('[Claude] Invalid JSON — using fallback superset logic. Raw:', rawText.slice(0, 200));
+      return applyFallbackSupersets(draftExercises);
     }
 
-    if (!Array.isArray(claudeResult.exercises) || claudeResult.exercises.length === 0) {
-      console.warn('[Claude] Empty exercises array — falling back');
-      return draftExercises;
+    if (!Array.isArray(claudeResult.groups) || claudeResult.groups.length === 0) {
+      console.warn('[Claude] Empty groups array — using fallback');
+      return applyFallbackSupersets(draftExercises);
     }
 
-    // --- Validate: Claude must return exactly the same IDs ---
+    // --- Validate: all IDs must appear exactly once ---
     const draftIds = new Set(draftExercises.map(e => e.exerciseId));
-    const claudeIds = claudeResult.exercises.map(e => e.id);
-    const uniqueClaudeIds = new Set(claudeIds);
+    const allClaudeIds = claudeResult.groups.flatMap(g => g.exercises);
+    const uniqueClaudeIds = new Set(allClaudeIds);
+
     const idMismatch =
       uniqueClaudeIds.size !== draftIds.size ||
-      claudeIds.length !== draftIds.size ||
+      allClaudeIds.length !== draftIds.size ||
       ![...draftIds].every(id => uniqueClaudeIds.has(id));
 
     if (idMismatch) {
-      console.warn('[Claude] Exercise ID mismatch — falling back to rule-engine output');
-      return draftExercises;
+      console.warn('[Claude] Exercise ID mismatch — using fallback superset logic');
+      return applyFallbackSupersets(draftExercises);
     }
 
-    // --- Build lookup ---
+    // --- Build lookup map ---
     const draftMap = new Map<string, WorkoutExercise>();
     for (const we of draftExercises) draftMap.set(we.exerciseId, we);
 
-    // --- Reconstruct with Claude's ordering and superset pairings ---
+    // --- Reconstruct with Claude's groupings ---
     const result: WorkoutExercise[] = [];
-    const processed = new Set<string>();
 
-    for (const choice of claudeResult.exercises) {
-      if (processed.has(choice.id)) continue;
-      const original = draftMap.get(choice.id);
-      if (!original) continue;
+    for (const group of claudeResult.groups) {
+      const members = group.exercises
+        .map(id => draftMap.get(id))
+        .filter((e): e is WorkoutExercise => e !== undefined);
 
-      if (choice.supersetWith && !processed.has(choice.supersetWith)) {
-        const partner = draftMap.get(choice.supersetWith);
-        if (partner) {
-          // Guard: no double-barbell supersets
-          const bothBarbell =
-            original.exercise.equipment === 'barbell' &&
-            partner.exercise.equipment === 'barbell';
+      if (members.length === 0) continue;
 
-          if (!bothBarbell) {
-            const groupId = uuidv4();
-            const baseRest = original.sets[0]?.restSeconds ?? 90;
-            const supersetRest = Math.max(30, Math.round(baseRest * 0.5));
+      const isSuperset = group.type === 'superset' && members.length >= 2;
 
-            result.push({
-              ...original,
-              sets: original.sets.map(s => ({ ...s, restSeconds: supersetRest })),
-              supersetGroupId: groupId,
-              supersetOrder: 1,
-            });
-            result.push({
-              ...partner,
-              sets: partner.sets.map(s => ({ ...s, restSeconds: supersetRest })),
-              supersetGroupId: groupId,
-              supersetOrder: 2,
-            });
-            processed.add(choice.id);
-            processed.add(choice.supersetWith);
-            continue;
+      if (isSuperset) {
+        // Guard: never more than 4 in a group, never 2+ barbells
+        const barbellCount = members.filter(e => e.exercise.equipment === 'barbell').length;
+        const safeMembers = barbellCount > 1
+          ? members // fallback: push them in as standalone below
+          : members.slice(0, 4); // cap at 4
+
+        if (barbellCount > 1) {
+          // Too many barbells — treat all as standalone
+          for (const ex of safeMembers) {
+            result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
           }
+          continue;
+        }
+
+        const groupId = uuidv4();
+        const baseRest = safeMembers[0].sets[0]?.restSeconds ?? 90;
+        // Rest after completing a full round of the superset
+        const supersetRest = Math.max(45, Math.round(baseRest * 0.6));
+
+        safeMembers.forEach((ex, i) => {
+          result.push({
+            ...ex,
+            sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),
+            supersetGroupId: groupId,
+            supersetOrder: i + 1,
+          });
+        });
+      } else {
+        // Standalone — strip any stale superset metadata
+        for (const ex of members) {
+          result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
         }
       }
-
-      // Standard — strip any stale superset metadata from the rule engine
-      result.push({
-        ...original,
-        supersetGroupId: undefined,
-        supersetOrder: undefined,
-      });
-      processed.add(choice.id);
     }
 
-    // Final safety check: output count must match input count
+    // Safety: output must match input count
     if (result.length !== draftExercises.length) {
-      console.warn('[Claude] Output length mismatch — falling back');
-      return draftExercises;
+      console.warn('[Claude] Output length mismatch — using fallback');
+      return applyFallbackSupersets(draftExercises);
     }
 
     if (claudeResult.reasoning) {
-      console.log(`[Claude] ${claudeResult.reasoning}`);
+      console.log(`[Claude superset] ${claudeResult.reasoning}`);
     }
 
     return result;
   } catch (err: any) {
-    // Graceful fallback — Claude enhancement is additive, never break the workout
-    console.error('[Claude] Enhancement failed, using rule-engine output:', err?.message ?? err);
-    return draftExercises;
+    console.error('[Claude] Enhancement failed, using fallback superset logic:', err?.message ?? err);
+    return applyFallbackSupersets(draftExercises);
   }
 }

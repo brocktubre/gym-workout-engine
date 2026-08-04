@@ -289,15 +289,22 @@ export default function ActiveWorkout() {
 
   const currentExercise = exercises[currentTurn.exerciseIndex];
 
-  // For superset display: find the partner
-  let supersetPartner: WorkoutExercise | undefined;
+  // For superset display: find ALL members of the superset group (supports 2-4)
+  let supersetMembers: WorkoutExercise[] = [];
+  let supersetTypeName = '';
   if (currentTurn.isSuperset && currentTurn.supersetGroupId) {
-    supersetPartner = exercises.find(
-      (e) =>
-        e.supersetGroupId === currentTurn.supersetGroupId &&
-        e.exerciseId !== currentExercise?.exerciseId,
-    );
+    supersetMembers = exercises
+      .filter(e => e.supersetGroupId === currentTurn.supersetGroupId)
+      .sort((a, b) => (a.supersetOrder ?? 0) - (b.supersetOrder ?? 0));
+    supersetTypeName =
+      supersetMembers.length === 2 ? 'Superset'
+      : supersetMembers.length === 3 ? 'Tri-Set'
+      : 'Giant Set';
   }
+  // Position of the current exercise within its superset (0-based)
+  const supersetPosition = supersetMembers.findIndex(
+    e => e.exerciseId === currentExercise?.exerciseId,
+  );
 
   // Unique exercise count for "Exercise X of Y" counter
   const exerciseCount = exercises.length;
@@ -341,13 +348,25 @@ export default function ActiveWorkout() {
     updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
     updateActiveWorkout(updated as Workout);
 
-    const restSecs = currentTurn.betweenExercise
-      ? BETWEEN_EXERCISE_REST
-      : (set.restSeconds ?? 90);
-    restTotalRef.current = restSecs;
-    startRest(restSecs);
-
     toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });
+
+    // Within a superset: if the next turn is in the SAME round (same setIndex, same group),
+    // advance immediately without a rest timer — you move straight to the next movement.
+    const nextTurn = turns[currentTurnIndex + 1];
+    const sameRound =
+      currentTurn.isSuperset &&
+      nextTurn?.supersetGroupId === currentTurn.supersetGroupId &&
+      nextTurn?.setIndex === currentTurn.setIndex;
+
+    if (sameRound) {
+      setCurrentTurnIndex(i => Math.min(i + 1, turns.length - 1));
+    } else {
+      const restSecs = currentTurn.betweenExercise
+        ? BETWEEN_EXERCISE_REST
+        : (set.restSeconds ?? 90);
+      restTotalRef.current = restSecs;
+      startRest(restSecs);
+    }
   }
 
   function handleSkipSet() {
@@ -497,36 +516,48 @@ export default function ActiveWorkout() {
             transition={{ duration: 0.2 }}
           >
             <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4">
-              {/* Superset header */}
+              {/* Superset header — shows type name + sequence pills (A / B / C / D) */}
               {currentTurn.isSuperset && (
                 <div className="flex items-center gap-2 mb-3 pb-3 border-b border-[#38383A]">
-                  <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF]" />
-                  <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
-                    Superset
+                  <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] flex-shrink-0" />
+                  <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider flex-shrink-0">
+                    {supersetTypeName}
                   </span>
-                  <span className="text-xs text-[#8E8E93]">Alternate between exercises</span>
+                  {/* Sequence pills: A B C D — active=blue, done-this-round=green, pending=gray */}
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    {supersetMembers.map((m, i) => {
+                      const letter = String.fromCharCode(65 + i);
+                      const isCurrent = m.exerciseId === currentExercise?.exerciseId;
+                      const doneThisRound = m.sets[currentTurn.setIndex]?.completed;
+                      return (
+                        <span
+                          key={m.exerciseId}
+                          className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold transition-colors ${
+                            isCurrent
+                              ? 'bg-[#0A84FF] text-white'
+                              : doneThisRound
+                              ? 'bg-[#30D158] text-white'
+                              : 'bg-[#38383A] text-[#8E8E93]'
+                          }`}
+                        >
+                          {letter}
+                        </span>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 
               <div className="flex items-start justify-between mb-2">
-                <div className="flex-1">
-                  {/* Exercise name(s) */}
+                <div className="flex-1 min-w-0">
+                  {/* Current exercise name */}
                   <h2 className="text-lg font-bold text-white leading-tight">
                     {currentExercise?.exercise.name}
-                    {supersetPartner && (
-                      <span className="text-[#8E8E93] font-normal">
-                        {' / '}
-                        <span className="text-[#8E8E93]">{supersetPartner.exercise.name}</span>
-                      </span>
-                    )}
                   </h2>
-                  {/* Muscle badges */}
+                  {/* Muscle badge + equipment */}
                   <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                     {currentExercise && (
                       <MuscleGroupBadge muscle={currentExercise.exercise.primaryMuscle} />
-                    )}
-                    {supersetPartner && (
-                      <MuscleGroupBadge muscle={supersetPartner.exercise.primaryMuscle} />
                     )}
                     <span className="text-xs text-[#8E8E93] capitalize">
                       {currentExercise?.exercise.equipment?.replace('-', ' ')}
@@ -542,20 +573,20 @@ export default function ActiveWorkout() {
                     <ArrowLeftRight className="h-4 w-4" />
                   </button>
                   <div className="bg-[#2c2c2e] rounded-xl px-3 py-1.5 text-center">
-                  <p className="text-lg font-bold text-white">{setNumber}</p>
-                  <p className="text-[10px] text-[#8E8E93]">of {totalExerciseSets}</p>
+                    <p className="text-lg font-bold text-white">{setNumber}</p>
+                    <p className="text-[10px] text-[#8E8E93]">of {totalExerciseSets}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Superset: show which exercise this set belongs to */}
-              {currentTurn.isSuperset && (
+              {/* Superset context row: letter + round info */}
+              {currentTurn.isSuperset && supersetPosition >= 0 && (
                 <div className="flex items-center gap-2 mt-2 px-3 py-2 bg-[#0A84FF]/10 rounded-xl">
                   <span className="text-xs font-semibold text-[#0A84FF]">
-                    Now: {currentExercise?.exercise.name}
+                    {String.fromCharCode(65 + supersetPosition)} · {currentExercise?.exercise.name}
                   </span>
-                  <span className="text-xs text-[#8E8E93]">
-                    (Set {currentTurn.setIndex + 1})
+                  <span className="text-xs text-[#8E8E93] ml-auto">
+                    Round {currentTurn.setIndex + 1}/{totalExerciseSets}
                   </span>
                 </div>
               )}
@@ -575,18 +606,24 @@ export default function ActiveWorkout() {
         {/* Rest timer overlay */}
         <AnimatePresence>
           {isResting && (() => {
-            // Peek at the next turn to build the "Next Up" preview
             const nextTurn = turns[currentTurnIndex + 1];
             const nextExercise = nextTurn ? exercises[nextTurn.exerciseIndex] : undefined;
-            // For supersets, also grab the partner if the next turn starts a new superset
-            const nextPartner = nextTurn?.isSuperset && nextExercise?.supersetGroupId
-              ? exercises.find(
-                  e => e.supersetGroupId === nextExercise.supersetGroupId &&
-                       e.exerciseId !== nextExercise.exerciseId,
-                )
-              : undefined;
 
-            const nextSetNum  = (nextTurn?.setIndex ?? 0) + 1;
+            // Is this rest at the end of a superset round? (next turn is same group, new set index)
+            const endOfSupersetRound =
+              currentTurn.isSuperset &&
+              nextTurn?.supersetGroupId === currentTurn.supersetGroupId &&
+              nextTurn?.setIndex !== undefined &&
+              nextTurn.setIndex > currentTurn.setIndex;
+
+            // Next-exercise superset members (for between-exercise Next Up card)
+            const nextSupersetMembers: WorkoutExercise[] = nextTurn?.isSuperset && nextTurn.supersetGroupId
+              ? exercises
+                  .filter(e => e.supersetGroupId === nextTurn.supersetGroupId)
+                  .sort((a, b) => (a.supersetOrder ?? 0) - (b.supersetOrder ?? 0))
+              : nextExercise ? [nextExercise] : [];
+
+            const nextSetNum   = (nextTurn?.setIndex ?? 0) + 1;
             const nextSetTotal = nextExercise?.sets.length ?? 0;
 
             return (
@@ -603,6 +640,11 @@ export default function ActiveWorkout() {
                       Rest between exercises
                     </p>
                   )}
+                  {endOfSupersetRound && (
+                    <p className="text-xs font-semibold text-[#0A84FF] uppercase tracking-wider">
+                      {supersetTypeName} — Round {currentTurn.setIndex + 2} up next
+                    </p>
+                  )}
                   <RestTimer
                     seconds={restSeconds}
                     totalSeconds={restTotalRef.current}
@@ -610,34 +652,68 @@ export default function ActiveWorkout() {
                   />
                 </div>
 
-                {/* Next Up card — only shown during between-exercise rest */}
+                {/* End-of-superset-round: show upcoming round sequence */}
+                {endOfSupersetRound && supersetMembers.length > 0 && (
+                  <div className="bg-[#1c1c1e] rounded-2xl border border-[#0A84FF]/25 p-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
+                      <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
+                        Next Round — {supersetTypeName}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {supersetMembers.map((m, i) => {
+                        const exSet = m.sets[currentTurn.setIndex + 1] ?? m.sets[0];
+                        const hasWeight = exSet?.targetWeight && exSet.targetWeight > 0;
+                        return (
+                          <div key={m.exerciseId} className="flex items-center gap-2 bg-[#2c2c2e] rounded-xl px-3 py-2">
+                            <span className="text-xs font-bold text-[#0A84FF] w-4">
+                              {String.fromCharCode(65 + i)}
+                            </span>
+                            <div>
+                              <p className="text-xs font-semibold text-white leading-tight">{m.exercise.name}</p>
+                              <p className="text-[10px] text-[#8E8E93]">
+                                {exSet?.targetReps ?? '?'} reps
+                                {hasWeight ? ` · ${exSet!.targetWeight} lbs` : ''}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Between-exercise Next Up card */}
                 {currentTurn.betweenExercise && nextExercise && (
                   <div className="bg-[#1c1c1e] rounded-2xl border border-[#FF9F0A]/25 p-4">
-                    {/* Header */}
                     <div className="flex items-center gap-2 mb-3">
                       <ChevronRight className="h-3.5 w-3.5 text-[#FF9F0A]" />
                       <span className="text-xs font-bold text-[#FF9F0A] uppercase tracking-wider">
                         Next Up
                       </span>
-                      {nextPartner && (
-                        <span className="text-[10px] text-[#8E8E93] ml-1">Superset</span>
+                      {nextTurn?.isSuperset && (
+                        <span className="text-[10px] text-[#8E8E93] ml-1">
+                          {nextSupersetMembers.length === 2 ? 'Superset' : nextSupersetMembers.length === 3 ? 'Tri-Set' : nextSupersetMembers.length > 3 ? 'Giant Set' : ''}
+                        </span>
                       )}
                     </div>
 
-                    {/* Exercise(s) */}
-                    {[nextExercise, ...(nextPartner ? [nextPartner] : [])].map((ex, i) => {
+                    {nextSupersetMembers.map((ex, i) => {
                       const exSet = ex.sets[nextTurn?.setIndex ?? 0] ?? ex.sets[0];
                       const hasWeight = exSet?.targetWeight && exSet.targetWeight > 0;
                       return (
-                        <div
-                          key={ex.exerciseId}
-                          className={i > 0 ? 'mt-3 pt-3 border-t border-[#38383A]' : ''}
-                        >
+                        <div key={ex.exerciseId} className={i > 0 ? 'mt-3 pt-3 border-t border-[#38383A]' : ''}>
                           <div className="flex items-start justify-between gap-2">
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-bold text-white leading-tight">
+                              {nextSupersetMembers.length > 1 && (
+                                <span className="text-[10px] font-bold text-[#FF9F0A] mr-1">
+                                  {String.fromCharCode(65 + i)}
+                                </span>
+                              )}
+                              <span className="text-sm font-bold text-white leading-tight">
                                 {ex.exercise.name}
-                              </p>
+                              </span>
                               <div className="flex items-center gap-2 mt-1 flex-wrap">
                                 <MuscleGroupBadge muscle={ex.exercise.primaryMuscle} size="sm" />
                                 <span className="text-[10px] text-[#8E8E93] capitalize">
@@ -645,7 +721,6 @@ export default function ActiveWorkout() {
                                 </span>
                               </div>
                             </div>
-                            {/* Set counter badge */}
                             <div className="bg-[#2c2c2e] rounded-xl px-2.5 py-1.5 text-center flex-shrink-0">
                               <p className="text-sm font-bold text-white leading-none">
                                 {nextSetNum}/{nextSetTotal}
@@ -653,8 +728,6 @@ export default function ActiveWorkout() {
                               <p className="text-[10px] text-[#8E8E93]">set</p>
                             </div>
                           </div>
-
-                          {/* Reps + weight pills */}
                           <div className="flex items-center gap-2 mt-2.5 flex-wrap">
                             <span className="text-xs font-semibold bg-[#2c2c2e] text-white px-3 py-1 rounded-full">
                               {exSet?.targetReps ?? '?'} reps
