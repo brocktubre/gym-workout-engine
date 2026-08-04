@@ -27,6 +27,7 @@ export interface AuthTokens {
 export interface AuthUser {
   email: string;
   sub?: string;
+  displayName?: string;
 }
 
 function persistTokens(session: CognitoUserSession, email?: string) {
@@ -62,13 +63,13 @@ export const authService = {
     });
   },
 
-  async signUp(email: string, password: string): Promise<AuthTokens> {
+  async signUp(email: string, password: string, displayName?: string): Promise<AuthTokens> {
     // Use backend route: adminCreateUser + adminSetUserPassword → no email verification required
     const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
     const resp = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, displayName }),
     });
     if (!resp.ok) {
       const body = await resp.json().catch(() => ({})) as { error?: string };
@@ -77,11 +78,11 @@ export const authService = {
       throw err;
     }
     const tokens = await resp.json() as { accessToken: string; idToken: string; refreshToken: string };
-    // Store tokens and restore Cognito SDK session so the rest of auth works
     localStorage.setItem('gym_access_token', tokens.accessToken);
     localStorage.setItem('gym_id_token', tokens.idToken);
     localStorage.setItem('gym_refresh_token', tokens.refreshToken);
     localStorage.setItem('gym_user_email', email);
+    if (displayName) localStorage.setItem('gym_display_name', displayName);
     return tokens;
   },
 
@@ -131,6 +132,10 @@ export const authService = {
 
   getCurrentEmail(): string | null {
     return localStorage.getItem(EMAIL_KEY);
+  },
+
+  getCurrentDisplayName(): string | null {
+    return localStorage.getItem('gym_display_name');
   },
 
   getAccessToken(): string | null {

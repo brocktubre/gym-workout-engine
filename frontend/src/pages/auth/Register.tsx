@@ -10,6 +10,8 @@ export default function Register() {
   const navigate = useNavigate();
   const { signUp } = useAuth();
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -20,6 +22,10 @@ export default function Register() {
     e.preventDefault();
     setError(null);
 
+    if (!firstName.trim() || !lastName.trim()) {
+      setError('Please enter your first and last name');
+      return;
+    }
     if (password !== confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -29,9 +35,10 @@ export default function Register() {
       return;
     }
 
+    const displayName = `${firstName.trim()} ${lastName.trim()}`;
     setIsLoading(true);
     try {
-      await signUp(email.trim().toLowerCase(), password);
+      await signUp(email.trim().toLowerCase(), password, displayName);
       navigate('/', { replace: true });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed');
@@ -57,6 +64,37 @@ export default function Register() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Name row */}
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-2">
+                First Name
+              </label>
+              <Input
+                type="text"
+                autoComplete="given-name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                placeholder="Brock"
+                required
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-2">
+                Last Name
+              </label>
+              <Input
+                type="text"
+                autoComplete="family-name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                placeholder="Tubre"
+                required
+              />
+            </div>
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-2">
               Email
@@ -68,7 +106,6 @@ export default function Register() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               required
-              autoFocus
             />
           </div>
 

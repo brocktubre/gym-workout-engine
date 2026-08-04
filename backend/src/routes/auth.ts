@@ -29,7 +29,7 @@ const cognito = new CognitoIdentityProviderClient({ region: REGION });
 // ── POST /api/auth/register ───────────────────────────────────────────────────
 // Creates a CONFIRMED Cognito user without email verification, then signs in.
 router.post('/register', async (req: Request, res: Response) => {
-  const { email, password } = req.body as { email?: string; password?: string };
+  const { email, password, displayName } = req.body as { email?: string; password?: string; displayName?: string };
 
   if (!email || !password) {
     res.status(400).json({ error: 'Email and password are required' });
@@ -59,6 +59,22 @@ router.post('/register', async (req: Request, res: Response) => {
 
     // 3. Sign in and return tokens
     const authResult = await adminSignIn(email, password);
+
+    // 4. Create user profile in DynamoDB with displayName
+    if (authResult.idToken) {
+      try {
+        const { getOrCreateUserProfile } = await import('../services/userService');
+        // Decode sub from the ID token payload (base64)
+        const payload = JSON.parse(Buffer.from(authResult.idToken.split('.')[1], 'base64url').toString());
+        const sub = payload.sub as string;
+        if (sub) {
+          await getOrCreateUserProfile(sub, email, displayName);
+        }
+      } catch (profileErr) {
+        console.error('[auth/register] profile creation failed (non-fatal):', profileErr);
+      }
+    }
+
     res.json(authResult);
   } catch (err: any) {
     const code = err.name ?? err.__type ?? '';

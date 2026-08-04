@@ -68,12 +68,16 @@ export async function getUserProfile(sub: string): Promise<UserProfile | null> {
   return stripKeys(result.Item) as UserProfile;
 }
 
-export async function getOrCreateUserProfile(sub: string, email: string): Promise<UserProfile> {
+export async function getOrCreateUserProfile(sub: string, email: string, displayName?: string): Promise<UserProfile> {
   const existing = await getUserProfile(sub);
   const now = new Date().toISOString();
   if (existing) {
-    // Touch lastLogin (best-effort; do not fail if it errors)
-    const updated: UserProfile = { ...existing, lastLogin: now };
+    // Touch lastLogin and update displayName if provided
+    const updated: UserProfile = {
+      ...existing,
+      lastLogin: now,
+      ...(displayName ? { displayName } : {}),
+    };
     await client.send(new PutCommand({
       TableName: TABLE_NAME,
       Item: {
@@ -88,6 +92,7 @@ export async function getOrCreateUserProfile(sub: string, email: string): Promis
   const profile: UserProfile = {
     sub,
     email,
+    displayName,
     createdDate: now,
     lastLogin: now,
     preferences: { ...DEFAULT_PREFERENCES },

@@ -10,12 +10,14 @@ import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StreakDisplay } from '@/components/dashboard/StreakDisplay';
 import { RecentWorkout } from '@/components/dashboard/RecentWorkout';
 import { useWorkoutHistory, useWorkoutStats, useDeleteWorkout } from '@/hooks/useWorkouts';
+import { useAuth } from '@/contexts/AuthContext';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCoachingNote } from '@/hooks/useCoachingNote';
 import { formatDuration, getGreeting, getTodayDate } from '@/lib/utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { activeWorkout, hasActiveWorkout, isPaused, pauseWorkout, clearActiveWorkout } = useActiveWorkout();
   const deleteWorkoutMutation = useDeleteWorkout();
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
@@ -49,7 +51,7 @@ export default function Dashboard() {
         >
           <p className="text-[#8E8E93] text-sm">{dateLabel}</p>
           <h1 className="text-2xl font-bold text-white mt-0.5">
-            {greeting}, Brock! 👋
+            {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}! 👋
           </h1>
         </motion.div>
       </div>

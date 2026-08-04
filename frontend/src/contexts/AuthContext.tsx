@@ -6,7 +6,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string) => Promise<void>;
+  signUp: (email: string, password: string, displayName?: string) => Promise<void>;
   signOut: () => void;
   forgotPassword: (email: string) => Promise<void>;
   confirmForgotPassword: (email: string, code: string, newPassword: string) => Promise<void>;
@@ -29,8 +29,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const setUserFromEmail = (email: string) => {
-    setUser({ email });
+  const setUserFromEmail = (email: string, displayName?: string) => {
+    setUser({ email, displayName: displayName ?? authService.getCurrentDisplayName() ?? undefined });
   };
 
   const handleSignOut = useCallback(() => {
@@ -63,7 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (cancelled) return;
         if (tokens) {
           const email = authService.getCurrentEmail() ?? '';
-          setUserFromEmail(email);
+          setUserFromEmail(email, authService.getCurrentDisplayName() ?? undefined);
           startRefreshTimer();
         } else {
           setUser(null);
@@ -94,10 +94,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const signUp = useCallback(
-    async (email: string, password: string) => {
+    async (email: string, password: string, displayName?: string) => {
       try {
-        await authService.signUp(email, password);
-        setUserFromEmail(email);
+        await authService.signUp(email, password, displayName);
+        setUserFromEmail(email, displayName);
         startRefreshTimer();
       } catch (err) {
         throw new Error(friendlyAuthError(err));
