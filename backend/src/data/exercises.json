@@ -50,7 +50,7 @@
   },
   {
     "id": "ex_dumbbell_flye",
-    "name": "Dumbbell Flye",
+    "name": "Dumbbell Chest Fly",
     "primaryMuscle": "chest",
     "secondaryMuscles": [],
     "equipment": "dumbbell",
@@ -163,7 +163,7 @@
   },
   {
     "id": "ex_low_cable_flye",
-    "name": "Low Cable Flye",
+    "name": "Low Cable Fly",
     "primaryMuscle": "chest",
     "secondaryMuscles": [],
     "equipment": "cable",
@@ -208,7 +208,7 @@
   },
   {
     "id": "ex_high_cable_flye",
-    "name": "High Cable Flye",
+    "name": "High Cable Fly",
     "primaryMuscle": "chest",
     "secondaryMuscles": [],
     "equipment": "cable",
@@ -513,7 +513,7 @@
   },
   {
     "id": "ex_reverse_flye",
-    "name": "Reverse Dumbbell Flye",
+    "name": "Reverse Dumbbell Fly",
     "primaryMuscle": "back",
     "secondaryMuscles": [
       "shoulders"
@@ -764,7 +764,7 @@
   },
   {
     "id": "ex_rear_delt_flye",
-    "name": "Rear Delt Dumbbell Flye",
+    "name": "Rear Delt Dumbbell Fly",
     "primaryMuscle": "shoulders",
     "secondaryMuscles": [
       "back"
