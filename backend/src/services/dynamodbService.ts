@@ -326,3 +326,43 @@ export async function deleteActiveWorkoutState(sub: string): Promise<void> {
     Key: { PK: `USER#${sub}`, SK: 'ACTIVE_WORKOUT' },
   }));
 }
+
+// ── Feature Flags ────────────────────────────────────────────────────────────
+
+export interface FeatureFlags {
+  videoPlaybackEnabled: boolean;
+}
+
+const DEFAULT_FEATURE_FLAGS: FeatureFlags = {
+  videoPlaybackEnabled: true,
+};
+
+export async function getFeatureFlags(): Promise<FeatureFlags> {
+  try {
+    const result = await client.send(new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { PK: 'CONFIG', SK: 'FEATURES' },
+    }));
+    if (!result.Item) return { ...DEFAULT_FEATURE_FLAGS };
+    const { PK, SK, entityType, updatedAt, ...flags } = result.Item;
+    return { ...DEFAULT_FEATURE_FLAGS, ...flags } as FeatureFlags;
+  } catch {
+    return { ...DEFAULT_FEATURE_FLAGS };
+  }
+}
+
+export async function saveFeatureFlags(flags: Partial<FeatureFlags>): Promise<FeatureFlags> {
+  const current = await getFeatureFlags();
+  const updated: FeatureFlags = { ...current, ...flags };
+  await client.send(new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: 'CONFIG',
+      SK: 'FEATURES',
+      entityType: 'FeatureFlags',
+      updatedAt: new Date().toISOString(),
+      ...updated,
+    },
+  }));
+  return updated;
+}

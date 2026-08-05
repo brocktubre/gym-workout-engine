@@ -191,6 +191,12 @@ export const api = {
     return res.note;
   },
 
+  // ── Feature Flags ──────────────────────────────────────────────────────
+  async getFeatureFlags(): Promise<{ videoPlaybackEnabled: boolean }> {
+    const res = await request<{ flags: { videoPlaybackEnabled: boolean } }>('/config/features');
+    return res.flags;
+  },
+
   // ── TTS ────────────────────────────────────────────────────────────────────
   async synthesizeSpeech(text: string): Promise<{ audio: string }> {
     return request('/tts', {

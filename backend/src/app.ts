@@ -8,6 +8,7 @@ import engineRouter from './routes/engine';
 import coachingRouter from './routes/coaching';
 import authRouter from './routes/auth';
 import ttsRouter from './routes/tts';
+import configRouter from './routes/config';
 import { errorHandler } from './middleware/errorHandler';
 import { requireAuth, optionalAuth } from './middleware/auth';
 
@@ -35,9 +36,10 @@ app.get('/api/health', (req, res) => {
 // Auth: backend-assisted Cognito signup/login (bypasses email verification)
 app.use('/api/auth', authRouter);
 
-// Public: exercises, workout generation, coaching notes, TTS
+// Public: exercises, workout generation, coaching notes, TTS, config
 app.use('/api/exercises', exercisesRouter);
 app.use('/api/tts', ttsRouter);
+app.use('/api/config', configRouter);
 app.use('/api/engine', optionalAuth, engineRouter);
 app.use('/api/coaching', coachingRouter);
 

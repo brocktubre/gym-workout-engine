@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useFeatureFlags } from '@/hooks/useFeatureFlags';
 import { Play, Loader2, VideoOff } from 'lucide-react';
 import {
   Dialog,
@@ -38,7 +39,9 @@ export function ExerciseVideoButton({
   const [matchedName, setMatchedName] = useState<string | null>(null);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
 
-  if (hidden) return null;
+  const { videoPlaybackEnabled } = useFeatureFlags();
+
+  if (!videoPlaybackEnabled || hidden) return null;
 
   async function handleOpen(e?: React.MouseEvent) {
     e?.stopPropagation();
