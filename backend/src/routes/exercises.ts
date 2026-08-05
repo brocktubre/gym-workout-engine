@@ -11,6 +11,29 @@ import { MuscleGroup, Equipment } from '../types';
 
 const router = Router();
 
+/** API Gateway caps a Lambda response at 6 MB, and base64 inflates bytes by ~33%. */
+const MAX_STREAM_CHUNK_BYTES = 3 * 1024 * 1024;
+
+/** Bound open-ended ranges so one response can never exceed the Lambda payload cap. */
+function clampRangeHeader(rangeHeader?: string): string {
+  const raw = (rangeHeader ?? '').trim();
+  // Suffix ranges (bytes=-N) fetch trailing metadata and are always small.
+  if (/^bytes=-\d+$/.test(raw)) return raw;
+  const match = /^bytes=(\d+)-(\d+)?$/.exec(raw);
+  const start = match ? Number(match[1]) : 0;
+  const maxEnd = start + MAX_STREAM_CHUNK_BYTES - 1;
+  const requestedEnd = match?.[2] ? Number(match[2]) : undefined;
+  const end = requestedEnd === undefined ? maxEnd : Math.min(requestedEnd, maxEnd);
+  return `bytes=${start}-${end}`;
+}
+
+/** Parse `bytes start-end/total` into its numeric parts. */
+function parseContentRange(value: string | null): { start: number; end: number; total: number } | null {
+  const match = /^bytes (\d+)-(\d+)\/(\d+)$/.exec(value ?? '');
+  if (!match) return null;
+  return { start: Number(match[1]), end: Number(match[2]), total: Number(match[3]) };
+}
+
 router.get('/', (req: Request, res: Response) => {
   const { muscle, equipment, search } = req.query;
   const exercises = filterExercises({
@@ -77,25 +100,31 @@ router.get('/video/stream', async (req: Request, res: Response) => {
       return;
     }
 
-    const rangeHeader = typeof req.headers.range === 'string' ? req.headers.range : undefined;
-    const upstream = await proxyStream(path, rangeHeader);
+    const clientRange = typeof req.headers.range === 'string' ? req.headers.range : undefined;
+    const upstream = await proxyStream(path, clampRangeHeader(clientRange));
+    const body = Buffer.from(upstream.body);
 
     const contentType = upstream.headers.get('content-type') || 'video/mp4';
-    res.status(upstream.status);
     res.setHeader('Content-Type', contentType);
     // helmet defaults CORP to same-origin, which blocks <video> when the SPA is
     // served from a different origin than the API (localhost:5173 → :3001)
     res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
-    const acceptRanges = upstream.headers.get('accept-ranges');
-    if (acceptRanges) res.setHeader('Accept-Ranges', acceptRanges);
-    const contentRange = upstream.headers.get('content-range');
-    if (contentRange) res.setHeader('Content-Range', contentRange);
-    const contentLength = upstream.headers.get('content-length');
-    if (contentLength) res.setHeader('Content-Length', contentLength);
-    const cacheControl = upstream.headers.get('cache-control');
-    res.setHeader('Cache-Control', cacheControl || 'private, max-age=3600');
+    res.setHeader('Accept-Ranges', upstream.headers.get('accept-ranges') || 'bytes');
+    res.setHeader('Cache-Control', upstream.headers.get('cache-control') || 'private, max-age=3600');
+    res.setHeader('Content-Length', String(body.length));
 
-    res.send(Buffer.from(upstream.body));
+    const range = parseContentRange(upstream.headers.get('content-range'));
+    // We always send upstream a Range, so answer 200 when the client didn't ask
+    // for one and the clamped chunk turned out to be the whole file.
+    const isWholeFile = range !== null && range.start === 0 && range.end === range.total - 1;
+    if (!clientRange && isWholeFile) {
+      res.status(200);
+    } else {
+      res.status(upstream.status);
+      if (range) res.setHeader('Content-Range', `bytes ${range.start}-${range.end}/${range.total}`);
+    }
+
+    res.send(body);
   } catch (err) {
     if (err instanceof MuscleWikiConfigError) {
       console.error('[exercises/video/stream] config:', err.message);
