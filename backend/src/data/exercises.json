@@ -66,29 +66,7 @@
     "tips": [
       "Think 'hugging a tree', not pressing",
       "Don't go below shoulder level",
-      "Control the eccentric — most growth happens here"
-    ]
-  },
-  {
-    "id": "ex_cable_crossover",
-    "name": "Cable Crossover",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set pulleys high, stand in center",
-      "Grab handles, step forward with slight lean",
-      "With arms slightly bent, sweep hands down and together",
-      "Squeeze chest at bottom of movement",
-      "Slowly return to start"
-    ],
-    "tips": [
-      "Adjust pulley height to target different chest regions",
-      "High pulleys hit lower chest, low pulleys hit upper",
-      "Cross hands at bottom for extra contraction"
+      "Control the eccentric \u2014 most growth happens here"
     ]
   },
   {
@@ -109,7 +87,7 @@
     "tips": [
       "Keep elbows at shoulder height throughout",
       "Excellent chest isolation for beginners",
-      "Don't let the weight slam back — control the negative"
+      "Don't let the weight slam back \u2014 control the negative"
     ]
   },
   {
@@ -162,27 +140,6 @@
     ]
   },
   {
-    "id": "ex_low_cable_flye",
-    "name": "Low Cable Fly",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set pulleys at lowest position",
-      "Stand center, grab handles, step forward",
-      "With slight elbow bend, arc hands upward and together",
-      "Squeeze upper chest at top"
-    ],
-    "tips": [
-      "Targets upper chest effectively",
-      "Lean slightly forward for better range",
-      "Use light-moderate weight for form"
-    ]
-  },
-  {
     "id": "ex_machine_chest_press",
     "name": "Machine Chest Press",
     "primaryMuscle": "chest",
@@ -207,27 +164,6 @@
     ]
   },
   {
-    "id": "ex_high_cable_flye",
-    "name": "High Cable Fly",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set pulleys at highest position",
-      "Stand center, step forward, grab handles",
-      "Arc hands downward and together with slight elbow bend",
-      "Squeeze lower chest at bottom"
-    ],
-    "tips": [
-      "Targets lower chest",
-      "Keep core tight and maintain slight forward lean",
-      "Consistent tension throughout movement"
-    ]
-  },
-  {
     "id": "ex_deadlift",
     "name": "Conventional Deadlift",
     "primaryMuscle": "back",
@@ -244,7 +180,7 @@
       "Stand with feet hip-width, bar over mid-foot",
       "Hinge at hips, grip bar just outside legs",
       "Chest up, lats engaged, take slack out of bar",
-      "Push floor away — drive hips forward as bar passes knees",
+      "Push floor away \u2014 drive hips forward as bar passes knees",
       "Stand tall at top, lower with control"
     ],
     "tips": [
@@ -274,32 +210,8 @@
     ],
     "tips": [
       "Keep lower back neutral throughout",
-      "Don't use momentum — control both phases",
+      "Don't use momentum \u2014 control both phases",
       "Elbow path determines which muscles fire most"
-    ]
-  },
-  {
-    "id": "ex_cable_row",
-    "name": "Seated Cable Row",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "biceps"
-    ],
-    "equipment": "cable",
-    "category": "compound",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Sit at cable row station, feet on platform",
-      "Grab handle with slight forward lean",
-      "Pull to abdomen while sitting upright",
-      "Squeeze shoulder blades together",
-      "Slowly extend arms back to start"
-    ],
-    "tips": [
-      "Don't rock torso — minimal body movement",
-      "Chest up and proud at the top",
-      "Pause and squeeze at the peak contraction"
     ]
   },
   {
@@ -321,7 +233,7 @@
     ],
     "tips": [
       "Initiate with elbows driving down, not biceps curling",
-      "Slight lean back is okay — excessive is cheating",
+      "Slight lean back is okay \u2014 excessive is cheating",
       "Full extension at top for maximum stretch"
     ]
   },
@@ -390,7 +302,7 @@
       "Lower with control to full extension"
     ],
     "tips": [
-      "Elbow stays close to body — don't flare out",
+      "Elbow stays close to body \u2014 don't flare out",
       "Think 'elbow to ceiling' not 'hand to hip'",
       "Full stretch at bottom is key for lat activation"
     ]
@@ -410,7 +322,7 @@
       "Set cable at forehead height with rope attachment",
       "Grab rope with palms facing in, step back",
       "Pull rope toward face, elbows high and flared",
-      "Externally rotate wrists at end — 'W' position",
+      "Externally rotate wrists at end \u2014 'W' position",
       "Slowly return to start"
     ],
     "tips": [
@@ -437,7 +349,7 @@
     "tips": [
       "Excellent lat isolation without biceps involvement",
       "Slight bend in elbows is fine",
-      "Focus on the feeling in your lats — mind-muscle connection"
+      "Focus on the feeling in your lats \u2014 mind-muscle connection"
     ]
   },
   {
@@ -483,7 +395,7 @@
       "Drive hips forward to return to upright"
     ],
     "tips": [
-      "Keep spine neutral — not rounded",
+      "Keep spine neutral \u2014 not rounded",
       "Feel stretch in hamstrings at bottom",
       "Use light weight and focus on movement pattern"
     ]
@@ -531,7 +443,7 @@
     "tips": [
       "Lead with elbows, not hands",
       "Pinch shoulder blades at peak",
-      "Use lighter weight — rear delts are small"
+      "Use lighter weight \u2014 rear delts are small"
     ]
   },
   {
@@ -577,31 +489,8 @@
     ],
     "tips": [
       "Wide grip emphasizes lat width",
-      "Don't pull behind neck — bad for shoulder health",
+      "Don't pull behind neck \u2014 bad for shoulder health",
       "Full stretch at top is crucial"
-    ]
-  },
-  {
-    "id": "ex_close_grip_cable_row",
-    "name": "Close-Grip Cable Row",
-    "primaryMuscle": "back",
-    "secondaryMuscles": [
-      "biceps"
-    ],
-    "equipment": "cable",
-    "category": "compound",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Sit at cable station, use V-bar attachment",
-      "Grab handles, sit upright with slight forward lean",
-      "Pull to lower chest/abdomen, elbows tight to body",
-      "Squeeze mid-back, slowly return"
-    ],
-    "tips": [
-      "Neutral grip reduces forearm fatigue",
-      "Focus on pulling with elbows, not hands",
-      "Brief pause and squeeze at peak contraction"
     ]
   },
   {
@@ -624,7 +513,7 @@
       "Lower to collarbone with control"
     ],
     "tips": [
-      "Keep wrists straight — don't let them roll back",
+      "Keep wrists straight \u2014 don't let them roll back",
       "Elbows slightly forward at start, not flared",
       "Press your head through at lockout"
     ]
@@ -649,7 +538,7 @@
     "tips": [
       "Seated provides more stability, standing engages core more",
       "Don't crash the weights at bottom",
-      "Slight arc inward at top — natural movement"
+      "Slight arc inward at top \u2014 natural movement"
     ]
   },
   {
@@ -664,8 +553,8 @@
     "instructions": [
       "Stand with dumbbells at sides",
       "With slight elbow bend, raise arms out to sides",
-      "Stop at shoulder height — slight tilt so pinkies slightly higher",
-      "Lower slowly — this is where the work is"
+      "Stop at shoulder height \u2014 slight tilt so pinkies slightly higher",
+      "Lower slowly \u2014 this is where the work is"
     ],
     "tips": [
       "Lead with elbows, not wrists",
@@ -691,28 +580,7 @@
     "tips": [
       "Targets anterior (front) delt",
       "Can alternate arms or do both simultaneously",
-      "Keep core tight — don't lean back"
-    ]
-  },
-  {
-    "id": "ex_cable_lateral_raise",
-    "name": "Cable Lateral Raise",
-    "primaryMuscle": "shoulders",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set cable at lowest position on one side",
-      "Grab handle with far hand, slight forward lean",
-      "Raise arm out to side to shoulder height",
-      "Lower slowly against cable tension"
-    ],
-    "tips": [
-      "Cable maintains constant tension unlike dumbbells",
-      "Cross body for unique angle",
-      "Great finishing movement for delts"
+      "Keep core tight \u2014 don't lean back"
     ]
   },
   {
@@ -781,7 +649,7 @@
     ],
     "tips": [
       "Can also do standing or prone on incline bench",
-      "Use lighter weights — rear delts are small",
+      "Use lighter weights \u2014 rear delts are small",
       "Think 'showing your armpits' to get the motion right"
     ]
   },
@@ -801,7 +669,7 @@
       "Lower slowly back down"
     ],
     "tips": [
-      "Don't roll shoulders — straight up and down",
+      "Don't roll shoulders \u2014 straight up and down",
       "Pause at top to eliminate momentum",
       "Traps respond well to heavy loads and high volume"
     ]
@@ -866,7 +734,7 @@
       "Slowly lower to full extension"
     ],
     "tips": [
-      "Don't swing — keep elbows pinned to torso",
+      "Don't swing \u2014 keep elbows pinned to torso",
       "Supinate wrists slightly at top for peak contraction",
       "Full extension at bottom maximizes stretch"
     ]
@@ -908,7 +776,7 @@
       "Lower with control"
     ],
     "tips": [
-      "Works brachialis — fills out the arm more",
+      "Works brachialis \u2014 fills out the arm more",
       "Can do cross-body hammer curls for variation",
       "Heavier than supinated curls for most lifters"
     ]
@@ -932,27 +800,6 @@
       "Braced elbow eliminates cheating",
       "Great for isolating individual arms",
       "Mind-muscle connection is key here"
-    ]
-  },
-  {
-    "id": "ex_cable_curl",
-    "name": "Cable Curl",
-    "primaryMuscle": "biceps",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set cable at lowest position, attach straight bar or EZ bar",
-      "Step back, grab handle underhand",
-      "Curl to shoulder height, elbows tucked",
-      "Lower with control against cable tension"
-    ],
-    "tips": [
-      "Cable maintains tension at bottom unlike free weights",
-      "Great finishing movement for biceps",
-      "Try different attachments (rope, bar, handles)"
     ]
   },
   {
@@ -992,8 +839,8 @@
       "Lower slowly to full extension"
     ],
     "tips": [
-      "Bench eliminates cheat — pure isolation",
-      "Don't lock out completely — keep tension on bicep",
+      "Bench eliminates cheat \u2014 pure isolation",
+      "Don't lock out completely \u2014 keep tension on bicep",
       "Excellent for building bicep peak"
     ]
   },
@@ -1037,8 +884,8 @@
       "Keep wrists straight throughout"
     ],
     "tips": [
-      "Don't go too narrow — wrists will suffer",
-      "Elbow path is key — keep them tucked",
+      "Don't go too narrow \u2014 wrists will suffer",
+      "Elbow path is key \u2014 keep them tucked",
       "One of the best mass builders for triceps"
     ]
   },
@@ -1079,7 +926,7 @@
       "Extend arms back to start"
     ],
     "tips": [
-      "Upper arms must not move — only elbows bend",
+      "Upper arms must not move \u2014 only elbows bend",
       "Lower to forehead or behind head for more stretch",
       "Can superset with close-grip bench for extra pump"
     ]
@@ -1100,7 +947,7 @@
       "Extend back overhead to start"
     ],
     "tips": [
-      "Overhead position stretches long head of tricep — great for mass",
+      "Overhead position stretches long head of tricep \u2014 great for mass",
       "Keep core tight to protect lower back",
       "Also works well with cable or EZ bar"
     ]
@@ -1124,7 +971,7 @@
     ],
     "tips": [
       "Upright torso = more triceps, leaned = more chest",
-      "Avoid going too deep — risks shoulder impingement",
+      "Avoid going too deep \u2014 risks shoulder impingement",
       "Add weight with dip belt for progression"
     ]
   },
@@ -1147,27 +994,6 @@
       "Upper arm must stay parallel to floor throughout",
       "Use lighter weight for full range and feel",
       "Excellent for finishing the tricep"
-    ]
-  },
-  {
-    "id": "ex_cable_overhead_extension",
-    "name": "Cable Overhead Extension",
-    "primaryMuscle": "triceps",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "push",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set cable high, attach rope, stand facing away",
-      "Hold rope at neck, elbows forward",
-      "Extend arms forward overhead",
-      "Return to start with control"
-    ],
-    "tips": [
-      "Constant cable tension plus overhead stretch = great stimulus",
-      "Keep elbows pointing forward throughout",
-      "Don't let elbows flare wide"
     ]
   },
   {
@@ -1210,7 +1036,7 @@
     ],
     "tips": [
       "Flaring rope at bottom hits lateral and medial heads",
-      "Elbows stay fixed — only forearms move",
+      "Elbows stay fixed \u2014 only forearms move",
       "Great pump builder for triceps"
     ]
   },
@@ -1257,8 +1083,8 @@
     ],
     "tips": [
       "Keep knees tracking over toes throughout",
-      "Chest and elbows up — fight forward lean",
-      "Squat depth matters — parallel or bust"
+      "Chest and elbows up \u2014 fight forward lean",
+      "Squat depth matters \u2014 parallel or bust"
     ]
   },
   {
@@ -1280,7 +1106,7 @@
       "Drive knees out, stand tall"
     ],
     "tips": [
-      "Upright torso is essential — bar will fall if you lean",
+      "Upright torso is essential \u2014 bar will fall if you lean",
       "Wrist mobility required for clean grip",
       "Hits quads harder than back squat due to torso position"
     ]
@@ -1375,7 +1201,7 @@
       "Continue alternating legs across floor"
     ],
     "tips": [
-      "Keep torso upright — don't lean forward",
+      "Keep torso upright \u2014 don't lean forward",
       "Front knee should not go past toes",
       "Great for coordination and unilateral strength"
     ]
@@ -1397,8 +1223,8 @@
     ],
     "tips": [
       "Pause and squeeze at full extension",
-      "Don't use momentum — controlled throughout",
-      "Great quad finisher but controversial for knee health — use full ROM"
+      "Don't use momentum \u2014 controlled throughout",
+      "Great quad finisher but controversial for knee health \u2014 use full ROM"
     ]
   },
   {
@@ -1416,7 +1242,7 @@
     "instructions": [
       "Set up like back squat with box behind you",
       "Squat back onto box, sit briefly",
-      "Keep core tight — don't relax on box",
+      "Keep core tight \u2014 don't relax on box",
       "Drive powerfully back to standing"
     ],
     "tips": [
@@ -1468,9 +1294,9 @@
       "Drive hips forward to return to standing"
     ],
     "tips": [
-      "Soft bend in knees — this is a hip hinge, not a squat",
+      "Soft bend in knees \u2014 this is a hip hinge, not a squat",
       "Bar stays close to legs throughout",
-      "Feel stretch in hamstrings — that's the target"
+      "Feel stretch in hamstrings \u2014 that's the target"
     ]
   },
   {
@@ -1514,7 +1340,7 @@
     ],
     "tips": [
       "Straighter legs than RDL for more hamstring stretch",
-      "Keep back flat — rounding is injury risk",
+      "Keep back flat \u2014 rounding is injury risk",
       "Range of motion limited by hamstring flexibility"
     ]
   },
@@ -1536,7 +1362,7 @@
     "tips": [
       "One of the hardest hamstring exercises",
       "Significantly reduces hamstring injury risk",
-      "Progress from partial reps — very demanding"
+      "Progress from partial reps \u2014 very demanding"
     ]
   },
   {
@@ -1560,7 +1386,7 @@
       "Stand tall with hips forward"
     ],
     "tips": [
-      "Hip dominant lift — great for those with long torso",
+      "Hip dominant lift \u2014 great for those with long torso",
       "Knees track toes to protect them",
       "More inner thigh and glute than conventional"
     ]
@@ -1584,7 +1410,7 @@
       "Drive hips forward and stand"
     ],
     "tips": [
-      "Focus on hamstring stretch — not just bending over",
+      "Focus on hamstring stretch \u2014 not just bending over",
       "Keep lower back neutral throughout",
       "Use light to moderate weight only"
     ]
@@ -1609,7 +1435,7 @@
     ],
     "tips": [
       "Excellent for balance and addressing imbalances",
-      "Hinge at hip — don't just bend at waist",
+      "Hinge at hip \u2014 don't just bend at waist",
       "Keep hips square to floor throughout"
     ]
   },
@@ -1630,8 +1456,8 @@
     ],
     "tips": [
       "Hip position stretched vs seated affects contraction range",
-      "Control the return — don't let weight snap back",
-      "Slightly different feel than lying leg curl — both are valuable"
+      "Control the return \u2014 don't let weight snap back",
+      "Slightly different feel than lying leg curl \u2014 both are valuable"
     ]
   },
   {
@@ -1653,7 +1479,7 @@
       "Lower hips toward floor and repeat"
     ],
     "tips": [
-      "Full hip extension — don't stop short",
+      "Full hip extension \u2014 don't stop short",
       "Chin tucked to chest for neutral spine",
       "One of the best glute builders available"
     ]
@@ -1682,27 +1508,6 @@
     ]
   },
   {
-    "id": "ex_cable_kickback",
-    "name": "Cable Kickback",
-    "primaryMuscle": "glutes",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "legs",
-    "difficulty": "beginner",
-    "instructions": [
-      "Attach ankle cuff to cable at lowest position",
-      "Stand facing machine, slight forward lean",
-      "Kick working leg back to full hip extension",
-      "Squeeze glute hard, lower with control"
-    ],
-    "tips": [
-      "Keep working leg straight at peak",
-      "Don't swing — slow and controlled",
-      "Can also be done on all-fours"
-    ]
-  },
-  {
     "id": "ex_donkey_kick",
     "name": "Donkey Kick",
     "primaryMuscle": "glutes",
@@ -1719,7 +1524,7 @@
     ],
     "tips": [
       "Focus on glute contraction, not how high you kick",
-      "Keep hips level — don't rotate",
+      "Keep hips level \u2014 don't rotate",
       "Add ankle weights for progressive overload"
     ]
   },
@@ -1763,7 +1568,7 @@
       "Walk 10-15 steps each direction"
     ],
     "tips": [
-      "Keep tension in band at all times — don't let feet come too close",
+      "Keep tension in band at all times \u2014 don't let feet come too close",
       "Stay low in squat position throughout",
       "Great glute med activation for knee health"
     ]
@@ -1785,7 +1590,7 @@
     ],
     "tips": [
       "Excellent glute medius activation",
-      "Hips stay stacked — don't roll back",
+      "Hips stay stacked \u2014 don't roll back",
       "Progress to standing hip abduction or cable variation"
     ]
   },
@@ -1831,7 +1636,7 @@
       "Keep toes forward and core braced throughout"
     ],
     "tips": [
-      "Never let the band go slack — maintain constant glute tension",
+      "Never let the band go slack \u2014 maintain constant glute tension",
       "Stay low in the mini-squat the entire time",
       "Great for activating the glute medius before lower body work"
     ]
@@ -1855,7 +1660,7 @@
       "Keep hips level and core engaged throughout"
     ],
     "tips": [
-      "Move like a monster — exaggerated outward stride",
+      "Move like a monster \u2014 exaggerated outward stride",
       "Activates glute med and hip abductors simultaneously",
       "Excellent pre-leg day warmup"
     ]
@@ -1878,7 +1683,7 @@
     ],
     "tips": [
       "Band adds external resistance and forces glute engagement",
-      "Keep hips square — don't let them tilt or rotate",
+      "Keep hips square \u2014 don't let them tilt or rotate",
       "Squeeze glute hard at top of each rep"
     ]
   },
@@ -1903,7 +1708,7 @@
     ],
     "tips": [
       "The band dramatically increases glute activation vs. plain bridge",
-      "Don't let knees cave in — push against band throughout",
+      "Don't let knees cave in \u2014 push against band throughout",
       "Full hip extension at top for maximum glute engagement"
     ]
   },
@@ -1925,7 +1730,7 @@
     ],
     "tips": [
       "Keep the standing leg slightly bent",
-      "Don't lean body to compensate — move only the leg",
+      "Don't lean body to compensate \u2014 move only the leg",
       "Targets glute medius essential for hip stability"
     ]
   },
@@ -2016,7 +1821,7 @@
       "Forearms on floor, elbows under shoulders",
       "Body forms straight line from head to heels",
       "Squeeze core, glutes, and quads",
-      "Hold position — breathe steadily"
+      "Hold position \u2014 breathe steadily"
     ],
     "tips": [
       "Don't let hips sag or pike up",
@@ -2111,29 +1916,8 @@
     ],
     "tips": [
       "Start with short range and build up",
-      "Keep lower back neutral — don't hyperextend",
+      "Keep lower back neutral \u2014 don't hyperextend",
       "One of the hardest bodyweight core exercises"
-    ]
-  },
-  {
-    "id": "ex_cable_crunch",
-    "name": "Cable Crunch",
-    "primaryMuscle": "core",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "core",
-    "difficulty": "beginner",
-    "instructions": [
-      "Kneel facing cable machine, rope at high position",
-      "Hold rope behind head",
-      "Crunch forward, bringing elbows to knees",
-      "Slowly return to upright"
-    ],
-    "tips": [
-      "Allows progressive overload unlike floor crunches",
-      "Round the upper back — think ribcage to hips",
-      "Keep hips stationary — move only the spine"
     ]
   },
   {
@@ -2148,13 +1932,13 @@
     "instructions": [
       "Hang from pull-up bar with overhand grip",
       "Raise legs to horizontal or vertical",
-      "Lower with control — don't swing",
+      "Lower with control \u2014 don't swing",
       "Keep upper body stable"
     ],
     "tips": [
       "Posterior pelvic tilt at top for max ab contraction",
       "Bent-knee version is easier modification",
-      "Control the negative — don't let legs drop"
+      "Control the negative \u2014 don't let legs drop"
     ]
   },
   {
@@ -2194,9 +1978,9 @@
       "Extend other leg simultaneously"
     ],
     "tips": [
-      "Don't pull on neck — hands just touch head",
+      "Don't pull on neck \u2014 hands just touch head",
       "Full rotation each side for oblique engagement",
-      "Control the pace — slow beats fast"
+      "Control the pace \u2014 slow beats fast"
     ]
   },
   {
@@ -2238,7 +2022,7 @@
       "Keep hips level and core braced"
     ],
     "tips": [
-      "Hips should stay in line with body — don't pike",
+      "Hips should stay in line with body \u2014 don't pike",
       "Faster = more cardio, slower = more core",
       "Great metabolic finisher"
     ]
@@ -2259,7 +2043,7 @@
       "Hold briefly, pull back to chest"
     ],
     "tips": [
-      "Anti-rotation exercise — resist turning toward cable",
+      "Anti-rotation exercise \u2014 resist turning toward cable",
       "Excellent for sports performance and spine health",
       "Move slowly and deliberately"
     ]
@@ -2280,7 +2064,7 @@
       "Pause at peak, lower slowly"
     ],
     "tips": [
-      "Full range of motion — bottom stretch is crucial",
+      "Full range of motion \u2014 bottom stretch is crucial",
       "Slow negatives work better than fast bouncing reps",
       "Calves respond well to high rep work"
     ]
@@ -2348,7 +2132,7 @@
     ],
     "tips": [
       "Slight incline (1-2%) mimics outdoor running",
-      "Don't hold handrails — use proper running form",
+      "Don't hold handrails \u2014 use proper running form",
       "Build duration before speed"
     ]
   },
@@ -2365,13 +2149,13 @@
     "movementType": "cardio",
     "difficulty": "beginner",
     "instructions": [
-      "Adjust seat height — slight bend at bottom of pedal stroke",
+      "Adjust seat height \u2014 slight bend at bottom of pedal stroke",
       "Maintain steady cadence (80-100 RPM for most)",
       "Keep upper body relaxed",
       "Adjust resistance to maintain target heart rate"
     ],
     "tips": [
-      "Low impact — great for recovery sessions",
+      "Low impact \u2014 great for recovery sessions",
       "Upright bike less stress on back than recumbent",
       "Intervals on bike are very effective for fat loss"
     ]
@@ -2391,13 +2175,13 @@
     "difficulty": "intermediate",
     "instructions": [
       "Grab handle with overhand grip, sit tall",
-      "Drive legs first — fully extend",
+      "Drive legs first \u2014 fully extend",
       "Then lean back slightly and pull handle to lower chest",
       "Return: arms out, lean forward, bend knees"
     ],
     "tips": [
-      "Sequence: legs → back → arms on pull; reverse on recovery",
-      "Avoid hunching — keep chest tall",
+      "Sequence: legs \u2192 back \u2192 arms on pull; reverse on recovery",
+      "Avoid hunching \u2014 keep chest tall",
       "Full body cardio with excellent calorie burn"
     ]
   },
@@ -2416,7 +2200,7 @@
     "instructions": [
       "Hold handles, rope behind feet",
       "Jump on balls of feet, rope passes under",
-      "Keep jumps low — just enough clearance",
+      "Keep jumps low \u2014 just enough clearance",
       "Use wrists to rotate rope, not shoulders"
     ],
     "tips": [
@@ -2448,30 +2232,6 @@
       "Scale by stepping instead of jumping",
       "Maintain tight core in plank phase",
       "Full body metabolic conditioning exercise"
-    ]
-  },
-  {
-    "id": "ex_cable_face_pull",
-    "name": "Cable Face Pull",
-    "primaryMuscle": "shoulders",
-    "secondaryMuscles": [
-      "back"
-    ],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set cable at upper-chest height with rope attachment",
-      "Grip rope with thumbs up, step back",
-      "Pull rope to face, elbows high and flared out",
-      "End position: hands beside ears, W-shape",
-      "Slowly return to start"
-    ],
-    "tips": [
-      "Critical for shoulder health and rear delt development",
-      "Keep elbows above wrist height throughout",
-      "High reps work best — 15-25 per set"
     ]
   },
   {
@@ -2511,11 +2271,11 @@
     "instructions": [
       "Set up like back squat",
       "Descend to parallel depth",
-      "Pause for 2-3 seconds at bottom — no bouncing",
+      "Pause for 2-3 seconds at bottom \u2014 no bouncing",
       "Drive powerfully back to standing"
     ],
     "tips": [
-      "Eliminates the stretch reflex — builds raw strength",
+      "Eliminates the stretch reflex \u2014 builds raw strength",
       "Lighter weight than regular squat",
       "Excellent for fixing squat depth and form issues"
     ]
@@ -2542,29 +2302,6 @@
     ]
   },
   {
-    "id": "ex_cable_pullthrough",
-    "name": "Cable Pull-Through",
-    "primaryMuscle": "hamstrings",
-    "secondaryMuscles": [
-      "glutes"
-    ],
-    "equipment": "cable",
-    "category": "compound",
-    "movementType": "hinge",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set cable low, attach rope, stand facing away",
-      "Hinge forward grasping rope between legs",
-      "Drive hips forward to stand, squeezing glutes",
-      "Hinge back with control for next rep"
-    ],
-    "tips": [
-      "Excellent hip hinge teaching tool",
-      "Feel the stretch in hamstrings at bottom",
-      "Light weight and focus on movement pattern"
-    ]
-  },
-  {
     "id": "ex_hollow_rock",
     "name": "Hollow Rock",
     "primaryMuscle": "core",
@@ -2577,7 +2314,7 @@
       "Start in hollow body hold position",
       "Lower back pressed into floor, arms overhead",
       "Rock forward and back like a rocking chair",
-      "Maintain hollow position throughout — no breaking"
+      "Maintain hollow position throughout \u2014 no breaking"
     ],
     "tips": [
       "Don't let lower back arch off floor",
@@ -2604,7 +2341,7 @@
       "Step down and alternate legs"
     ],
     "tips": [
-      "Drive through the top leg — don't push off back foot",
+      "Drive through the top leg \u2014 don't push off back foot",
       "Knee tracks over toes on working leg",
       "Height of step determines difficulty"
     ]
@@ -2630,27 +2367,6 @@
       "Easier on wrists than straight barbell",
       "Good alternative for those with wrist pain",
       "Stand or seated both work well"
-    ]
-  },
-  {
-    "id": "ex_cable_bicep_curl_high",
-    "name": "High Cable Bicep Curl",
-    "primaryMuscle": "biceps",
-    "secondaryMuscles": [],
-    "equipment": "cable",
-    "category": "isolation",
-    "movementType": "pull",
-    "difficulty": "beginner",
-    "instructions": [
-      "Set both cables at high position",
-      "Stand in center, grab both handles",
-      "Curl hands toward head, like a double bicep pose",
-      "Squeeze hard at peak, lower with control"
-    ],
-    "tips": [
-      "Maximum stretch and peak contraction in one movement",
-      "Can do one arm at a time",
-      "Great finisher for the bicep workout"
     ]
   },
   {
@@ -2699,7 +2415,7 @@
     "tips": [
       "Turn rings out at lockout for extra chest contraction",
       "Instability demands more stabilizer activation",
-      "Harder than floor push-up — progress methodically"
+      "Harder than floor push-up \u2014 progress methodically"
     ]
   },
   {
@@ -2723,7 +2439,7 @@
     "tips": [
       "Turn rings out at top for shoulder stability",
       "Keep rings as close to body as possible",
-      "Much harder than bar dips — master those first"
+      "Much harder than bar dips \u2014 master those first"
     ]
   },
   {
@@ -2744,7 +2460,7 @@
       "Support bodyweight on rings with arms fully extended",
       "Turn rings out to 45 degrees externally",
       "Squeeze everything: core, glutes, quads",
-      "Hold for timed duration — breathe steadily"
+      "Hold for timed duration \u2014 breathe steadily"
     ],
     "tips": [
       "Rings turned out stabilizes the shoulder joint",
@@ -2772,7 +2488,7 @@
       "Press to lockout in support position, rings turned out"
     ],
     "tips": [
-      "False grip is essential — practice it separately",
+      "False grip is essential \u2014 practice it separately",
       "The transition is the hardest part",
       "Build strict pull-ups and ring dips first"
     ]
@@ -2792,7 +2508,7 @@
       "Set rings at waist height with wider foot position",
       "Hang with almost upright body angle",
       "Pull chest to rings, elbows back",
-      "Lower with control — body stays straight"
+      "Lower with control \u2014 body stays straight"
     ],
     "tips": [
       "More upright body = easier; more horizontal = harder",
@@ -2844,7 +2560,7 @@
     ],
     "tips": [
       "Similar to ab wheel rollout but with rings",
-      "Keep lower back neutral — do not hyperextend",
+      "Keep lower back neutral \u2014 do not hyperextend",
       "Start with limited range and build progressively"
     ]
   },
@@ -2863,7 +2579,7 @@
       "Set rings at forehead height",
       "Lean back holding rings, palms facing in",
       "Pull rings to face, elbows high and flared",
-      "Externally rotate at end — hands beside ears"
+      "Externally rotate at end \u2014 hands beside ears"
     ],
     "tips": [
       "Great for rear delts and external rotators",
@@ -2891,7 +2607,7 @@
     ],
     "tips": [
       "Only add weight when bodyweight reps feel easy",
-      "Maintain perfect form — don't swing or kip",
+      "Maintain perfect form \u2014 don't swing or kip",
       "Small weight increments work best"
     ]
   },
@@ -2934,10 +2650,10 @@
       "Hang from pull-up bar with overhand grip",
       "Engage lats to stabilize upper body",
       "Raise straight legs to touch bar",
-      "Lower with control — minimize swing"
+      "Lower with control \u2014 minimize swing"
     ],
     "tips": [
-      "Initiate with abs — don't just kick with hip flexors",
+      "Initiate with abs \u2014 don't just kick with hip flexors",
       "Knees-to-elbows is an easier regression",
       "Control the descent to build more core strength"
     ]
@@ -2962,7 +2678,7 @@
     ],
     "tips": [
       "Requires strong pull-ups and dips as a base",
-      "The transition is the skill element — practice slow negatives",
+      "The transition is the skill element \u2014 practice slow negatives",
       "Straight bar muscle-up is harder than ring version"
     ]
   },
@@ -2980,11 +2696,11 @@
     "instructions": [
       "Grip bar with overhand or neutral grip",
       "Hang with arms fully extended, feet off floor",
-      "Relax grip slightly — focus on shoulder decompression",
+      "Relax grip slightly \u2014 focus on shoulder decompression",
       "Hold for timed duration"
     ],
     "tips": [
-      "Decompresses the lumbar spine — great after heavy lifts",
+      "Decompresses the lumbar spine \u2014 great after heavy lifts",
       "Also builds grip strength and shoulder mobility",
       "Progress to scapular pulls before attempting pull-ups"
     ]
@@ -3152,7 +2868,7 @@
       "Push for prescribed distance"
     ],
     "tips": [
-      "Stay low — higher handles = less leg drive",
+      "Stay low \u2014 higher handles = less leg drive",
       "Drive through the whole foot, not just toes",
       "Excellent no-eccentric conditioning for recovery days"
     ]
@@ -3176,7 +2892,7 @@
       "Pull for prescribed distance"
     ],
     "tips": [
-      "Keep pulling mechanics — use arms and hips",
+      "Keep pulling mechanics \u2014 use arms and hips",
       "Walk backward with controlled steps",
       "Face-away version targets posterior chain more"
     ]
@@ -3248,8 +2964,8 @@
       "Land softly on box in squat position, then stand"
     ],
     "tips": [
-      "Land softly — absorb through hips and knees",
-      "Step down, don't jump down — protects knees",
+      "Land softly \u2014 absorb through hips and knees",
+      "Step down, don't jump down \u2014 protects knees",
       "Start with lower box height and build up"
     ]
   },
@@ -3297,7 +3013,7 @@
     ],
     "tips": [
       "Drive knee high for glute activation",
-      "Push through the top leg — not the floor leg",
+      "Push through the top leg \u2014 not the floor leg",
       "Great for hip flexor and quad development"
     ]
   },
@@ -3316,7 +3032,7 @@
     "difficulty": "advanced",
     "instructions": [
       "Stand on box edge, toes near the front",
-      "Step off box — do not jump off",
+      "Step off box \u2014 do not jump off",
       "Upon landing, immediately jump up as high as possible",
       "Minimize ground contact time"
     ],
@@ -3340,13 +3056,13 @@
     "difficulty": "intermediate",
     "instructions": [
       "Stand in front of box, sit back onto box",
-      "Pause briefly — no relaxing core",
+      "Pause briefly \u2014 no relaxing core",
       "Explosively jump up off box, feet leave surface",
       "Land and repeat"
     ],
     "tips": [
-      "Pause eliminates stretch reflex — pure explosive power",
-      "Keep weight moderate — focus on speed",
+      "Pause eliminates stretch reflex \u2014 pure explosive power",
+      "Keep weight moderate \u2014 focus on speed",
       "Excellent for developing starting strength"
     ]
   },
@@ -3439,13 +3155,13 @@
     "difficulty": "intermediate",
     "instructions": [
       "Hold slam ball overhead with both hands",
-      "Extend fully — rise onto toes",
+      "Extend fully \u2014 rise onto toes",
       "Slam ball into floor as hard as possible",
       "Pick it up and repeat"
     ],
     "tips": [
-      "Use your whole body — not just arms",
-      "Slam balls don't bounce — stand aside if needed",
+      "Use your whole body \u2014 not just arms",
+      "Slam balls don't bounce \u2014 stand aside if needed",
       "Excellent for power and stress release"
     ]
   },
@@ -3462,12 +3178,12 @@
       "Sit with knees bent, feet elevated or on floor",
       "Hold medicine ball at chest, lean back 45 degrees",
       "Rotate ball to one side touching floor",
-      "Rotate to other side — continue alternating"
+      "Rotate to other side \u2014 continue alternating"
     ],
     "tips": [
       "Rotate through thoracic spine, not just arms",
       "Heavier ball increases demand",
-      "Control each touch — don't bounce the ball"
+      "Control each touch \u2014 don't bounce the ball"
     ]
   },
   {
@@ -3614,7 +3330,7 @@
       "Rest for 40-60 seconds and repeat"
     ],
     "tips": [
-      "Echo bike uses fan resistance — harder you go, harder it gets",
+      "Echo bike uses fan resistance \u2014 harder you go, harder it gets",
       "Drive with both arms and legs simultaneously",
       "Brutal but highly effective conditioning tool"
     ]
@@ -3663,7 +3379,7 @@
       "Rest and repeat for prescribed intervals"
     ],
     "tips": [
-      "Sequence: legs → back → arms; reverse on recovery",
+      "Sequence: legs \u2192 back \u2192 arms; reverse on recovery",
       "Catch position: shins vertical, arms extended",
       "Monitor split time (/500m) for pacing"
     ]
@@ -3685,7 +3401,7 @@
       "Set up on rower with feet strapped in",
       "Maintain consistent stroke rate (18-24 SPM)",
       "Row at conversational pace for 20-40 minutes",
-      "Focus on technique — long smooth strokes"
+      "Focus on technique \u2014 long smooth strokes"
     ],
     "tips": [
       "Quality strokes beat fast frantic rowing",
@@ -3764,7 +3480,7 @@
     ],
     "tips": [
       "This is a HIP HINGE, not a squat",
-      "Power comes from the hips — arms are just a guide",
+      "Power comes from the hips \u2014 arms are just a guide",
       "Squeeze glutes hard at the top of each rep"
     ]
   },
@@ -3937,7 +3653,7 @@
     ],
     "tips": [
       "Overhead arm must remain locked out throughout",
-      "Lateral hip flexion — not rotation",
+      "Lateral hip flexion \u2014 not rotation",
       "Excellent shoulder stability and core rotation exercise"
     ]
   },
@@ -3984,7 +3700,7 @@
     "tips": [
       "Critical for rear delt and external rotator health",
       "Perfect for travel when no cable machine available",
-      "High reps work best — 15-25 per set"
+      "High reps work best \u2014 15-25 per set"
     ]
   },
   {
@@ -4006,7 +3722,7 @@
       "Drive hips forward to return to standing"
     ],
     "tips": [
-      "Band provides lighter resistance than barbell — great for learning",
+      "Band provides lighter resistance than barbell \u2014 great for learning",
       "Keep spine neutral throughout",
       "Feel the stretch in hamstrings at the bottom"
     ]
@@ -4030,8 +3746,8 @@
       "Drive through heels to stand"
     ],
     "tips": [
-      "Band resistance increases at top — great for quad lockout",
-      "Lighter than barbell — perfect for warm-up or high reps",
+      "Band resistance increases at top \u2014 great for quad lockout",
+      "Lighter than barbell \u2014 perfect for warm-up or high reps",
       "Add band around knees to cue proper knee tracking"
     ]
   },
@@ -4051,7 +3767,7 @@
     "instructions": [
       "Bar over mid-foot, hip-width stance",
       "Hinge down and grip bar just outside legs",
-      "Drive through floor — legs, then hip extension, then shrug",
+      "Drive through floor \u2014 legs, then hip extension, then shrug",
       "Pull bar up, drop under and catch in quarter-squat rack position",
       "Stand tall to complete the lift"
     ],
@@ -4077,12 +3793,12 @@
     "instructions": [
       "Hold bar at hip crease, slight knee bend",
       "Hinge slightly at hips to load the posterior chain",
-      "Explosively extend hips and knees — triple extension",
+      "Explosively extend hips and knees \u2014 triple extension",
       "Shrug and pull, drop under to catch in rack position",
       "Stand to finish"
     ],
     "tips": [
-      "Starting from hang removes the pull from floor — great for learning",
+      "Starting from hang removes the pull from floor \u2014 great for learning",
       "Focus on aggressive hip drive not arm pull",
       "Keep elbows high in catch"
     ]
@@ -4103,7 +3819,7 @@
     "instructions": [
       "Wide snatch grip, bar over mid-foot",
       "Hinge down, chest up, lats engaged",
-      "Drive through floor — leg drive, hip extension, shrug",
+      "Drive through floor \u2014 leg drive, hip extension, shrug",
       "Punch bar overhead, catch with arms locked out in quarter-squat",
       "Stand tall with bar overhead"
     ],
@@ -4128,12 +3844,12 @@
     "instructions": [
       "Wide snatch grip, bar at hip crease",
       "Slight hinge back to load hips",
-      "Explosive hip drive — full triple extension",
+      "Explosive hip drive \u2014 full triple extension",
       "Punch bar overhead and catch locked out",
       "Stand to complete"
     ],
     "tips": [
-      "Great snatch entry point — less technical than full snatch",
+      "Great snatch entry point \u2014 less technical than full snatch",
       "Focus on catching with straight arms",
       "Use lighter load than power clean"
     ]
@@ -4152,14 +3868,14 @@
     "movementType": "push",
     "difficulty": "advanced",
     "instructions": [
-      "Perform a full clean — pull from floor to rack position",
+      "Perform a full clean \u2014 pull from floor to rack position",
       "Dip: slight knee bend, torso upright",
       "Drive: explosively extend legs",
-      "Split or push jerk — punch bar overhead as you drop under",
+      "Split or push jerk \u2014 punch bar overhead as you drop under",
       "Stand through and lock out overhead"
     ],
     "tips": [
-      "Two movements in one — clean first, then jerk",
+      "Two movements in one \u2014 clean first, then jerk",
       "Dip-drive must be vertical",
       "Most weight can be lifted overhead this way"
     ]
@@ -4184,7 +3900,7 @@
       "Stand to lockout"
     ],
     "tips": [
-      "Dip is shallow and fast — not a squat",
+      "Dip is shallow and fast \u2014 not a squat",
       "Let the legs do the work, arms guide bar",
       "Receive with soft knees, arms locked"
     ]
@@ -4229,12 +3945,12 @@
     "instructions": [
       "Clean grip and setup from floor",
       "Pull bar as if performing a clean",
-      "Achieve full triple extension — ankles, knees, hips",
+      "Achieve full triple extension \u2014 ankles, knees, hips",
       "Shrug at top, bar rises to waist/stomach height",
       "Lower with control"
     ],
     "tips": [
-      "Load heavier than full clean — no catch required",
+      "Load heavier than full clean \u2014 no catch required",
       "Great for building clean pulling strength",
       "Focus on staying over bar until hips extend"
     ]
@@ -4253,7 +3969,7 @@
     "difficulty": "intermediate",
     "instructions": [
       "Wide snatch grip, set up from floor",
-      "Pull with full triple extension — legs, hips, shrug",
+      "Pull with full triple extension \u2014 legs, hips, shrug",
       "Bar should travel to lower chest height",
       "Lower with control"
     ],
@@ -4282,7 +3998,7 @@
       "Lower with control"
     ],
     "tips": [
-      "Light weight — no leg drive assistance",
+      "Light weight \u2014 no leg drive assistance",
       "Great for shoulder mobility and overhead strength",
       "Useful as a warm-up for snatch work"
     ]
@@ -4310,7 +4026,7 @@
     "tips": [
       "Demands extreme shoulder mobility and overhead stability",
       "Bar over base of support throughout",
-      "Start light — this exposes mobility restrictions quickly"
+      "Start light \u2014 this exposes mobility restrictions quickly"
     ]
   },
   {
@@ -4329,13 +4045,13 @@
     "instructions": [
       "Hold dumbbells at sides or hang position",
       "Hinge at hips, slight knee bend",
-      "Drive hips explosively — full triple extension",
+      "Drive hips explosively \u2014 full triple extension",
       "Shrug and pull dumbbells up, rotate elbows forward to catch at shoulders",
       "Stand to complete"
     ],
     "tips": [
       "Great intro to Olympic lifting patterns",
-      "Each arm works independently — exposes imbalances",
+      "Each arm works independently \u2014 exposes imbalances",
       "Can use heavier loads than barbell version due to bilateral deficit"
     ]
   },
@@ -4360,7 +4076,7 @@
     "tips": [
       "Best beginner introduction to clean mechanics",
       "Dumbbells allow natural wrist rotation",
-      "Go lighter than you think — technique first"
+      "Go lighter than you think \u2014 technique first"
     ]
   },
   {
@@ -4377,7 +4093,7 @@
     "difficulty": "intermediate",
     "instructions": [
       "Hold one dumbbell between feet, squat down",
-      "Drive through floor — full triple extension",
+      "Drive through floor \u2014 full triple extension",
       "Pull dumbbell straight up close to body",
       "Punch overhead with arm fully locked",
       "Lower and alternate sides"
@@ -4404,12 +4120,12 @@
     "instructions": [
       "Clean bar to front rack position",
       "Take a breath, brace core",
-      "Strict press bar overhead — no leg drive",
+      "Strict press bar overhead \u2014 no leg drive",
       "Lockout arms overhead",
       "Lower to rack, then to floor"
     ],
     "tips": [
-      "Strict press after clean — no jerk",
+      "Strict press after clean \u2014 no jerk",
       "Great total body strength movement",
       "Add leg drive to convert to push press"
     ]
@@ -4452,7 +4168,7 @@
     ],
     "tips": [
       "Keep forearm flat on thigh throughout",
-      "Use light weight — wrist flexors fatigue quickly",
+      "Use light weight \u2014 wrist flexors fatigue quickly",
       "Pair with reverse wrist curl for balanced forearm development"
     ]
   },
@@ -4472,7 +4188,7 @@
       "Return to standing and repeat"
     ],
     "tips": [
-      "Hold only one dumbbell — the resistance should be on the working side",
+      "Hold only one dumbbell \u2014 the resistance should be on the working side",
       "Avoid leaning forward or backward",
       "For equal work on both obliques, hold a dumbbell in each hand"
     ]
@@ -4496,7 +4212,7 @@
     ],
     "tips": [
       "Keep movements slow and controlled",
-      "Light weight only — focuses on posterior chain tension",
+      "Light weight only \u2014 focuses on posterior chain tension",
       "Great for lower back health and posture correction"
     ]
   },
@@ -4520,7 +4236,7 @@
     "tips": [
       "The lighter the weight, the longer you can maintain form",
       "Keep feet elevated to maximise core engagement",
-      "Control the rotation — do not just swing arms"
+      "Control the rotation \u2014 do not just swing arms"
     ]
   },
   {
@@ -4541,7 +4257,7 @@
       "Hold 1-2 seconds and lower with control"
     ],
     "tips": [
-      "Use very light weight — this targets small stabiliser muscles",
+      "Use very light weight \u2014 this targets small stabiliser muscles",
       "Thumbs pointing up protects the rotator cuff",
       "Excellent for posture correction and shoulder health"
     ]
@@ -4566,8 +4282,8 @@
       "Lower and repeat on other side, alternating each rep"
     ],
     "tips": [
-      "The wider the feet, the more stable the plank — narrow stance increases core demand",
-      "Resist rotating the hips — anti-rotation is the point",
+      "The wider the feet, the more stable the plank \u2014 narrow stance increases core demand",
+      "Resist rotating the hips \u2014 anti-rotation is the point",
       "Hexagonal dumbbells are far more stable than round ones"
     ]
   },
@@ -4614,7 +4330,7 @@
       "Land softly with knees bent, absorbing force into next squat"
     ],
     "tips": [
-      "Use light dumbbells or bodyweight only — heavy loads increase injury risk",
+      "Use light dumbbells or bodyweight only \u2014 heavy loads increase injury risk",
       "Land toe-heel to protect joints",
       "Great for power development and cardio integration"
     ]
@@ -4634,7 +4350,7 @@
     "instructions": [
       "Stand holding dumbbells at sides, feet together",
       "Step one foot back and lower rear knee toward floor",
-      "Front knee stays over ankle — do not push forward",
+      "Front knee stays over ankle \u2014 do not push forward",
       "Drive through front heel to return to standing"
     ],
     "tips": [
@@ -4684,10 +4400,10 @@
       "Hold one dumbbell with both hands, stand feet shoulder-width",
       "Hinge at hips, swinging dumbbell back between legs",
       "Drive hips forward explosively, swinging dumbbell to chest height",
-      "Let momentum carry it — this is a hip drive, not an arm raise"
+      "Let momentum carry it \u2014 this is a hip drive, not an arm raise"
     ],
     "tips": [
-      "Same mechanics as kettlebell swing — hip hinge dominant, not a squat",
+      "Same mechanics as kettlebell swing \u2014 hip hinge dominant, not a squat",
       "Keep lower back neutral throughout the hinge",
       "Great power and conditioning movement when done for reps"
     ]
@@ -4707,13 +4423,13 @@
     "difficulty": "beginner",
     "instructions": [
       "Pick up heavy dumbbells at sides with firm grip",
-      "Stand tall — shoulders back, core braced",
+      "Stand tall \u2014 shoulders back, core braced",
       "Walk forward with controlled steps for distance or time",
       "Keep breathing, maintain posture throughout"
     ],
     "tips": [
-      "Heavier is better — this is a loaded carry, challenge your grip",
-      "Maintain upright posture — resist leaning with the weight",
+      "Heavier is better \u2014 this is a loaded carry, challenge your grip",
+      "Maintain upright posture \u2014 resist leaning with the weight",
       "One of the best grip, core, and trap builders available"
     ]
   },
@@ -4739,7 +4455,7 @@
     ],
     "tips": [
       "The squat-to-press should be one fluid movement, not two separate exercises",
-      "Moderate weight — this is a conditioning movement",
+      "Moderate weight \u2014 this is a conditioning movement",
       "Breathing: inhale on the way down, exhale as you press"
     ]
   },
@@ -4763,7 +4479,7 @@
     ],
     "tips": [
       "Power comes from rotating the thorax, not swinging the arms",
-      "Keep arms slightly bent throughout — not locked out",
+      "Keep arms slightly bent throughout \u2014 not locked out",
       "Progress to cable or medicine ball for smoother resistance curve"
     ]
   },
@@ -4809,7 +4525,7 @@
     "tips": [
       "The kettlebell handle creates a different centre of mass than dumbbells",
       "Supinate the wrist at the top for peak bicep contraction",
-      "Strict form — no swinging"
+      "Strict form \u2014 no swinging"
     ]
   },
   {
@@ -4830,8 +4546,8 @@
       "After prescribed reps, reverse direction"
     ],
     "tips": [
-      "Engage core to resist rotation — the passing motion challenges anti-rotation",
-      "Keep movement controlled — do not rush the circle",
+      "Engage core to resist rotation \u2014 the passing motion challenges anti-rotation",
+      "Keep movement controlled \u2014 do not rush the circle",
       "Work equal reps in each direction"
     ]
   },
@@ -4853,8 +4569,8 @@
       "Repeat without letting the arm drift"
     ],
     "tips": [
-      "This is a core + shoulder stability combo — keep the arm perfectly vertical",
-      "Foundation of the Turkish Get-Up — master this first",
+      "This is a core + shoulder stability combo \u2014 keep the arm perfectly vertical",
+      "Foundation of the Turkish Get-Up \u2014 master this first",
       "Light weight until the pattern is ingrained"
     ]
   },
@@ -4897,7 +4613,7 @@
     "instructions": [
       "Start lying on back, press kettlebell to ceiling with one hand locked",
       "Roll to elbow on the same side, then to hand",
-      "Bridge hips up high — this is the halfway point",
+      "Bridge hips up high \u2014 this is the halfway point",
       "Reverse the sequence to return to floor"
     ],
     "tips": [
@@ -4925,7 +4641,7 @@
     ],
     "tips": [
       "The kettlebell handle angle feels different from dumbbell at the bottom",
-      "Neutral back position is essential — do not round",
+      "Neutral back position is essential \u2014 do not round",
       "Great single-arm strength builder for the back"
     ]
   },
@@ -4975,7 +4691,7 @@
     ],
     "tips": [
       "The single-arm version challenges the core much more than two-handed",
-      "Square both hips equally — resist rotation",
+      "Square both hips equally \u2014 resist rotation",
       "Perfect technique precedes increasing weight"
     ]
   },
@@ -4999,7 +4715,7 @@
       "Lower it back to rack as you drive back to standing"
     ],
     "tips": [
-      "Ensures shoulder pressing against an unstable base — demands core stability",
+      "Ensures shoulder pressing against an unstable base \u2014 demands core stability",
       "The timing: press at the bottom of the lunge, lower on the way up",
       "Use opposite arm to lunge leg for the natural twisting engagement"
     ]
@@ -5025,8 +4741,8 @@
       "Lock out at top, then lower to rack for the next rep"
     ],
     "tips": [
-      "Fluid squat-to-press is the goal — one continuous power movement",
-      "The squat generates momentum for the press — use it",
+      "Fluid squat-to-press is the goal \u2014 one continuous power movement",
+      "The squat generates momentum for the press \u2014 use it",
       "One of the most effective conditioning exercises available"
     ]
   },
@@ -5049,7 +4765,7 @@
       "Elbows at roughly 45 degrees to body"
     ],
     "tips": [
-      "Floor limits range of motion — great for those with shoulder issues",
+      "Floor limits range of motion \u2014 great for those with shoulder issues",
       "The kettlebell handle rotation adds a unique wrist challenge vs dumbbells",
       "Excellent pressing variation for home training"
     ]
@@ -5070,7 +4786,7 @@
       "Return to upright and repeat"
     ],
     "tips": [
-      "Kettlebell is heavier than dumbbells — use appropriate weight",
+      "Kettlebell is heavier than dumbbells \u2014 use appropriate weight",
       "Hold only one bell, on the working side",
       "Resist the urge to lean forward during the bend"
     ]
@@ -5120,7 +4836,7 @@
       "Keep hips level and core tight throughout"
     ],
     "tips": [
-      "Progressively loads one side at a time — good archer push-up progression",
+      "Progressively loads one side at a time \u2014 good archer push-up progression",
       "Wider hand placement makes it more lateral",
       "Great precursor to single-arm push-up training"
     ]
@@ -5136,14 +4852,14 @@
     "difficulty": "beginner",
     "instructions": [
       "Lie on back, knees bent, feet flat, hands behind head lightly",
-      "Curl shoulders off floor by contracting abs — not pulling the neck",
+      "Curl shoulders off floor by contracting abs \u2014 not pulling the neck",
       "Hold the peak contraction 1 second",
       "Lower with control, do not rest head between reps"
     ],
     "tips": [
-      "It is a short range movement — not a full sit-up",
+      "It is a short range movement \u2014 not a full sit-up",
       "Exhale at the top to improve abdominal contraction",
-      "Hands behind head — do not pull — just support the weight"
+      "Hands behind head \u2014 do not pull \u2014 just support the weight"
     ]
   },
   {
@@ -5161,7 +4877,7 @@
       "Lie on back, hands under lower back for support, legs raised 6 inches",
       "Alternate kicking legs up and down in a scissors motion",
       "Keep lower back pressed to floor throughout",
-      "Breathe steadily — do not hold breath"
+      "Breathe steadily \u2014 do not hold breath"
     ],
     "tips": [
       "The closer to the floor the legs are, the harder the exercise",
@@ -5185,8 +4901,8 @@
       "Move in a controlled bicycle-like pattern"
     ],
     "tips": [
-      "The rotation is what activates the obliques — do not just lift straight up",
-      "Slower is harder — control both directions",
+      "The rotation is what activates the obliques \u2014 do not just lift straight up",
+      "Slower is harder \u2014 control both directions",
       "Extend the working leg as the other knee comes in for extra intensity"
     ]
   },
@@ -5202,7 +4918,7 @@
     "instructions": [
       "Lie on back, hands at sides, hips and knees at 90 degrees",
       "Contract abs and curl hips up off floor toward chest",
-      "Do not swing — use controlled ab contraction",
+      "Do not swing \u2014 use controlled ab contraction",
       "Lower slowly to start position"
     ],
     "tips": [
@@ -5225,7 +4941,7 @@
     "instructions": [
       "Lie on back, arms out to sides for support, legs raised to 90 degrees",
       "Rotate both legs together toward the floor on one side",
-      "Control the descent — do not let legs slam down",
+      "Control the descent \u2014 do not let legs slam down",
       "Reverse and rotate to the other side"
     ],
     "tips": [
@@ -5248,7 +4964,7 @@
     "instructions": [
       "Lie flat on back, hands under lower back for support",
       "Raise both legs together to 90 degrees keeping them straight",
-      "Lower slowly to just above the floor — do not touch down",
+      "Lower slowly to just above the floor \u2014 do not touch down",
       "Repeat while keeping lower back pressed to floor"
     ],
     "tips": [
@@ -5295,12 +5011,12 @@
       "Hang from pull-up bar with overhand grip, arms fully extended",
       "Brace core and pull knees up toward chest by contracting abs",
       "Hold briefly at the top",
-      "Lower legs slowly — do not just drop them"
+      "Lower legs slowly \u2014 do not just drop them"
     ],
     "tips": [
-      "Avoid swinging — momentum reduces the core work",
+      "Avoid swinging \u2014 momentum reduces the core work",
       "Progress to straight-leg raises once this is easy",
-      "Grip endurance is often the limiting factor — use straps if needed"
+      "Grip endurance is often the limiting factor \u2014 use straps if needed"
     ]
   },
   {
@@ -5342,11 +5058,11 @@
       "Start in forearm plank position",
       "Engage core and pike hips up toward ceiling in a fluid arc",
       "Lower hips through plank and continue to a slight dip below neutral",
-      "Return to plank — this creates a wave-like dolphin motion"
+      "Return to plank \u2014 this creates a wave-like dolphin motion"
     ],
     "tips": [
       "The flowing motion demands continuous core and shoulder engagement",
-      "Keep arms fixed — only the hips and spine move",
+      "Keep arms fixed \u2014 only the hips and spine move",
       "Great full-body core stability and shoulder strength drill"
     ]
   },
@@ -5366,11 +5082,11 @@
       "Start on all fours, hands under shoulders, knees under hips",
       "Simultaneously extend opposite arm and leg until both parallel to floor",
       "Hold 2-3 seconds, maintaining a flat back",
-      "Return and switch sides — that is one rep"
+      "Return and switch sides \u2014 that is one rep"
     ],
     "tips": [
-      "The challenge is keeping the hips level — do not let them rotate or drop",
-      "Move slowly — this is a stability exercise, not a speed drill",
+      "The challenge is keeping the hips level \u2014 do not let them rotate or drop",
+      "Move slowly \u2014 this is a stability exercise, not a speed drill",
       "An excellent low-back rehabilitation and prevention exercise"
     ]
   },
@@ -5393,9 +5109,9 @@
       "Continue alternating sides in a smooth arcing motion"
     ],
     "tips": [
-      "One step toward the archer pull-up — loads each side unequally",
+      "One step toward the archer pull-up \u2014 loads each side unequally",
       "Requires considerable lat and bicep strength",
-      "Slow down the transitions — do not swing to get from side to side"
+      "Slow down the transitions \u2014 do not swing to get from side to side"
     ]
   },
   {
@@ -5418,7 +5134,7 @@
     ],
     "tips": [
       "Faster tempo = more cardio benefit; slower = more stability demand",
-      "Like Superman but with alternating movement — easier on the back",
+      "Like Superman but with alternating movement \u2014 easier on the back",
       "Great posterior chain warm-up or activation drill"
     ]
   },
@@ -5439,10 +5155,10 @@
       "Stand feet shoulder-width, toes slightly out, arms forward for balance",
       "Break at hips and knees simultaneously",
       "Descend until thighs are parallel to floor or below",
-      "Drive through full foot to stand — do not shift forward onto toes"
+      "Drive through full foot to stand \u2014 do not shift forward onto toes"
     ],
     "tips": [
-      "The foundation of all lower body training — master this before loading",
+      "The foundation of all lower body training \u2014 master this before loading",
       "Knees track over toes throughout",
       "Add a pause at the bottom to build control and muscle activation"
     ]
@@ -5459,11 +5175,11 @@
     "instructions": [
       "Start on all fours, hands under shoulders, knees under hips",
       "Keeping knee bent at 90 degrees, raise one leg out to side",
-      "Lift until thigh is parallel to floor — like a dog at a fire hydrant",
+      "Lift until thigh is parallel to floor \u2014 like a dog at a fire hydrant",
       "Lower with control and repeat before switching sides"
     ],
     "tips": [
-      "Keep hips square — do not let them tilt or rotate",
+      "Keep hips square \u2014 do not let them tilt or rotate",
       "Slower movement increases glute activation",
       "Progress by adding an ankle weight or hip circle band"
     ]
@@ -5490,7 +5206,7 @@
     ],
     "tips": [
       "Do not let knees push forward past toes",
-      "Flat back against the wall is essential — no rounding",
+      "Flat back against the wall is essential \u2014 no rounding",
       "Progress by increasing hold time or adding weight on thighs"
     ]
   },
@@ -5514,8 +5230,8 @@
       "Drive through the standing foot to return upright"
     ],
     "tips": [
-      "Easier than a full pistol squat — good stepping stone to it",
-      "The extended rear leg acts as a counterbalance — use it",
+      "Easier than a full pistol squat \u2014 good stepping stone to it",
+      "The extended rear leg acts as a counterbalance \u2014 use it",
       "Touch the rear knee softly to floor if you need a target for depth"
     ]
   },
@@ -5535,7 +5251,7 @@
     "instructions": [
       "Stand on one leg, extend other leg forward off floor",
       "Lower by bending the standing knee, keeping extended leg straight",
-      "Descend as deep as hip mobility allows — ideally to full depth",
+      "Descend as deep as hip mobility allows \u2014 ideally to full depth",
       "Drive through the heel of the standing foot to return to standing"
     ],
     "tips": [
@@ -5560,9 +5276,9 @@
       "Lower heels below step level for full stretch if on a step"
     ],
     "tips": [
-      "Full range of motion — all the way up and all the way down",
+      "Full range of motion \u2014 all the way up and all the way down",
       "Progress with a step for greater range and single-leg variation",
-      "Calves respond well to high rep sets — 15-30 reps per set"
+      "Calves respond well to high rep sets \u2014 15-30 reps per set"
     ]
   },
   {
@@ -5584,7 +5300,7 @@
       "Maintain a steady rhythm throughout"
     ],
     "tips": [
-      "Classic full-body warm-up movement — great for elevating heart rate fast",
+      "Classic full-body warm-up movement \u2014 great for elevating heart rate fast",
       "Land softly to protect joints",
       "Increase speed or add a weighted vest for more challenge"
     ]
@@ -5605,12 +5321,12 @@
     "instructions": [
       "Start on all fours, knees hovering just 1 inch off the floor",
       "Move opposite hand and foot forward simultaneously",
-      "Keep back flat and hips level — do not rise or sag",
+      "Keep back flat and hips level \u2014 do not rise or sag",
       "Crawl forward for distance, then backward to start"
     ],
     "tips": [
       "The hovering knees are what makes this different from normal crawling",
-      "Slow is harder — fight the urge to rush",
+      "Slow is harder \u2014 fight the urge to rush",
       "Great full-body conditioning and shoulder stability drill"
     ]
   },
@@ -5655,11 +5371,11 @@
     "instructions": [
       "Start in a low push-up position, very close to the floor",
       "Move opposite elbow and knee forward simultaneously",
-      "Stay very low to the ground — less than 6 inches clearance",
+      "Stay very low to the ground \u2014 less than 6 inches clearance",
       "Crawl forward for distance keeping body flat and controlled"
     ],
     "tips": [
-      "More challenging than bear crawl — much lower centre of gravity",
+      "More challenging than bear crawl \u2014 much lower centre of gravity",
       "Requires hip flexor mobility and tricep/shoulder endurance",
       "Great for military-style conditioning and tactical fitness"
     ]
@@ -5680,7 +5396,7 @@
     "instructions": [
       "Lie flat on stomach, arms bent in front",
       "Pull forward using forearms and elbows while pushing with toes",
-      "Keep hips flat on the floor — no raising",
+      "Keep hips flat on the floor \u2014 no raising",
       "Move forward alternating sides for distance"
     ],
     "tips": [
@@ -5730,7 +5446,7 @@
       "Hold 20-30 seconds each side, breathe deeply"
     ],
     "tips": [
-      "Never force the neck — gentle pressure only",
+      "Never force the neck \u2014 gentle pressure only",
       "Rotate the chin slightly up or down to hit different fibres of the neck",
       "Great to do between sets during shoulder or upper back work"
     ]
@@ -5755,7 +5471,7 @@
     "tips": [
       "The 45-degree angle targets the upper trap specifically",
       "The arm behind back depresses the shoulder for more stretch",
-      "A daily stretch — upper traps are chronically tight in desk workers"
+      "A daily stretch \u2014 upper traps are chronically tight in desk workers"
     ]
   },
   {
@@ -5776,9 +5492,9 @@
       "Hold 20-30 seconds each side"
     ],
     "tips": [
-      "This targets the levator scapulae — a key source of neck and shoulder pain",
+      "This targets the levator scapulae \u2014 a key source of neck and shoulder pain",
       "Combined with upper trap stretch covers most of the neck musculature",
-      "Do not force the head — this should feel like a gentle pull, not pain"
+      "Do not force the head \u2014 this should feel like a gentle pull, not pain"
     ]
   },
   {
@@ -5799,7 +5515,7 @@
       "Hold 20-30 seconds each side"
     ],
     "tips": [
-      "Targets posterior deltoid and rotator cuff — commonly tight in pressing athletes",
+      "Targets posterior deltoid and rotator cuff \u2014 commonly tight in pressing athletes",
       "Avoid shrugging the shoulder being stretched",
       "Excellent pre- and post-shoulder workout stretch"
     ]
@@ -5820,7 +5536,7 @@
       "Hold 20-30 seconds each side"
     ],
     "tips": [
-      "Keep torso upright — do not let the body lean to stretch further",
+      "Keep torso upright \u2014 do not let the body lean to stretch further",
       "Great post-pressing stretch for triceps recovery",
       "Also stretches the long head of the tricep into the shoulder area"
     ]
@@ -5929,14 +5645,14 @@
     "difficulty": "beginner",
     "instructions": [
       "Start on all fours, hands under shoulders, knees under hips",
-      "Arch back toward the floor, head up — this is Cow position",
-      "Round back toward the ceiling, head drops — this is Cat",
+      "Arch back toward the floor, head up \u2014 this is Cow position",
+      "Round back toward the ceiling, head drops \u2014 this is Cat",
       "Flow smoothly between the two, matching movement to breath"
     ],
     "tips": [
       "Breathe in on Cow, breathe out on Cat for maximum benefit",
       "This is the fundamental spinal mobility exercise",
-      "Move through your pain-free range — never force end range positions"
+      "Move through your pain-free range \u2014 never force end range positions"
     ]
   },
   {
@@ -5959,7 +5675,7 @@
     "tips": [
       "Place hands on inner knees and press gently for a deeper adductor stretch",
       "The closer feet are to groin, the more intense the stretch",
-      "Avoid rounding the lower back — hinge from the hips"
+      "Avoid rounding the lower back \u2014 hinge from the hips"
     ]
   },
   {
@@ -6004,9 +5720,9 @@
       "Hold 30-45 seconds each side"
     ],
     "tips": [
-      "Let gravity do the work — do not force the knee to the floor",
+      "Let gravity do the work \u2014 do not force the knee to the floor",
       "Both shoulder blades stay in contact with the floor",
-      "Excellent lower back decompression stretch — great after any workout"
+      "Excellent lower back decompression stretch \u2014 great after any workout"
     ]
   },
   {
@@ -6050,7 +5766,7 @@
       "Hold 20-30 seconds, then switch sides"
     ],
     "tips": [
-      "Similar to a side lunge stretch — keep back flat",
+      "Similar to a side lunge stretch \u2014 keep back flat",
       "Deeper stance = more intense stretch",
       "Progress to seated straddle or frog stretch for deeper work"
     ]
@@ -6069,12 +5785,12 @@
     "instructions": [
       "Start on all fours, then walk knees wide out to sides",
       "Toes can point out to align with knees",
-      "Lower hips toward floor — feel a deep groin and hip stretch",
+      "Lower hips toward floor \u2014 feel a deep groin and hip stretch",
       "Rock gently forward and back to work through tightness"
     ],
     "tips": [
       "One of the deepest groin and inner hip stretches available",
-      "Move slowly — this is an advanced stretch for many people",
+      "Move slowly \u2014 this is an advanced stretch for many people",
       "Progress by working into deeper hip sinks over time"
     ]
   },
@@ -6118,7 +5834,7 @@
     ],
     "tips": [
       "Keep both feet flat on the floor for the full lateral stretch",
-      "Do not lean forward or backward — purely lateral",
+      "Do not lean forward or backward \u2014 purely lateral",
       "Reaching the arm further overhead increases the stretch intensity"
     ]
   },
@@ -6140,7 +5856,7 @@
       "Hold 30-45 seconds each side"
     ],
     "tips": [
-      "Sit as tall as possible before rotating — length first, then twist",
+      "Sit as tall as possible before rotating \u2014 length first, then twist",
       "Great thoracic and lumbar rotation stretch",
       "A yoga staple that translates well to athletic performance"
     ]
@@ -6164,7 +5880,7 @@
       "Hold 20-30 seconds, breathe into the abdomen"
     ],
     "tips": [
-      "Keep hips on the floor — this is not a push-up",
+      "Keep hips on the floor \u2014 this is not a push-up",
       "Progress from low cobra (elbows bent) to full cobra (arms straight)",
       "Excellent post-deadlift and squat spinal extension stretch"
     ]
@@ -6186,7 +5902,7 @@
     ],
     "tips": [
       "Tuck the pelvis under slightly to increase the stretch into the hip flexor",
-      "Do not let the knee flare outward — keep knees aligned",
+      "Do not let the knee flare outward \u2014 keep knees aligned",
       "Great post-leg day stretch and pre-run warm-up"
     ]
   },
@@ -6208,7 +5924,7 @@
       "Hold 20-30 seconds each side"
     ],
     "tips": [
-      "Flat back is essential — rounding defeats the purpose",
+      "Flat back is essential \u2014 rounding defeats the purpose",
       "Progress by raising the surface height as flexibility improves",
       "Can also be done seated with one leg extended on the floor"
     ]
@@ -6232,7 +5948,7 @@
     ],
     "tips": [
       "Bend the knees if hamstrings are very tight",
-      "Do not bounce — hold steady at the end range",
+      "Do not bounce \u2014 hold steady at the end range",
       "A good measure of overall posterior chain flexibility"
     ]
   },
@@ -6289,14 +6005,14 @@
     "difficulty": "beginner",
     "instructions": [
       "Sit or stand, lift one foot slightly off floor",
-      "Draw large circles with the foot — 10 clockwise, 10 counter-clockwise",
+      "Draw large circles with the foot \u2014 10 clockwise, 10 counter-clockwise",
       "Make the circles as large as possible to take ankle through full range",
       "Switch feet and repeat"
     ],
     "tips": [
       "Great pre-workout warm-up for ankles and lower leg joints",
       "Also useful in rehabilitation after ankle sprains",
-      "Can be done seated — great for those with limited mobility"
+      "Can be done seated \u2014 great for those with limited mobility"
     ]
   },
   {
