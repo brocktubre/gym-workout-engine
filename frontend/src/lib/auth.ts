@@ -4,6 +4,7 @@ import {
   AuthenticationDetails,
   CognitoUserSession,
 } from 'amazon-cognito-identity-js';
+import { getApiBaseUrl } from '@/lib/apiBase';
 
 const COGNITO_USER_POOL_ID = 'us-east-1_WucFi2sNK';
 const COGNITO_CLIENT_ID = '3i724l9g6bb4qffde95n7u5sgm';
@@ -67,8 +68,7 @@ export const authService = {
 
   async signUp(email: string, password: string, displayName?: string): Promise<AuthTokens> {
     // Use backend route: adminCreateUser + adminSetUserPassword → no email verification required
-    const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
-    const resp = await fetch(`${BASE_URL}/auth/register`, {
+    const resp = await fetch(`${getApiBaseUrl()}/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password, displayName }),

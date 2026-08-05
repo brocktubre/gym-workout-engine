@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
-import { getSettings, getRecentWorkouts } from '../services/dynamodbService';
+import { getRecentWorkouts } from '../services/dynamodbService';
+import { resolveUserSettings } from '../services/userService';
 import { generateWorkout } from '../services/workoutEngine';
 import { enhanceWorkoutWithClaude } from '../services/claudeService';
 import { filterExercises } from '../services/exerciseService';
@@ -17,8 +18,8 @@ router.post('/generate', async (req: Request, res: Response) => {
     }
 
     const [settings, recentWorkouts] = await Promise.all([
-      getSettings(),
-      getRecentWorkouts(14),
+      resolveUserSettings(req.user?.sub),
+      getRecentWorkouts(14, req.user?.sub),
     ]);
 
     const { exercises: ruleExercises, warmup } = await generateWorkout({ settings, recentWorkouts, request });
@@ -63,7 +64,7 @@ router.post('/swap-suggest', async (req: Request, res: Response) => {
       return;
     }
 
-    const settings = await getSettings();
+    const settings = await resolveUserSettings(req.user?.sub);
     const excludeSet = new Set<string>(excludeIds);
 
     // All exercises that primarily target this muscle group

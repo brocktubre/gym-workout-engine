@@ -171,6 +171,11 @@ export function useActiveWorkout() {
     window.dispatchEvent(new StorageEvent('storage', { key: PAUSED_AT_KEY }));
   }, []);
 
+  /** Persist the current turn so leaving the screen mid-workout resumes in place */
+  const saveTurnIndex = useCallback((turnIndex: number) => {
+    localStorage.setItem(TURN_INDEX_KEY, String(turnIndex));
+  }, []);
+
   /** Return the saved turn index (0 if none) */
   const getSavedTurnIndex = useCallback((): number => {
     const raw = localStorage.getItem(TURN_INDEX_KEY);
@@ -206,6 +211,7 @@ export function useActiveWorkout() {
     pauseWorkout,
     resumeFromPause,
     getSavedTurnIndex,
+    saveTurnIndex,
     updateActiveWorkout,
     clearActiveWorkout,
     hasActiveWorkout: activeWorkout !== null,

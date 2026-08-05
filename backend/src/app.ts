@@ -36,7 +36,7 @@ app.use('/api/auth', authRouter);
 
 // Public: exercises, workout generation, coaching notes
 app.use('/api/exercises', exercisesRouter);
-app.use('/api/engine', engineRouter);
+app.use('/api/engine', optionalAuth, engineRouter);
 app.use('/api/coaching', coachingRouter);
 
 // Settings: GET is public (returns defaults for anonymous), PUT requires auth.

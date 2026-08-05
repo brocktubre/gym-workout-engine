@@ -1,6 +1,7 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
 import { UserSettings } from '../types';
+import { getSettings } from './dynamodbService';
 
 const TABLE_NAME = process.env.TABLE_NAME || 'gym-workout-engine-prod';
 const REGION = process.env.AWS_REGION || 'us-east-1';
@@ -136,6 +137,21 @@ export async function updateUserProfile(
 export async function getUserPreferences(sub: string): Promise<UserPreferences> {
   const profile = await getUserProfile(sub);
   return profile?.preferences ?? { ...DEFAULT_PREFERENCES };
+}
+
+/**
+ * Settings to drive workout generation for a request. Authenticated users get
+ * their saved preferences layered over the global settings item; anonymous
+ * requests get the global settings alone.
+ */
+export async function resolveUserSettings(sub?: string): Promise<UserSettings> {
+  const base = await getSettings();
+  if (!sub) return base;
+  const preferences = await getUserPreferences(sub);
+  const overrides = Object.fromEntries(
+    Object.entries(preferences).filter(([, value]) => value !== undefined),
+  ) as Partial<UserSettings>;
+  return { ...base, ...overrides };
 }
 
 export async function updateUserPreferences(

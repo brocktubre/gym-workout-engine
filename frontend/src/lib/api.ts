@@ -16,7 +16,9 @@ export interface CoachingNote {
   generatedAt: string;
 }
 
-const BASE_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? '/api';
+import { getApiBaseUrl } from '@/lib/apiBase';
+
+const BASE_URL = getApiBaseUrl();
 
 export class ApiError extends Error {
   constructor(

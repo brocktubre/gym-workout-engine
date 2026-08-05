@@ -18,6 +18,7 @@ import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
 import { ApiError } from '@/lib/api';
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
+import { useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 
 import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout, Exercise } from '@/types';
@@ -35,6 +36,9 @@ interface WorkoutTurn {
 }
 
 const BETWEEN_EXERCISE_REST = 60; // 1 minute always between different movements
+// Superset movements have no rest between them, so show the upcoming movement
+// briefly instead of snapping straight to it
+const SUPERSET_TRANSITION_SECONDS = 3;
 
 function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
   const turns: WorkoutTurn[] = [];
@@ -94,7 +98,7 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
-  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedTurnIndex, isPaused } = useActiveWorkout();
+  const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedTurnIndex, saveTurnIndex, isPaused } = useActiveWorkout();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
   // Local state drives warmup visibility — immediate sync update avoids black screen on transition
@@ -102,6 +106,9 @@ export default function ActiveWorkout() {
     () => activeWorkout?.warmupStatus === 'pending' && (activeWorkout?.warmup?.length ?? 0) > 0
   );
   const [showSwapSheet, setShowSwapSheet] = useState(false);
+  // Turn we're about to move to during a superset changeover, null when not transitioning
+  const [transitionTurnIndex, setTransitionTurnIndex] = useState<number | null>(null);
+  const [transitionSeconds, setTransitionSeconds] = useState(SUPERSET_TRANSITION_SECONDS);
   const [expandedWarmupItems, setExpandedWarmupItems] = useState<Set<number>>(new Set());
   const toggleWarmupItem = (i: number) =>
     setExpandedWarmupItems(prev => {
@@ -145,6 +152,10 @@ export default function ActiveWorkout() {
   // Timer is anchored to workout.startedAt — accurate across devices and restarts
   const { elapsed } = useWorkoutTimer(activeWorkout, isPaused);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
+  const { data: settings } = useSettings();
+  // The user's current setting wins over the value baked into the workout at
+  // generation time, so changing it applies to workouts already in progress.
+  const configuredRest = settings?.restBetweenSetsSeconds ?? 90;
   const wasRestingRef = useRef(false);
   // Track the total rest seconds the current timer was started with (for the progress arc)
   const restTotalRef = useRef(90);
@@ -154,6 +165,12 @@ export default function ActiveWorkout() {
     if (isPaused) resumeFromPause();
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Keep the saved turn in sync so navigating away (e.g. to Settings) and back
+  // returns to the same set rather than the start of the workout
+  useEffect(() => {
+    saveTurnIndex(currentTurnIndex);
+  }, [currentTurnIndex, saveTurnIndex]);
 
   const completeWorkoutMutation = useCompleteWorkout();
   const updateWorkoutMutation = useUpdateWorkout();
@@ -187,6 +204,44 @@ export default function ActiveWorkout() {
     }
     if (isResting) wasRestingRef.current = true;
   }, [isResting, turns.length]);
+
+  // Hold on the upcoming superset movement, then hand over to it
+  useEffect(() => {
+    if (transitionTurnIndex === null) return;
+    setTransitionSeconds(SUPERSET_TRANSITION_SECONDS);
+
+    const tick = setInterval(() => {
+      setTransitionSeconds((s) => Math.max(0, s - 1));
+    }, 1000);
+    const handover = setTimeout(() => {
+      setCurrentTurnIndex(transitionTurnIndex);
+      setTransitionTurnIndex(null);
+    }, SUPERSET_TRANSITION_SECONDS * 1000);
+
+    return () => {
+      clearInterval(tick);
+      clearTimeout(handover);
+    };
+  }, [transitionTurnIndex]);
+
+  // On resume: the turn only advances once the rest countdown finishes, so a set
+  // completed just before exiting leaves the saved turn pointing at finished
+  // work. Skip ahead to the first set that still needs doing.
+  const alignedResumeTurnRef = useRef(false);
+  useEffect(() => {
+    if (alignedResumeTurnRef.current || turns.length === 0) return;
+    alignedResumeTurnRef.current = true;
+    setCurrentTurnIndex((i) => {
+      let next = Math.max(0, i);
+      while (next < turns.length) {
+        const turn = turns[next];
+        if (!exercises[turn.exerciseIndex]?.sets[turn.setIndex]?.completed) break;
+        next++;
+      }
+      return next;
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [turns]);
 
   // ── Conditional returns — no hooks after this point ──────────────────────
 
@@ -385,6 +440,15 @@ export default function ActiveWorkout() {
     e => e.exerciseId === currentExercise?.exerciseId,
   );
 
+  // Superset changeover: the movement being previewed before it takes over
+  const isTransitioning = transitionTurnIndex !== null;
+  const transitionTurn = transitionTurnIndex !== null ? turns[transitionTurnIndex] : undefined;
+  const transitionExercise = transitionTurn ? exercises[transitionTurn.exerciseIndex] : undefined;
+  const transitionSet = transitionTurn ? transitionExercise?.sets[transitionTurn.setIndex] : undefined;
+  const transitionPosition = transitionExercise
+    ? supersetMembers.findIndex(e => e.exerciseId === transitionExercise.exerciseId)
+    : -1;
+
   // Unique exercise count for "Exercise X of Y" counter
   const exerciseCount = exercises.length;
   const currentExerciseNumber = currentTurn.exerciseIndex + 1;
@@ -446,14 +510,22 @@ export default function ActiveWorkout() {
       nextTurn?.setIndex === currentTurn.setIndex;
 
     if (sameRound) {
-      setCurrentTurnIndex(i => Math.min(i + 1, turns.length - 1));
+      setTransitionTurnIndex(Math.min(currentTurnIndex + 1, turns.length - 1));
     } else {
+      // restSeconds === 0 means the movement is structured with no rest at all
+      // (e.g. the cardio finisher), which isn't a preference to override.
       const restSecs = currentTurn.betweenExercise
-        ? BETWEEN_EXERCISE_REST
-        : (set.restSeconds ?? 90);
+        ? Math.min(BETWEEN_EXERCISE_REST, configuredRest)
+        : (set.restSeconds === 0 ? 0 : configuredRest);
       restTotalRef.current = restSecs;
       startRest(restSecs);
     }
+  }
+
+  function startNextMovementNow() {
+    if (transitionTurnIndex === null) return;
+    setCurrentTurnIndex(transitionTurnIndex);
+    setTransitionTurnIndex(null);
   }
 
   function handleSkipSet() {
@@ -550,7 +622,7 @@ export default function ActiveWorkout() {
       targetReps: lastSet?.targetReps ?? 10,
       targetWeight: lastSet?.targetWeight,
       completed: false,
-      restSeconds: lastSet?.restSeconds ?? 90,
+      restSeconds: configuredRest,
     };
 
     const updatedExercise = {
@@ -876,8 +948,60 @@ export default function ActiveWorkout() {
           })()}
         </AnimatePresence>
 
+        {/* Superset changeover — hold on the movement coming up next */}
+        <AnimatePresence>
+          {isTransitioning && transitionExercise && (
+            <motion.button
+              type="button"
+              onClick={startNextMovementNow}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              className="w-full text-left bg-[#1c1c1e] rounded-2xl border border-[#0A84FF]/25 p-5"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
+                <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
+                  {supersetTypeName} — Up Next
+                </span>
+                <span className="ml-auto text-xs font-semibold text-[#8E8E93] tabular-nums">
+                  {transitionSeconds}s
+                </span>
+              </div>
+
+              <div className="flex items-start gap-3">
+                {transitionPosition >= 0 && (
+                  <span className="text-lg font-bold text-[#0A84FF] leading-none mt-0.5">
+                    {String.fromCharCode(65 + transitionPosition)}
+                  </span>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="text-lg font-bold text-white leading-tight">
+                    {transitionExercise.exercise.name}
+                  </p>
+                  <div className="flex items-center gap-2 mt-2 flex-wrap">
+                    <span className="text-xs font-semibold bg-[#2c2c2e] text-white px-3 py-1 rounded-full">
+                      {transitionSet?.targetReps ?? '?'} reps
+                    </span>
+                    {!!transitionSet?.targetWeight && transitionSet.targetWeight > 0 && (
+                      <span className="text-xs font-semibold bg-[#FF375F]/15 text-[#FF375F] px-3 py-1 rounded-full">
+                        {transitionSet.targetWeight} lbs
+                      </span>
+                    )}
+                    <span className="text-xs text-[#8E8E93]">
+                      Round {(transitionTurn?.setIndex ?? 0) + 1}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[11px] text-[#8E8E93] mt-4">Tap to start now</p>
+            </motion.button>
+          )}
+        </AnimatePresence>
+
         {/* Sets */}
-        {!isResting && currentExercise && (
+        {!isResting && !isTransitioning && currentExercise && (
           <div className="space-y-2">
             {currentExercise.sets.map((set, si) => {
               const isCurrent = si === currentTurn.setIndex;
@@ -911,7 +1035,7 @@ export default function ActiveWorkout() {
       </div>
 
       {/* Bottom actions — hidden during rest (RestTimer has its own skip control) */}
-      {!isResting && (
+      {!isResting && !isTransitioning && (
         <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
           <div className="flex gap-2">
             {/* Go Back — previous set, or back to warmup from set 1 */}
