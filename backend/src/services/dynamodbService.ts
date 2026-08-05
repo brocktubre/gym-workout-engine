@@ -344,7 +344,21 @@ export async function getFeatureFlags(): Promise<FeatureFlags> {
       TableName: TABLE_NAME,
       Key: { PK: 'CONFIG', SK: 'FEATURES' },
     }));
-    if (!result.Item) return { ...DEFAULT_FEATURE_FLAGS };
+    if (!result.Item) {
+      // Auto-seed defaults on first access so the item is visible in DynamoDB
+      const defaults = { ...DEFAULT_FEATURE_FLAGS };
+      await client.send(new PutCommand({
+        TableName: TABLE_NAME,
+        Item: {
+          PK: 'CONFIG',
+          SK: 'FEATURES',
+          entityType: 'FeatureFlags',
+          updatedAt: new Date().toISOString(),
+          ...defaults,
+        },
+      }));
+      return defaults;
+    }
     const { PK, SK, entityType, updatedAt, ...flags } = result.Item;
     return { ...DEFAULT_FEATURE_FLAGS, ...flags } as FeatureFlags;
   } catch {
