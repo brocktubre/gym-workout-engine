@@ -15,9 +15,9 @@ router.get('/features', async (_req: Request, res: Response) => {
   }
 });
 
-// POST /api/config/features/seed — force-creates the default item; idempotent
+// GET /api/config/features/seed — force-creates the default item; idempotent
 // Remove or lock this down once the item is confirmed in DynamoDB
-router.post('/features/seed', async (_req: Request, res: Response) => {
+router.get('/features/seed', async (_req: Request, res: Response) => {
   try {
     const flags = await saveFeatureFlags({ videoPlaybackEnabled: true });
     res.json({ seeded: true, flags });
