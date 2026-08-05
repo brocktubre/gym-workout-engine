@@ -15,6 +15,18 @@ router.get('/features', async (_req: Request, res: Response) => {
   }
 });
 
+// POST /api/config/features/seed — force-creates the default item; idempotent
+// Remove or lock this down once the item is confirmed in DynamoDB
+router.post('/features/seed', async (_req: Request, res: Response) => {
+  try {
+    const flags = await saveFeatureFlags({ videoPlaybackEnabled: true });
+    res.json({ seeded: true, flags });
+  } catch (err) {
+    console.error('Seed failed:', err);
+    res.status(500).json({ error: 'Seed failed', detail: (err as Error).message });
+  }
+});
+
 // PUT /api/config/features — admin only (requires X-Admin-Secret header)
 // Allows toggling feature flags without a redeployment.
 // Set ADMIN_SECRET env var on the Lambda to protect this endpoint.
