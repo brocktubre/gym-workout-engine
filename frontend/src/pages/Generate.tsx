@@ -59,10 +59,11 @@ function DragHandle({ onPointerDown }: { onPointerDown: (e: React.PointerEvent) 
     <button
       type="button"
       aria-label="Drag to reorder"
-      className="mt-0.5 h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] touch-manipulation cursor-grab active:cursor-grabbing flex-shrink-0"
+      className="mt-0.5 h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] touch-none select-none no-touch-select cursor-grab active:cursor-grabbing flex-shrink-0"
       onPointerDown={onPointerDown}
       // Prevent click from expanding the card
       onClick={(e) => e.stopPropagation()}
+      onContextMenu={(e) => e.preventDefault()}
     >
       <GripVertical className="h-4 w-4" />
     </button>
@@ -90,6 +91,8 @@ function ReorderBlockItem({ block, startIndex, canRemove, onSwap, onRemove }: Re
     <DragHandle
       onPointerDown={(e) => {
         e.preventDefault();
+        // iOS may have already begun a selection on the long press
+        window.getSelection()?.removeAllRanges();
         controls.start(e);
       }}
     />
@@ -647,7 +650,7 @@ export default function Generate() {
                 values={workoutBlocks.map((b) => b.id)}
                 onReorder={handleReorder}
                 as="div"
-                className="space-y-2"
+                className="space-y-2 select-none no-touch-select"
               >
                 {workoutBlocks.map((block, blockIndex) => {
                   const startIndex = workoutBlocks

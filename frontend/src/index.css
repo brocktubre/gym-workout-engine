@@ -40,6 +40,14 @@
 }
 
 @layer components {
+  /* iOS Safari starts a text selection on long-press drags; opt the whole
+     draggable list out of selection and the callout menu. */
+  .no-touch-select {
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+  }
+
   .safe-area-bottom {
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
