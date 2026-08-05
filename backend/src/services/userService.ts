@@ -35,7 +35,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
     'barbell', 'dumbbell', 'kettlebell', 'bodyweight',
     'rings', 'pull-up-bar', 'resistance-band',
     'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
-    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg', 'hip-circle-band',
+    'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg', 'hip-circle-band', 'plate',
   ],
   goal: 'hypertrophy',
   fitnessLevel: 'intermediate',

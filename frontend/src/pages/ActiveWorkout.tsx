@@ -23,6 +23,7 @@ import { toast } from '@/components/ui/use-toast';
 
 import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout, Exercise } from '@/types';
 import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
+import { ExerciseVideoButton } from '@/components/workout/ExerciseVideoButton';
 
 // ── Superset turn logic ───────────────────────────────────────────────────────
 
@@ -759,6 +760,13 @@ export default function ActiveWorkout() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 ml-3 flex-shrink-0">
+                  {currentExercise && (
+                    <ExerciseVideoButton
+                      key={currentExercise.exerciseId}
+                      name={currentExercise.exercise.name}
+                      exerciseId={currentExercise.exerciseId}
+                    />
+                  )}
                   <button
                     onClick={() => setShowSwapSheet(true)}
                     className="h-9 w-9 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors"

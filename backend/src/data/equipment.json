@@ -71,6 +71,24 @@
     ]
   },
   {
+    "id": "plate",
+    "name": "Weight Plates",
+    "category": "Plates",
+    "enabled": true,
+    "tags": [
+      "strength",
+      "accessory",
+      "grip",
+      "core"
+    ],
+    "exerciseTypes": [
+      "Accessory",
+      "Hypertrophy",
+      "Grip"
+    ],
+    "notes": "Olympic plates used for plate-loaded movements and holds"
+  },
+  {
     "id": "bodyweight",
     "name": "Bodyweight",
     "category": "Bodyweight",

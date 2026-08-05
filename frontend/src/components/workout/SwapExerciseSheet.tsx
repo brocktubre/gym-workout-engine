@@ -7,6 +7,7 @@ import {
   faLink, faMinus, faBell, faRing, faArrowUp,
   faWater, faTruckFast, faCube, faShirt, faBagShopping,
   faCircleDot, faPersonBiking, faPersonSwimming, faPersonSkiing,
+  faCircle,
   type IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
 import {
@@ -46,6 +47,7 @@ const equipmentIcons: Record<string, IconDefinition> = {
   'echo-bike': faPersonBiking,
   rower: faPersonSwimming,
   'ski-erg': faPersonSkiing,
+  plate: faCircle,
 };
 
 // ── Exercise row used in both tabs ────────────────────────────────────────────

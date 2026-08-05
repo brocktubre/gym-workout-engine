@@ -82,6 +82,26 @@ export const api = {
     return res.exercise;
   },
 
+  /**
+   * On-demand MuscleWiki demo lookup. Only call when the user taps Watch video.
+   * Throws ApiError 404 when no match (caller should hide the button).
+   */
+  async getExerciseVideo(params: {
+    name: string;
+    exerciseId?: string;
+  }): Promise<{ muscleWikiId: number; matchedName: string; streamUrl: string }> {
+    const qs = new URLSearchParams({ name: params.name });
+    if (params.exerciseId) qs.set('exerciseId', params.exerciseId);
+    return request(`/exercises/video?${qs.toString()}`);
+  },
+
+  /** Absolute URL for the proxied video stream (for <video src>). */
+  getExerciseVideoStreamUrl(streamUrl: string): string {
+    if (streamUrl.startsWith('http')) return streamUrl;
+    const path = streamUrl.startsWith('/') ? streamUrl : `/${streamUrl}`;
+    return `${BASE_URL}${path}`;
+  },
+
   // ── Engine ──────────────────────────────────────────────────────────────────
   generateWorkout(req: GenerateWorkoutRequest): Promise<{ workout: Workout }> {
     return request('/engine/generate', {

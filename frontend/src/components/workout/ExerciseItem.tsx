@@ -2,40 +2,11 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faWeightHanging, faDumbbell, faPersonWalking, faCog,
-  faLink, faRing, faBell, faMinus,
-  faArrowUp, faWater, faTruckFast, faCube,
-  faShirt, faBagShopping, faCircleDot, faPersonBiking,
-  faPersonSwimming, faPersonSkiing,
-  faArrowRightArrowLeft,
-  type IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
+import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
+import { ExerciseVideoButton } from './ExerciseVideoButton';
 import { cn } from '@/lib/utils';
 import type { WorkoutExercise } from '@/types';
-
-const equipmentIcons: Record<string, IconDefinition> = {
-  barbell: faWeightHanging,
-  dumbbell: faDumbbell,
-  bodyweight: faPersonWalking,
-  machine: faCog,
-  cable: faLink,
-  'resistance-band': faMinus,
-  kettlebell: faBell,
-  'ez-bar': faMinus,
-  rings: faRing,
-  'pull-up-bar': faArrowUp,
-  'battle-rope': faWater,
-  sled: faTruckFast,
-  'plyometric-box': faCube,
-  'weight-vest': faShirt,
-  sandbag: faBagShopping,
-  'medicine-ball': faCircleDot,
-  'echo-bike': faPersonBiking,
-  rower: faPersonSwimming,
-  'ski-erg': faPersonSkiing,
-};
 
 interface ExerciseItemProps {
   workoutExercise: WorkoutExercise;
@@ -102,15 +73,13 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
       )}
 
       {/* Main row */}
-      <button
-        className="w-full text-left p-4"
-        onClick={() => setExpanded((v) => !v)}
-      >
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-start gap-3 flex-1 min-w-0">
-            <div className="flex-shrink-0 h-8 w-8 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-base">
-              <FontAwesomeIcon icon={equipmentIcons[exercise.equipment] ?? faWeightHanging} className="text-[#8E8E93]" />
-            </div>
+      <div className="flex items-start justify-between gap-2 p-4">
+          <button
+            type="button"
+            className="flex items-start flex-1 min-w-0 text-left"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+          >
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 {index !== undefined && (
@@ -138,7 +107,7 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
                 </div>
               )}
             </div>
-          </div>
+          </button>
           <div className="flex items-center gap-2 flex-shrink-0">
             {showProgress && (
               <span className={cn(
@@ -152,23 +121,36 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
                 {completedSets}/{totalSets}
               </span>
             )}
+            <ExerciseVideoButton
+              name={exercise.name}
+              exerciseId={exercise.id}
+              className="h-7 w-7 rounded-lg"
+            />
             {onSwap && (
               <button
-                onClick={e => { e.stopPropagation(); onSwap(); }}
+                type="button"
+                onClick={onSwap}
                 className="h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors"
                 title="Swap exercise"
               >
                 <ArrowLeftRight className="h-3.5 w-3.5" />
               </button>
             )}
-            {expanded ? (
-              <ChevronUp className="h-4 w-4 text-[#8E8E93]" />
-            ) : (
-              <ChevronDown className="h-4 w-4 text-[#8E8E93]" />
-            )}
+            <button
+              type="button"
+              onClick={() => setExpanded((v) => !v)}
+              className="flex items-center justify-center text-[#8E8E93]"
+              aria-expanded={expanded}
+              aria-label={expanded ? 'Collapse details' : 'Expand details'}
+            >
+              {expanded ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+            </button>
           </div>
-        </div>
-      </button>
+      </div>
 
       {/* Expanded instructions */}
       <AnimatePresence>

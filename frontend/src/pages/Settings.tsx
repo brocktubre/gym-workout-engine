@@ -7,11 +7,11 @@ import { Input } from '@/components/ui/input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faWeightHanging, faArrowTrendUp, faPersonRunning, faFire,
-  faDumbbell, faPersonWalking, faCog, faLink, faRing,
+  faDumbbell, faPersonWalking, faLink, faRing,
   faBell, faMinus, faSeedling, faBolt, faRocket,
   faArrowUp, faWater, faTruckFast, faCube,
   faShirt, faBagShopping, faCircleDot, faPersonBiking,
-  faPersonSwimming, faPersonSkiing,
+  faPersonSwimming, faPersonSkiing, faCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -29,6 +29,7 @@ const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNod
   { value: 'barbell', label: 'Barbell', icon: <FontAwesomeIcon icon={faWeightHanging} />, category: 'Free Weights' },
   { value: 'dumbbell', label: 'Dumbbells', icon: <FontAwesomeIcon icon={faDumbbell} />, category: 'Free Weights' },
   { value: 'kettlebell', label: 'Kettlebells', icon: <FontAwesomeIcon icon={faBell} />, category: 'Free Weights' },
+  { value: 'plate', label: 'Weight Plate', icon: <FontAwesomeIcon icon={faCircle} />, category: 'Free Weights' },
   // Bodyweight
   { value: 'bodyweight', label: 'Bodyweight', icon: <FontAwesomeIcon icon={faPersonWalking} />, category: 'Bodyweight' },
   { value: 'rings', label: 'Gymnastics Rings', icon: <FontAwesomeIcon icon={faRing} />, category: 'Bodyweight' },
@@ -46,7 +47,6 @@ const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNod
   { value: 'rower', label: 'Row Erg', icon: <FontAwesomeIcon icon={faPersonSwimming} />, category: 'Cardio' },
   { value: 'ski-erg', label: 'Ski Erg', icon: <FontAwesomeIcon icon={faPersonSkiing} />, category: 'Cardio' },
   // Other
-  { value: 'machine', label: 'Machine', icon: <FontAwesomeIcon icon={faCog} />, category: 'Other' },
   { value: 'cable', label: 'Cable', icon: <FontAwesomeIcon icon={faLink} />, category: 'Other' },
   { value: 'resistance-band', label: 'Bands', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
   { value: 'hip-circle-band', label: 'Hip Circle Bands', icon: <FontAwesomeIcon icon={faMinus} />, category: 'Other' },
@@ -75,6 +75,7 @@ const DEFAULT_SETTINGS: UserSettings = {
     'rings', 'pull-up-bar', 'resistance-band',
     'battle-rope', 'sled', 'plyometric-box', 'weight-vest',
     'sandbag', 'medicine-ball', 'echo-bike', 'rower', 'ski-erg',
+    'plate',
   ],
   goal: 'hypertrophy',
   fitnessLevel: 'intermediate',

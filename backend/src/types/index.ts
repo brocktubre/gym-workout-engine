@@ -31,7 +31,8 @@ export type Equipment =
   | 'ski-erg'
   | 'machine'
   | 'cable'
-  | 'ez-bar';
+  | 'ez-bar'
+  | 'plate';
 
 export type MovementType = 'push' | 'pull' | 'legs' | 'hinge' | 'core' | 'cardio' | 'mobility';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';

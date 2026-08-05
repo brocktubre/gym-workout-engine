@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, RefreshCw, Play, Clock, ChevronRight, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { Zap, RefreshCw, Play, Clock, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -128,6 +128,7 @@ export default function Generate() {
 
   // Warmup item expand/collapse state (Generate preview)
   const [expandedWarmupItems, setExpandedWarmupItems] = useState<Set<number>>(new Set());
+  const [warmupSectionExpanded, setWarmupSectionExpanded] = useState(true);
   const toggleWarmupPreview = (i: number) =>
     setExpandedWarmupItems(prev => { const n = new Set(prev); n.has(i) ? n.delete(i) : n.add(i); return n; });
 
@@ -399,21 +400,35 @@ export default function Generate() {
                   <Clock className="h-4 w-4" />
                   <span>{formatDuration(generatedWorkout.targetDurationMinutes)} estimated</span>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-[#8E8E93]">
-                  <ChevronRight className="h-4 w-4" />
+                <div className="text-sm text-[#8E8E93]">
                   <span>{generatedWorkout.exercises.length} exercises</span>
                 </div>
               </div>
 
-              {/* Warmup list (if present) */}
-{/* Warmup preview with expandable instructions */}
+              {/* Warmup preview — section collapses to shorten a long generated list */}
               {(generatedWorkout.warmup?.length ?? 0) > 0 && (
                 <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 py-3 border-b border-[#38383A]">
+                  <button
+                    type="button"
+                    className={cn(
+                      'w-full flex items-center gap-2 px-4 py-3 text-left',
+                      warmupSectionExpanded && 'border-b border-[#38383A]',
+                    )}
+                    onClick={() => setWarmupSectionExpanded((prev) => !prev)}
+                    aria-expanded={warmupSectionExpanded}
+                  >
                     <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F]" />
                     <span className="text-sm font-semibold text-white">Warmup</span>
-                    <span className="text-xs text-[#8E8E93] ml-auto">{totalWarmupMinutes} min total</span>
-                  </div>
+                    <span className="text-xs text-[#8E8E93]">
+                      {generatedWorkout.warmup!.length} items · {totalWarmupMinutes} min
+                    </span>
+                    <span className="ml-auto flex-shrink-0">
+                      {warmupSectionExpanded
+                        ? <ChevronUp className="h-4 w-4 text-[#8E8E93]" />
+                        : <ChevronDown className="h-4 w-4 text-[#8E8E93]" />}
+                    </span>
+                  </button>
+                  {warmupSectionExpanded && (
                   <div className="divide-y divide-[#38383A]">
                     {generatedWorkout.warmup!.map((item, i) => {
                       const typeColors: Record<string, string> = {
@@ -429,21 +444,25 @@ export default function Generate() {
                       const hasInstructions = (item.instructions?.length ?? 0) > 0;
                       return (
                         <div key={i}>
-                          <button
-                            className="w-full flex items-center gap-3 px-4 py-3 text-left active:bg-[#2c2c2e] transition-colors"
-                            onClick={() => hasInstructions && toggleWarmupPreview(i)}
-                          >
-                            <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
-                              {item.type}
-                            </span>
-                            <span className="text-sm text-white flex-1">{item.name}</span>
-                            <span className="text-xs text-[#8E8E93] flex-shrink-0 mr-1">{durationLabel}</span>
-                            {hasInstructions && (
-                              isExpanded
-                                ? <ChevronUp className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
-                                : <ChevronDown className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
-                            )}
-                          </button>
+                          <div className="w-full flex items-center gap-3 px-4 py-3">
+                            <button
+                              type="button"
+                              className="flex items-center gap-3 flex-1 min-w-0 text-left"
+                              onClick={() => hasInstructions && toggleWarmupPreview(i)}
+                              aria-expanded={hasInstructions ? isExpanded : undefined}
+                            >
+                              <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full flex-shrink-0 ${typeColors[item.type] ?? 'bg-gray-500/20 text-gray-400'}`}>
+                                {item.type}
+                              </span>
+                              <span className="text-sm text-white flex-1">{item.name}</span>
+                              <span className="text-xs text-[#8E8E93] flex-shrink-0">{durationLabel}</span>
+                              {hasInstructions && (
+                                isExpanded
+                                  ? <ChevronUp className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
+                                  : <ChevronDown className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
+                              )}
+                            </button>
+                          </div>
                           {isExpanded && hasInstructions && (
                             <ul className="px-4 pb-3 space-y-1 border-t border-[#2c2c2e]">
                               {item.instructions.map((instr, j) => (
@@ -458,6 +477,7 @@ export default function Generate() {
                       );
                     })}
                   </div>
+                  )}
                 </div>
               )}
 

@@ -184,11 +184,13 @@ export function WarmupPhase({ warmup, onComplete, onSkipAll }: WarmupPhaseProps)
           className="text-center mb-6"
         >
           <h2 className="text-2xl font-bold text-white mb-3">{currentItem.name}</h2>
-          <span
-            className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${typeStyle.bg} ${typeStyle.text}`}
-          >
-            {typeStyle.label}
-          </span>
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            <span
+              className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${typeStyle.bg} ${typeStyle.text}`}
+            >
+              {typeStyle.label}
+            </span>
+          </div>
         </motion.div>
       </AnimatePresence>
 
