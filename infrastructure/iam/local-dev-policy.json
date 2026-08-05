@@ -42,6 +42,14 @@
         "cognito-idp:ListUsers"
       ],
       "Resource": "arn:aws:cognito-idp:us-east-1:381753457015:userpool/*"
+    },
+    {
+      "Sid": "PollyLocalDev",
+      "Effect": "Allow",
+      "Action": [
+        "polly:SynthesizeSpeech"
+      ],
+      "Resource": "*"
     }
   ]
 }

@@ -223,13 +223,13 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
             ? `Time · ${fmtSeconds(set.targetDurationSeconds ?? 30)}`
           : `${showWeight && set.targetWeight && set.targetWeight > 0 ? `${set.targetWeight} lbs × ` : ''}${set.targetReps} reps`}
       </div>
-      <button
-        type="button"
-        onClick={handleComplete}
-        className="h-8 w-8 rounded-full bg-[#38383A]/50 flex items-center justify-center flex-shrink-0 touch-manipulation active:bg-[#30D158] active:text-white text-[#8E8E93]/40 transition-colors"
+      {/* Static marker — only the active set can be completed */}
+      <div
+        aria-hidden
+        className="h-8 w-8 rounded-full bg-[#38383A]/50 flex items-center justify-center flex-shrink-0 text-[#8E8E93]/40"
       >
         <Check className="h-4 w-4" />
-      </button>
+      </div>
     </motion.div>
   );
 }

@@ -24,17 +24,42 @@ const SET_WORK_SECONDS = 40;
 // ---------------------------------------------------------------------------
 // Starting weights in lbs by muscle group + equipment
 // ---------------------------------------------------------------------------
+/** Fixed dumbbells available in the gym — never suggest anything outside this set. */
+const AVAILABLE_DUMBBELL_WEIGHTS = [10, 15, 20, 35, 50] as const;
+
 const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, number>>>> = {
-  chest:      { barbell: 135, dumbbell: 45, machine: 90,  cable: 45,  rings: 0 },
-  back:       { barbell: 185, dumbbell: 55, machine: 110, cable: 65,  kettlebell: 53, sled: 135 },
-  shoulders:  { barbell: 95,  dumbbell: 25, machine: 65,  cable: 30,  kettlebell: 35 },
-  biceps:     { barbell: 65,  dumbbell: 25, cable: 35,    'ez-bar': 55, rings: 0 },
-  triceps:    { barbell: 95,  dumbbell: 25, cable: 45,    rings: 0 },
+  chest:      { barbell: 135, dumbbell: 50, machine: 90,  cable: 45,  rings: 0 },
+  back:       { barbell: 185, dumbbell: 50, machine: 110, cable: 65,  kettlebell: 53, sled: 135 },
+  shoulders:  { barbell: 95,  dumbbell: 20, machine: 65,  cable: 30,  kettlebell: 35 },
+  biceps:     { barbell: 65,  dumbbell: 20, cable: 35,    'ez-bar': 55, rings: 0 },
+  triceps:    { barbell: 95,  dumbbell: 20, cable: 45,    rings: 0 },
   quads:      { barbell: 185, machine: 135, sled: 185,    'plyometric-box': 0, kettlebell: 53, sandbag: 65 },
   hamstrings: { barbell: 135, machine: 90,  kettlebell: 53, sled: 135 },
   glutes:     { barbell: 185, machine: 110, sled: 185,    kettlebell: 53 },
   core:       { 'medicine-ball': 20, sandbag: 45, rings: 0, kettlebell: 35 },
 };
+
+/** Snap a weight to the nearest available dumbbell (ties bias upward). */
+function snapToAvailableDumbbell(weight: number): number {
+  let best: number = AVAILABLE_DUMBBELL_WEIGHTS[0];
+  let bestDist = Math.abs(weight - best);
+  for (const option of AVAILABLE_DUMBBELL_WEIGHTS) {
+    const dist = Math.abs(weight - option);
+    if (dist < bestDist || (dist === bestDist && option > best)) {
+      best = option;
+      bestDist = dist;
+    }
+  }
+  return best;
+}
+
+/** Next heavier dumbbell after `weight`, or the heaviest if already at/above max. */
+function nextDumbbellWeight(weight: number): number {
+  for (const option of AVAILABLE_DUMBBELL_WEIGHTS) {
+    if (option > weight) return option;
+  }
+  return AVAILABLE_DUMBBELL_WEIGHTS[AVAILABLE_DUMBBELL_WEIGHTS.length - 1];
+}
 
 // ---------------------------------------------------------------------------
 // Warmup stretches by muscle group
@@ -219,7 +244,7 @@ function buildWarmup(
     : [...openingCardio.instructions, 'Start easy for first 2 min, build to moderate pace'];
 
   warmup.push({
-    name: `${openingCardio.name} Warmup — 5 min`,
+    name: `${openingCardio.name} Warmup`,
     type: 'cardio',
     durationSeconds: 300,
     targetMuscles: ['cardio' as MuscleGroup],
@@ -364,8 +389,16 @@ function buildSets(
         const avgW = done.reduce((s, x) => s + (x.completedWeight || 0), 0) / done.length;
         const avgR = done.reduce((s, x) => s + (x.completedReps || x.targetReps), 0) / done.length;
         if (allDone && avgW > 0) {
-          suggestedWeight = avgW + 5;
-          progressionNote = `↑ Up 5lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`;
+          if (exercise.equipment === 'dumbbell') {
+            suggestedWeight = nextDumbbellWeight(avgW);
+            const bumped = suggestedWeight > avgW;
+            progressionNote = bumped
+              ? `↑ Up to ${suggestedWeight}lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`
+              : `Same weight — already at heaviest dumbbell (${avgW}lbs × ${Math.round(avgR)} reps last time)`;
+          } else {
+            suggestedWeight = avgW + 5;
+            progressionNote = `↑ Up 5lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`;
+          }
         } else if (avgW > 0) {
           suggestedWeight = avgW;
           progressionNote = `Same weight — aim to complete all sets (${avgW}lbs × ${Math.round(avgR)} reps last time)`;
@@ -378,6 +411,11 @@ function buildSets(
   if (!suggestedWeight && exercise.category !== 'cardio') {
     const mw = STARTING_WEIGHTS[exercise.primaryMuscle];
     if (mw) suggestedWeight = mw[exercise.equipment] ?? mw['dumbbell'];
+  }
+
+  // Always constrain dumbbell targets to the plates actually available
+  if (suggestedWeight !== undefined && exercise.equipment === 'dumbbell') {
+    suggestedWeight = snapToAvailableDumbbell(suggestedWeight);
   }
 
   const sets: WorkoutSet[] = Array.from({ length: config.sets }, (_, i) => ({

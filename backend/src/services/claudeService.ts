@@ -32,22 +32,27 @@ async function getAnthropicApiKey(): Promise<string> {
 }
 
 // ---------------------------------------------------------------------------
-// Antagonist pairs used for the deterministic superset fallback
+// Muscle families used by the deterministic superset fallback. Each entry is
+// ordered by how well the muscles pair, so a group grown from the front stays
+// sensible whether it ends up with 2, 3, or 4 movements.
 // ---------------------------------------------------------------------------
-const FALLBACK_SUPERSET_PAIRS: [MuscleGroup, MuscleGroup][] = [
-  ['chest',     'back'],
-  ['biceps',    'triceps'],
-  ['quads',     'hamstrings'],
-  ['shoulders', 'back'],
-  ['chest',     'shoulders'],
+const FALLBACK_SUPERSET_FAMILIES: MuscleGroup[][] = [
+  ['chest', 'back', 'shoulders', 'core'],
+  ['biceps', 'triceps', 'shoulders', 'core'],
+  ['quads', 'hamstrings', 'glutes', 'calves'],
+  ['back', 'chest', 'biceps', 'triceps'],
 ];
+
+const MAX_SUPERSET_MEMBERS = 4;
 
 // ---------------------------------------------------------------------------
 // Types for Claude's JSON response (superset grouping format)
 // ---------------------------------------------------------------------------
 interface SupersetGroup {
-  /** 'superset' = 2-4 exercises back-to-back; 'standalone' = normal rest */
-  type: 'superset' | 'standalone';
+  /** 'superset' = 2-4 exercises back-to-back; 'standalone' = normal rest.
+   *  Claude sometimes answers 'tri-set'/'giant set', so anything other than
+   *  'standalone' with 2+ members is treated as a superset group. */
+  type: string;
   /** Ordered list of exercise IDs */
   exercises: string[];
 }
@@ -150,47 +155,107 @@ Valid goals: strength,hypertrophy,endurance,fat-loss`;
   }
 }
 
+/** Emit a group as a superset (2-4 members) or as standalone movements. */
+function pushGroup(result: WorkoutExercise[], members: WorkoutExercise[]): void {
+  if (members.length < 2) {
+    for (const ex of members) {
+      result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
+    }
+    return;
+  }
+
+  const groupId = uuidv4();
+  // Rest fires once per round rather than per movement, so keep the user's
+  // configured rest rather than dividing it across members.
+  const supersetRest = members[0].sets[0]?.restSeconds ?? 90;
+
+  members.forEach((ex, i) => {
+    result.push({
+      ...ex,
+      sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),
+      supersetGroupId: groupId,
+      supersetOrder: i + 1,
+    });
+  });
+}
+
+/** Heavy barbell compounds are better trained on their own. */
+function isHeavyCompound(ex: WorkoutExercise): boolean {
+  return ex.exercise.equipment === 'barbell' && ex.exercise.category === 'compound';
+}
+
+// Cycled so a workout gets a mix of supersets, tri-sets and giant sets rather
+// than every group landing on the same size.
+const FALLBACK_GROUP_SIZES = [3, 2, 4];
+
 // ---------------------------------------------------------------------------
-// Fallback: deterministic 2-exercise superset pairing when Claude is unavailable
+// Fallback: deterministic superset grouping when Claude is unavailable.
+// Builds 2-4 movement groups (superset → tri-set → giant set) from
+// complementary muscle families, so a Claude outage doesn't mean pairs only.
 // ---------------------------------------------------------------------------
 function applyFallbackSupersets(exercises: WorkoutExercise[]): WorkoutExercise[] {
   const result: WorkoutExercise[] = [];
   const processed = new Set<string>();
+  let groupCount = 0;
+
+  const canJoin = (members: WorkoutExercise[], candidate: WorkoutExercise) => {
+    // Only one barbell can be loaded at a time, so never stack two in a group
+    if (candidate.exercise.equipment === 'barbell') {
+      if (members.some(m => m.exercise.equipment === 'barbell')) return false;
+    }
+    // Don't hit the same muscle twice in one round
+    return !members.some(m => m.exercise.primaryMuscle === candidate.exercise.primaryMuscle);
+  };
 
   for (const ex of exercises) {
     if (processed.has(ex.exerciseId)) continue;
     processed.add(ex.exerciseId);
 
-    // Try to find a complementary pairing
-    let paired = false;
-    for (const [a, b] of FALLBACK_SUPERSET_PAIRS) {
-      const primaryMuscle = ex.exercise.primaryMuscle;
-      const partnerMuscle = primaryMuscle === a ? b : primaryMuscle === b ? a : undefined;
-      if (!partnerMuscle) continue;
-
-      const partnerIdx = exercises.findIndex(e =>
-        !processed.has(e.exerciseId) &&
-        e.exercise.primaryMuscle === partnerMuscle &&
-        !(ex.exercise.equipment === 'barbell' && e.exercise.equipment === 'barbell'),
-      );
-
-      if (partnerIdx !== -1) {
-        const partner = exercises[partnerIdx];
-        processed.add(partner.exerciseId);
-        const groupId = uuidv4();
-        const baseRest = ex.sets[0]?.restSeconds ?? 90;
-        // Use user's full configured rest for superset rounds
-        const supersetRest = baseRest;
-        result.push({ ...ex,      sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),      supersetGroupId: groupId, supersetOrder: 1 });
-        result.push({ ...partner, sets: partner.sets.map(s => ({ ...s, restSeconds: supersetRest })), supersetGroupId: groupId, supersetOrder: 2 });
-        paired = true;
-        break;
-      }
-    }
-
-    if (!paired) {
+    const family = FALLBACK_SUPERSET_FAMILIES.find(f => f.includes(ex.exercise.primaryMuscle));
+    if (!family || isHeavyCompound(ex)) {
       result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
+      continue;
     }
+
+    const targetSize = Math.min(
+      FALLBACK_GROUP_SIZES[groupCount % FALLBACK_GROUP_SIZES.length],
+      MAX_SUPERSET_MEMBERS,
+    );
+    const members = [ex];
+
+    const take = (partner: WorkoutExercise | undefined) => {
+      if (!partner) return;
+      processed.add(partner.exerciseId);
+      members.push(partner);
+    };
+
+    // Walk the family in order so the closest complements are added first
+    for (const muscle of family) {
+      if (members.length >= targetSize) break;
+      if (muscle === ex.exercise.primaryMuscle) continue;
+
+      take(exercises.find(candidate =>
+        !processed.has(candidate.exerciseId) &&
+        !isHeavyCompound(candidate) &&
+        candidate.exercise.primaryMuscle === muscle &&
+        canJoin(members, candidate),
+      ));
+    }
+
+    // Family exhausted before hitting the target — top up with any other
+    // unused movement that doesn't repeat a muscle already in the group
+    while (members.length < targetSize) {
+      const filler = exercises.find(candidate =>
+        !processed.has(candidate.exerciseId) &&
+        !isHeavyCompound(candidate) &&
+        canJoin(members, candidate),
+      );
+      if (!filler) break;
+      take(filler);
+    }
+
+    if (members.length >= 2) groupCount++;
+    pushGroup(result, members);
   }
   return result;
 }
@@ -204,6 +269,14 @@ export async function enhanceWorkoutWithClaude(
   settings: UserSettings,
   recentWorkouts: Workout[],
 ): Promise<WorkoutExercise[]> {
+  if (settings.allowSupersets === false) {
+    return draftExercises.map(ex => ({
+      ...ex,
+      supersetGroupId: undefined,
+      supersetOrder: undefined,
+    }));
+  }
+
   try {
     const apiKey = await getAnthropicApiKey();
     const client = new Anthropic({ apiKey, timeout: 15_000 });
@@ -257,16 +330,25 @@ STRICT RULES:
 3. NEVER put two barbell exercises in the same superset group (only one barbell can be loaded)
 4. Heavy compound barbell lifts (squats, deadlifts, bench press) are usually better as standalone
 5. Isolation exercises group well into supersets
-6. Good superset pairings (antagonist muscles work best):
+6. Vary the group sizes — do NOT default to 2-movement supersets. Whenever 3 or more
+   non-barbell exercises can be grouped safely, build a tri-set or giant set instead of
+   two separate pairs. Aim for at least one 3+ movement group when the list allows it.
+7. Good groupings (antagonist and complementary muscles work best):
    - chest ↔ back
    - biceps ↔ triceps
    - quads ↔ hamstrings
    - shoulders ↔ back
    - Tri-set example: biceps + triceps + rear delts
    - Tri-set example: quads + hamstrings + glutes
-7. Compound movements should appear before isolation for the same muscle group
-8. Avoid leading with muscles in recentFatigue
-9. Return ONLY valid JSON — no markdown, no code fences
+   - Giant set example: chest + back + shoulders + core
+8. Never repeat the same primary muscle twice within one group
+9. Compound movements should appear before isolation for the same muscle group
+10. Avoid leading with muscles in recentFatigue
+11. Return ONLY valid JSON — no markdown, no code fences
+
+"type" MUST be the literal string "superset" or "standalone" — nothing else.
+Tri-sets and giant sets still use "superset"; the movement count is what makes
+them a tri-set or giant set. Never emit "tri-set", "giant-set" or any other value.
 
 JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4):
 {"groups":[{"type":"superset","exercises":["id1","id2","id3"]},{"type":"standalone","exercises":["id4"]}],"reasoning":"1-2 sentences"}`;
@@ -281,7 +363,9 @@ JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 800,
+      // Every exercise ID is echoed back, so keep enough headroom that a long
+      // list can't truncate the JSON and knock us into the fallback path
+      max_tokens: 2000,
       system: systemPrompt,
       messages: [{ role: 'user', content: userMessage }],
     });
@@ -330,36 +414,34 @@ JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4
 
       if (members.length === 0) continue;
 
-      const isSuperset = group.type === 'superset' && members.length >= 2;
+      // Claude labels larger groups "tri-set"/"giant set" despite the schema, so
+      // treat anything that isn't explicitly standalone as a superset group.
+      const isSuperset = String(group.type).toLowerCase() !== 'standalone' && members.length >= 2;
 
       if (isSuperset) {
-        // Guard: never more than 4 in a group, never 2+ barbells
-        const barbellCount = members.filter(e => e.exercise.equipment === 'barbell').length;
-        const safeMembers = barbellCount > 1
-          ? members // fallback: push them in as standalone below
-          : members.slice(0, 4); // cap at 4
-
-        if (barbellCount > 1) {
-          // Too many barbells — treat all as standalone
-          for (const ex of safeMembers) {
-            result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
+        // Only one barbell can be loaded per group — the extras go standalone
+        const groupable: WorkoutExercise[] = [];
+        const displacedBarbells: WorkoutExercise[] = [];
+        let hasBarbell = false;
+        for (const ex of members) {
+          if (ex.exercise.equipment === 'barbell') {
+            if (hasBarbell) {
+              displacedBarbells.push(ex);
+              continue;
+            }
+            hasBarbell = true;
           }
-          continue;
+          groupable.push(ex);
         }
 
-        const groupId = uuidv4();
-        const baseRest = safeMembers[0].sets[0]?.restSeconds ?? 90;
-        // Use the user's full configured rest — rest fires once per round, not per movement
-        const supersetRest = baseRest;
-
-        safeMembers.forEach((ex, i) => {
-          result.push({
-            ...ex,
-            sets: ex.sets.map(s => ({ ...s, restSeconds: supersetRest })),
-            supersetGroupId: groupId,
-            supersetOrder: i + 1,
-          });
-        });
+        // Split oversized groups instead of dropping members, which would
+        // desync the output count and force the whole workout into fallback
+        for (let i = 0; i < groupable.length; i += MAX_SUPERSET_MEMBERS) {
+          pushGroup(result, groupable.slice(i, i + MAX_SUPERSET_MEMBERS));
+        }
+        for (const ex of displacedBarbells) {
+          result.push({ ...ex, supersetGroupId: undefined, supersetOrder: undefined });
+        }
       } else {
         // Standalone — strip any stale superset metadata
         for (const ex of members) {
@@ -374,6 +456,15 @@ JSON format (standalone groups have exactly 1 exercise; superset groups have 2-4
       return applyFallbackSupersets(draftExercises);
     }
 
+    const groupSizes = new Map<string, number>();
+    for (const ex of result) {
+      if (!ex.supersetGroupId) continue;
+      groupSizes.set(ex.supersetGroupId, (groupSizes.get(ex.supersetGroupId) ?? 0) + 1);
+    }
+    console.log(
+      `[Claude superset] groups: ${[...groupSizes.values()].join(', ') || 'none'} ` +
+      `(${result.length} exercises)`,
+    );
     if (claudeResult.reasoning) {
       console.log(`[Claude superset] ${claudeResult.reasoning}`);
     }

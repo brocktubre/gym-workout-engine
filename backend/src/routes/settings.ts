@@ -39,8 +39,9 @@ router.put('/', async (req: Request, res: Response) => {
   try {
     const { displayName, ...prefs } = req.body ?? {};
     const profile = await getOrCreateUserProfile(req.user.sub, req.user.email);
+    const nextDisplayName = typeof displayName === 'string' ? displayName.trim() : '';
     const merged = await updateUserProfile(req.user.sub, {
-      ...(typeof displayName === 'string' ? { displayName } : {}),
+      ...(nextDisplayName ? { displayName: nextDisplayName } : {}),
       preferences: { ...profile.preferences, ...prefs },
     });
     res.json({

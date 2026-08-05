@@ -4,6 +4,7 @@ import { formatDate, formatDuration } from '@/lib/utils';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { Button } from '@/components/ui/button';
 import { useDeleteWorkout } from '@/hooks/useWorkouts';
+import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { toast } from '@/components/ui/use-toast';
 import type { Workout, MuscleGroup } from '@/types';
 
@@ -14,12 +15,14 @@ interface RecentWorkoutProps {
 export function RecentWorkout({ workout }: RecentWorkoutProps) {
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const deleteMutation = useDeleteWorkout();
+  const { activeWorkout, clearActiveWorkout } = useActiveWorkout();
 
   const muscles: MuscleGroup[] = Array.from(
     new Set(workout.exercises.map((e) => e.exercise.primaryMuscle)),
   ).slice(0, 2);
 
   const isCompleted = workout.status === 'completed';
+  const canDelete = isCompleted || workout.status === 'in-progress';
 
   return (
     <div className="py-3">
@@ -75,7 +78,7 @@ export function RecentWorkout({ workout }: RecentWorkoutProps) {
           >
             {workout.status?.replace('-', ' ') ?? ''}
           </span>
-          {isCompleted && (
+          {canDelete && (
             <button
               onClick={() => setShowDeleteConfirm((v) => !v)}
               className="h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors"
@@ -108,6 +111,10 @@ export function RecentWorkout({ workout }: RecentWorkoutProps) {
               disabled={deleteMutation.isPending}
               onClick={async () => {
                 try {
+                  // Clear local active session if this is the workout currently in progress
+                  if (activeWorkout?.id === workout.id) {
+                    clearActiveWorkout();
+                  }
                   await deleteMutation.mutateAsync({ date: workout.date, id: workout.id });
                   toast({ title: 'Workout deleted', variant: 'success', duration: 2000 });
                 } catch {

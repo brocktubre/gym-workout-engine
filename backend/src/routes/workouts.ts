@@ -84,6 +84,7 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
       // Preserve warmup fields
       ...(body.warmup ? { warmup: body.warmup } : {}),
       ...(body.warmupStatus ? { warmupStatus: body.warmupStatus } : {}),
+      ...(body.fromDailyDate ? { fromDailyDate: body.fromDailyDate } : {}),
       // Stamp the creating user's sub so history queries can filter by user
       ...(req.user?.sub ? { userId: req.user.sub } : {}),
     };

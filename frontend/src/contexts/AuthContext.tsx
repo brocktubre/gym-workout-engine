@@ -1,6 +1,13 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, ReactNode } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { authService, friendlyAuthError, type AuthUser } from '@/lib/auth';
+import {
+  authService,
+  friendlyAuthError,
+  isTokenExpiringSoon,
+  notifySessionExpired,
+  SESSION_EXPIRED_EVENT,
+  type AuthUser,
+} from '@/lib/auth';
 import { api } from '@/lib/api';
 import { migrateLegacyWorkout } from '@/lib/workoutMigrations';
 
@@ -90,17 +97,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSignOut = useCallback(() => {
+  const clearLocalSession = useCallback(() => {
     clearRefreshTimer();
     authService.signOut();
     setUser(null);
-    // Wipe ALL cached query data so the next user never sees this user's workouts/stats
     queryClient.clear();
-    // Redirect to login using hash router
+  }, [queryClient]);
+
+  const handleSignOut = useCallback(() => {
+    clearLocalSession();
     if (window.location.hash !== '#/login') {
       window.location.hash = '#/login';
     }
-  }, [queryClient]);
+  }, [clearLocalSession]);
+
+  const handleSessionExpired = useCallback(() => {
+    clearLocalSession();
+    if (!window.location.hash.includes('/login')) {
+      window.location.hash = '#/login';
+    }
+  }, [clearLocalSession]);
 
   const startRefreshTimer = useCallback(() => {
     clearRefreshTimer();
@@ -108,10 +124,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         await authService.refreshSession();
       } catch {
-        handleSignOut();
+        notifySessionExpired();
       }
     }, REFRESH_INTERVAL_MS);
-  }, [handleSignOut]);
+  }, []);
+
+  // API / refresh failures broadcast this event when the session cannot be renewed
+  useEffect(() => {
+    window.addEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, handleSessionExpired);
+  }, [handleSessionExpired]);
+
+  // Tab may have been backgrounded long enough for the JWT to expire — refresh on focus
+  useEffect(() => {
+    const onVisibility = () => {
+      if (document.visibilityState !== 'visible') return;
+      if (!authService.getIdToken()) return;
+      if (!isTokenExpiringSoon(authService.getIdToken(), 300)) return;
+      authService.refreshSession().catch(() => notifySessionExpired());
+    };
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => document.removeEventListener('visibilitychange', onVisibility);
+  }, []);
 
   // Restore session on mount
   useEffect(() => {
@@ -139,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       cancelled = true;
       clearRefreshTimer();
     };
-  }, [startRefreshTimer]);
+  }, [startRefreshTimer, syncProfileFromBackend]);
 
   const signIn = useCallback(
     async (email: string, password: string) => {
@@ -157,7 +191,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(friendlyAuthError(err));
       }
     },
-    [startRefreshTimer, syncProfileFromBackend],
+    [startRefreshTimer, syncProfileFromBackend, hydrateActiveWorkoutFromCloud, queryClient],
   );
 
   const signUp = useCallback(

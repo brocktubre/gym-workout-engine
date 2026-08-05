@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
 import { formatDate, formatDuration } from '@/lib/utils';
 import { useDeleteWorkout } from '@/hooks/useWorkouts';
+import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { toast } from '@/components/ui/use-toast';
 import type { Workout, MuscleGroup } from '@/types';
 
@@ -26,9 +27,11 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const deleteMutation = useDeleteWorkout();
+  const { activeWorkout, clearActiveWorkout } = useActiveWorkout();
   const muscles = getUniqueMuscles(workout);
   const visible = muscles.slice(0, 3);
   const extra = muscles.length - 3;
+  const canDelete = workout.status === 'completed' || workout.status === 'in-progress';
 
   const statusColor =
     workout.status === 'completed'
@@ -68,7 +71,7 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
                 {workout.status?.replace('-', ' ') ?? ''}
               </span>
             </div>
-            {workout.status === 'completed' && (
+            {canDelete && (
               <button
                 onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm((v) => !v); }}
                 className="h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10 transition-colors flex-shrink-0"
@@ -153,6 +156,9 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
                     disabled={deleteMutation.isPending}
                     onClick={async () => {
                       try {
+                        if (activeWorkout?.id === workout.id) {
+                          clearActiveWorkout();
+                        }
                         await deleteMutation.mutateAsync({ date: workout.date, id: workout.id });
                         toast({ title: 'Workout deleted', variant: 'success', duration: 2000 });
                       } catch {

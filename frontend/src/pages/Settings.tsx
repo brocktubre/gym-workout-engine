@@ -87,6 +87,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   preferCompound: true,
   includeWarmup: true,
   allowSupersets: true,
+  voiceCoachingEnabled: true,
 };
 
 function SectionHeader({ icon, title }: { icon: React.ReactNode; title: string }) {
@@ -107,7 +108,6 @@ export default function Settings() {
   const [form, setForm] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isDirty, setIsDirty] = useState(false);
   const [showChangePassword, setShowChangePassword] = useState(false);
-  const [displayName, setDisplayName] = useState('');
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -148,18 +148,9 @@ export default function Settings() {
           ? serverSettings.availableEquipment
           : DEFAULT_SETTINGS.availableEquipment,
       });
-      const rawDisplayName = (serverSettings as unknown as { displayName?: string }).displayName;
-      setDisplayName(rawDisplayName ?? '');
       setIsDirty(false);
     }
   }, [serverSettings]);
-
-  useEffect(() => {
-    // Default displayName to email prefix when user first signs in
-    if (isAuthenticated && user?.email && !displayName) {
-      setDisplayName(user.email.split('@')[0] ?? '');
-    }
-  }, [isAuthenticated, user, displayName]);
 
   function update<K extends keyof UserSettings>(key: K, value: UserSettings[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -174,11 +165,9 @@ export default function Settings() {
 
   const handleSave = async () => {
     try {
-      // Strip any undefined values before sending
-      const payload = JSON.parse(JSON.stringify(form)) as UserSettings & { displayName?: string };
-      if (isAuthenticated && displayName.trim()) {
-        payload.displayName = displayName.trim();
-      }
+      // Strip any undefined values before sending. displayName is intentionally
+      // omitted — it's set at registration and this screen never edits it.
+      const payload = JSON.parse(JSON.stringify(form)) as UserSettings;
       await updateMutation.mutateAsync(payload);
       setIsDirty(false);
       toast({ title: 'Settings saved!', variant: 'success' });
@@ -613,6 +602,27 @@ export default function Settings() {
             <Switch
               checked={form.includeWarmup ?? true}
               onCheckedChange={(v) => update('includeWarmup', v)}
+            />
+          </div>
+        </motion.section>
+
+        {/* Voice Coaching */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.31 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-white">Voice Coaching</h3>
+              <p className="text-xs text-[#8E8E93] mt-0.5">
+                Speak warmup, set, and rest cues during workouts
+              </p>
+            </div>
+            <Switch
+              checked={form.voiceCoachingEnabled ?? true}
+              onCheckedChange={(v) => update('voiceCoachingEnabled', v)}
             />
           </div>
         </motion.section>

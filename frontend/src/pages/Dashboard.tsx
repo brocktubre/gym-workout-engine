@@ -9,20 +9,24 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StreakDisplay } from '@/components/dashboard/StreakDisplay';
 import { RecentWorkout } from '@/components/dashboard/RecentWorkout';
+import { DailyWorkoutCard } from '@/components/dashboard/DailyWorkoutCard';
 import { useWorkoutHistory, useWorkoutStats, useDeleteWorkout } from '@/hooks/useWorkouts';
+import { useDailyWorkout } from '@/hooks/useDailyWorkout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCoachingNote } from '@/hooks/useCoachingNote';
+import { toast } from '@/components/ui/use-toast';
 import { formatDuration, getGreeting, getTodayDate } from '@/lib/utils';
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const { activeWorkout, hasActiveWorkout, isPaused, pauseWorkout, clearActiveWorkout } = useActiveWorkout();
   const deleteWorkoutMutation = useDeleteWorkout();
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const { data: history, isLoading: historyLoading } = useWorkoutHistory(30);
   const { data: stats, isLoading: statsLoading } = useWorkoutStats();
+  const { data: daily, isLoading: dailyLoading } = useDailyWorkout();
 
   const today = getTodayDate();
   const todayWorkout = history?.find((w) => w.date === today);
@@ -32,6 +36,7 @@ export default function Dashboard() {
     .slice(0, 5) ?? [];
 
   const { data: coachingNote, isLoading: noteLoading } = useCoachingNote();
+  const showDaily = isAuthenticated && (dailyLoading || (daily && daily.status === 'available'));
 
   const greeting = getGreeting();
   const dateLabel = new Date().toLocaleDateString('en-US', {
@@ -57,6 +62,15 @@ export default function Dashboard() {
       </div>
 
       <div className="px-4 space-y-5 pb-6">
+        {/* Daily workout — top card under greeting */}
+        {showDaily && (
+          dailyLoading || !daily ? (
+            <Skeleton className="h-48 rounded-2xl" />
+          ) : (
+            <DailyWorkoutCard daily={daily} />
+          )
+        )}
+
         {/* Active workout banner */}
         {hasActiveWorkout && activeWorkout && (
           <motion.div
@@ -102,7 +116,7 @@ export default function Dashboard() {
                 className="flex-1 text-xs text-[#FF375F] hover:text-[#FF375F]"
                 onClick={() => setShowCancelConfirm(true)}
               >
-                Cancel
+                Delete
               </Button>
             </div>
             {/* Cancel confirmation */}
@@ -124,7 +138,9 @@ export default function Dashboard() {
                       clearActiveWorkout();
                       setShowCancelConfirm(false);
                       // Delete in background (best-effort)
-                      deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id }).catch(() => {});
+                      deleteWorkoutMutation.mutateAsync({ date: activeWorkout.date, id: activeWorkout.id })
+                        .then(() => toast({ title: 'Workout deleted', variant: 'success', duration: 2000 }))
+                        .catch(() => toast({ title: 'Failed to delete workout', variant: 'error', duration: 3000 }));
                     }}
                   >
                     {deleteWorkoutMutation.isPending ? '...' : 'Delete'}
@@ -161,6 +177,7 @@ export default function Dashboard() {
                       state: {
                         suggestedMuscles: coachingNote.suggestedMuscles,
                         suggestedGoal: coachingNote.suggestedGoal,
+                        autoGenerate: true,
                       },
                     })
                   }

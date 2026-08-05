@@ -16,15 +16,26 @@ import { SetRow } from '@/components/workout/SetRow';
 import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
-import { ApiError } from '@/lib/api';
+import { ApiError, api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { useSettings } from '@/hooks/useSettings';
+import { useTTS } from '@/hooks/useTTS';
 import { toast } from '@/components/ui/use-toast';
+import { getWarmupAnnouncement, getWarmupDisplayName } from '@/lib/warmup';
+import { dailyWorkoutKeys } from '@/hooks/useDailyWorkout';
+import { useQueryClient } from '@tanstack/react-query';
 
 import type { WorkoutSet, WorkoutExercise, WarmupItem, Workout, Exercise } from '@/types';
 import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
+import { CircuitPickerSheet } from '@/components/workout/CircuitPickerSheet';
 import { ExerciseVideoButton } from '@/components/workout/ExerciseVideoButton';
+import {
+  buildCircuits,
+  circuitIndexForTurn,
+  entryTurnForCircuit,
+  WARMUP_CIRCUIT_INDEX,
+} from '@/lib/workoutCircuits';
 
 // ── Superset turn logic ───────────────────────────────────────────────────────
 
@@ -46,6 +57,76 @@ function formatSetTarget(set?: WorkoutSet): string {
   if (set?.targetDurationSeconds !== undefined) return `${set.targetDurationSeconds}s`;
   if (set?.targetHoldSeconds !== undefined) return `Hold ${set.targetHoldSeconds}s`;
   return `${set?.targetReps ?? '?'} reps`;
+}
+
+function formatSetDetails(set: WorkoutSet | undefined): string {
+  if (!set) return '';
+  if (set.targetDurationSeconds !== undefined) {
+    return `${set.targetDurationSeconds} seconds`;
+  }
+  if (set.targetHoldSeconds !== undefined) {
+    return `a ${set.targetHoldSeconds} second hold`;
+  }
+
+  const reps = set.targetReps;
+  const weight = set.targetWeight;
+  return weight !== undefined && weight > 0
+    ? `${reps} reps at ${weight} pounds`
+    : `${reps} reps`;
+}
+
+function formatSetAnnouncement(exercise: WorkoutExercise, setIndex: number): string {
+  const details = formatSetDetails(exercise.sets[setIndex]);
+  return details
+    ? `Set number ${setIndex + 1} of ${exercise.exercise.name} is ${details}.`
+    : `Set number ${setIndex + 1} of ${exercise.exercise.name}.`;
+}
+
+function joinMovementNames(exercises: WorkoutExercise[]): string {
+  const names = exercises.map((exercise) => exercise.exercise.name);
+  if (names.length <= 1) return names[0] ?? '';
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${names.slice(0, -1).join(', ')}, and ${names[names.length - 1]}`;
+}
+
+function formatTurnAnnouncement(
+  exercises: WorkoutExercise[],
+  turn: WorkoutTurn,
+  previousTurn?: WorkoutTurn,
+): string {
+  const exercise = exercises[turn.exerciseIndex];
+  if (!exercise) return '';
+  const setAnnouncement = formatSetAnnouncement(exercise, turn.setIndex);
+
+  if (turn.supersetGroupId) {
+    const enteringGroup = previousTurn?.supersetGroupId !== turn.supersetGroupId;
+    if (!enteringGroup) return setAnnouncement;
+
+    const members = exercises
+      .filter((candidate) => candidate.supersetGroupId === turn.supersetGroupId)
+      .sort((a, b) => (a.supersetOrder ?? 0) - (b.supersetOrder ?? 0));
+    const groupType =
+      members.length === 2 ? 'superset'
+      : members.length === 3 ? 'tri-set'
+      : 'giant set';
+    const setCount = Math.max(...members.map((member) => member.sets.length));
+    const setWord = setCount === 1 ? 'set' : 'sets';
+    return `Next up is a ${groupType} of ${joinMovementNames(members)}. ${setCount} ${setWord}. ${setAnnouncement}`;
+  }
+
+  if (previousTurn?.exerciseIndex === turn.exerciseIndex) return setAnnouncement;
+  const setWord = exercise.sets.length === 1 ? 'set' : 'sets';
+  return `Next up is ${exercise.sets.length} ${setWord} of ${exercise.exercise.name}. ${setAnnouncement}`;
+}
+
+function formatRestAnnouncement(seconds: number): string {
+  if (seconds < 60) return `Rest for ${seconds} seconds.`;
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  if (remainingSeconds === 0) {
+    return `Rest for ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}.`;
+  }
+  return `Rest for ${minutes} ${minutes === 1 ? 'minute' : 'minutes'} and ${remainingSeconds} seconds.`;
 }
 
 function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
@@ -106,7 +187,9 @@ function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
 
 export default function ActiveWorkout() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { activeWorkout, updateActiveWorkout, clearActiveWorkout, pauseWorkout, resumeFromPause, getSavedTurnIndex, saveTurnIndex, isPaused } = useActiveWorkout();
+  const { speak } = useTTS();
   const [currentTurnIndex, setCurrentTurnIndex] = useState(() => getSavedTurnIndex());
   const [showExitDialog, setShowExitDialog] = useState(false);
   // Local state drives warmup visibility — immediate sync update avoids black screen on transition
@@ -114,6 +197,7 @@ export default function ActiveWorkout() {
     () => activeWorkout?.warmupStatus === 'pending' && (activeWorkout?.warmup?.length ?? 0) > 0
   );
   const [showSwapSheet, setShowSwapSheet] = useState(false);
+  const [showCircuitPicker, setShowCircuitPicker] = useState(false);
   // Turn we're about to move to during a superset changeover, null when not transitioning
   const [transitionTurnIndex, setTransitionTurnIndex] = useState<number | null>(null);
   const [transitionSeconds, setTransitionSeconds] = useState(SUPERSET_TRANSITION_SECONDS);
@@ -127,8 +211,17 @@ export default function ActiveWorkout() {
 
   function handleToggleWarmupItem(index: number) {
     const items = [...(activeWorkout?.warmup ?? [])];
-    items[index] = { ...items[index], completed: !items[index].completed };
+    const item = items[index];
+    if (!item) return;
+
+    const isCompleting = item.completed !== true;
+    items[index] = { ...item, completed: isCompleting };
     updateActiveWorkout({ warmup: items });
+
+    const nextItem = items[index + 1];
+    if (isCompleting && nextItem) {
+      speak(`Next. ${getWarmupAnnouncement(nextItem)}`);
+    }
   }
 
   const handleSwapExercise = (newExercise: Exercise) => {
@@ -165,6 +258,9 @@ export default function ActiveWorkout() {
   // generation time, so changing it applies to workouts already in progress.
   const configuredRest = settings?.restBetweenSetsSeconds ?? 90;
   const wasRestingRef = useRef(false);
+  const activeSetRef = useRef<HTMLDivElement | null>(null);
+  // null until the first scroll pass, so mount can be told apart from a movement change
+  const lastScrolledExerciseRef = useRef<number | null>(null);
   // Track the total rest seconds the current timer was started with (for the progress arc)
   const restTotalRef = useRef(90);
 
@@ -191,27 +287,130 @@ export default function ActiveWorkout() {
   // Use local showWarmup state so transition is immediate (not waiting on async setState)
   const warmupPending = showWarmup;
 
+  const announceFirstMovement = useCallback(
+    (workoutExercises: WorkoutExercise[]) => {
+      const workoutTurns = buildTurns(workoutExercises);
+      const firstTurn = workoutTurns[0];
+      if (!firstTurn) return;
+      speak(formatTurnAnnouncement(workoutExercises, firstTurn));
+    },
+    [speak],
+  );
+
   const handleWarmupComplete = useCallback(
     (updatedWarmup: WarmupItem[]) => {
       setShowWarmup(false); // Immediate — no black screen between warmup and workout
       updateActiveWorkout({ warmup: updatedWarmup, warmupStatus: 'completed' });
+      if (activeWorkout) {
+        announceFirstMovement(activeWorkout.exercises);
+      }
     },
-    [updateActiveWorkout],
+    [activeWorkout, announceFirstMovement, updateActiveWorkout],
   );
   const handleSkipAllWarmup = useCallback(() => {
     setShowWarmup(false); // Immediate — no black screen
     updateActiveWorkout({ warmupStatus: 'skipped' });
-  }, [updateActiveWorkout]);
+    if (activeWorkout) {
+      announceFirstMovement(activeWorkout.exercises);
+    }
+  }, [activeWorkout, announceFirstMovement, updateActiveWorkout]);
 
   const turns = useMemo(() => buildTurns(exercises), [exercises]);
+
+  // A circuit is one card: a single movement or a whole superset group
+  const circuits = useMemo(() => buildCircuits(exercises, turns), [exercises, turns]);
+  const currentCircuitIndex = warmupPending
+    ? WARMUP_CIRCUIT_INDEX
+    : circuitIndexForTurn(circuits, currentTurnIndex);
+  const hasWarmup = (activeWorkout?.warmup?.length ?? 0) > 0;
+
+  const goToCircuit = useCallback(
+    (circuitIndex: number) => {
+      if (circuitIndex === WARMUP_CIRCUIT_INDEX) {
+        if (!hasWarmup) return;
+        setShowWarmup(true);
+        return;
+      }
+
+      const circuit = circuits[circuitIndex];
+      if (!circuit) return;
+
+      const target = entryTurnForCircuit(circuit, turns, exercises);
+      const previousTurn = turns[currentTurnIndex];
+      if (target === currentTurnIndex && !warmupPending) return;
+
+      // Clearing wasResting stops the rest-end effect from advancing a turn on
+      // top of the jump we're about to make.
+      wasRestingRef.current = false;
+      skipRest();
+      setTransitionTurnIndex(null);
+
+      if (warmupPending) {
+        setShowWarmup(false);
+        // Leaving an unfinished warmup behind, otherwise it reopens on return
+        if (activeWorkout?.warmupStatus === 'pending') {
+          updateActiveWorkout({ warmupStatus: 'skipped' });
+        }
+      }
+
+      setCurrentTurnIndex(target);
+      const nextTurn = turns[target];
+      if (nextTurn) speak(formatTurnAnnouncement(exercises, nextTurn, previousTurn));
+    },
+    [
+      activeWorkout?.warmupStatus,
+      circuits,
+      currentTurnIndex,
+      exercises,
+      hasWarmup,
+      skipRest,
+      speak,
+      turns,
+      updateActiveWorkout,
+      warmupPending,
+    ],
+  );
+
+  // Moving to a new movement resets the view to the top of its card; staying on
+  // the same movement (or resuming a paused session) keeps the live set visible.
+  useEffect(() => {
+    if (warmupPending) return;
+    const turn = turns[currentTurnIndex];
+    if (!turn) return;
+
+    const previousExerciseIndex = lastScrolledExerciseRef.current;
+    lastScrolledExerciseRef.current = turn.exerciseIndex;
+
+    if (previousExerciseIndex === null) {
+      // First paint (fresh start or resume) — jump straight to the live set
+      if (turn.setIndex === 0) window.scrollTo({ top: 0 });
+      else activeSetRef.current?.scrollIntoView({ block: 'center' });
+      return;
+    }
+
+    if (previousExerciseIndex !== turn.exerciseIndex) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    activeSetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [currentTurnIndex, turns, warmupPending]);
 
   useEffect(() => {
     if (!isResting && wasRestingRef.current) {
       wasRestingRef.current = false;
-      setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
+      setCurrentTurnIndex((i) => {
+        const nextIndex = Math.min(i + 1, turns.length - 1);
+        const previousTurn = turns[i];
+        const nextTurn = turns[nextIndex];
+        if (nextTurn && nextIndex !== i) {
+          speak(formatTurnAnnouncement(exercises, nextTurn, previousTurn));
+        }
+        return nextIndex;
+      });
     }
     if (isResting) wasRestingRef.current = true;
-  }, [isResting, turns.length]);
+  }, [exercises, isResting, speak, turns]);
 
   // Hold on the upcoming superset movement, then hand over to it
   useEffect(() => {
@@ -284,7 +483,33 @@ export default function ActiveWorkout() {
             </div>
             <WorkoutTimer elapsed={elapsed} size="default" />
           </div>
+
+          {/* Jump straight to any circuit without finishing the warmup */}
+          {circuits.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowCircuitPicker(true)}
+              className="mt-3 w-full h-9 rounded-xl bg-[#2c2c2e] border border-[#38383A] px-3 flex items-center gap-2 hover:bg-[#3a3a3c] transition-colors"
+            >
+              <span className="text-xs font-semibold text-white">Jump to circuit</span>
+              <span className="ml-auto text-[10px] text-[#8E8E93] tabular-nums">
+                {circuits.length} circuits
+              </span>
+              <ChevronDown className="h-3.5 w-3.5 text-[#8E8E93]" />
+            </button>
+          )}
         </div>
+
+        <CircuitPickerSheet
+          open={showCircuitPicker}
+          circuits={circuits}
+          currentIndex={WARMUP_CIRCUIT_INDEX}
+          hasWarmup
+          warmupComplete={activeWorkout.warmupStatus === 'completed'}
+          onSelect={goToCircuit}
+          onClose={() => setShowCircuitPicker(false)}
+        />
+
         {/* Warmup list */}
         <div className="flex-1 px-4 py-4 space-y-2 pb-[160px]">
           {warmupItems.map((item, i) => {
@@ -319,7 +544,7 @@ export default function ActiveWorkout() {
                   >
                     <p className={`text-sm font-semibold truncate mr-2 ${
                       isDone ? 'text-[#30D158]' : 'text-white'
-                    }`}>{item.name}</p>
+                    }`}>{getWarmupDisplayName(item.name)}</p>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <span className={`text-xs font-semibold ${isDone ? 'text-[#30D158]' : 'text-[#FF375F]'}`}>{durationLabel}</span>
                       {isExpanded
@@ -430,6 +655,7 @@ export default function ActiveWorkout() {
   }
 
   const currentExercise = exercises[currentTurn.exerciseIndex];
+  const currentCircuit = circuits[currentCircuitIndex];
 
   // For superset display: find ALL members of the superset group (supports 2-4)
   let supersetMembers: WorkoutExercise[] = [];
@@ -508,7 +734,32 @@ export default function ActiveWorkout() {
         ? { completedDurationSeconds: existingSet.targetDurationSeconds }
         : {}),
     };
-    updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
+    const nextSets = [...(updated.exercises[currentTurn.exerciseIndex]?.sets ?? [])];
+    nextSets[currentTurn.setIndex] = set;
+
+    // Whatever was actually performed becomes the target for the sets that
+    // follow, so an adjustment carries forward instead of snapping back
+    const isHoldSet = existingSet?.targetHoldSeconds !== undefined;
+    const isTimedSet = existingSet?.targetDurationSeconds !== undefined;
+    for (let i = currentTurn.setIndex + 1; i < nextSets.length; i++) {
+      const upcoming = nextSets[i];
+      if (upcoming.completed) continue;
+      nextSets[i] = {
+        ...upcoming,
+        ...(isHoldSet ? { targetHoldSeconds: set.completedHoldSeconds } : {}),
+        ...(isTimedSet ? { targetDurationSeconds: set.completedDurationSeconds } : {}),
+        ...(!isHoldSet && !isTimedSet ? { targetReps: reps } : {}),
+        ...(existingSet?.targetWeight !== undefined ? { targetWeight: weight } : {}),
+        // Drop stale in-progress edits so the carried-forward target is shown
+        completedReps: undefined,
+        completedWeight: undefined,
+      };
+    }
+
+    updated.exercises[currentTurn.exerciseIndex] = {
+      ...updated.exercises[currentTurn.exerciseIndex],
+      sets: nextSets,
+    };
     updateActiveWorkout(updated as Workout);
 
     toast({ title: `Set ${currentTurn.setIndex + 1} complete`, variant: 'success', duration: 1500 });
@@ -522,15 +773,22 @@ export default function ActiveWorkout() {
       nextTurn?.setIndex === currentTurn.setIndex;
 
     if (sameRound) {
+      speak(formatTurnAnnouncement(exercises, nextTurn, currentTurn));
       setTransitionTurnIndex(Math.min(currentTurnIndex + 1, turns.length - 1));
-    } else {
+    } else if (nextTurn) {
       // restSeconds === 0 means the movement is structured with no rest at all
       // (e.g. the cardio finisher), which isn't a preference to override.
       const restSecs = currentTurn.betweenExercise
         ? Math.min(BETWEEN_EXERCISE_REST, configuredRest)
         : (set.restSeconds === 0 ? 0 : configuredRest);
       restTotalRef.current = restSecs;
-      startRest(restSecs);
+      if (restSecs > 0) {
+        speak(formatRestAnnouncement(restSecs));
+        startRest(restSecs);
+      } else {
+        speak(formatTurnAnnouncement(exercises, nextTurn, currentTurn));
+        setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
+      }
     }
   }
 
@@ -543,6 +801,10 @@ export default function ActiveWorkout() {
   function handleSkipSet() {
     skipRest();
     if (!isLastTurn) {
+      const nextTurn = turns[currentTurnIndex + 1];
+      if (nextTurn && nextTurn.exerciseIndex !== currentTurn.exerciseIndex) {
+        speak(formatTurnAnnouncement(exercises, nextTurn, currentTurn));
+      }
       setCurrentTurnIndex((i) => i + 1);
     }
   }
@@ -619,6 +881,17 @@ export default function ActiveWorkout() {
       description: `${exercises.length} exercises · ${durationMinutes}min`,
       variant: 'success',
     });
+    speak('Workout complete. Great work.');
+
+    // Remove today's daily card once this session (started from daily) is done
+    if (activeWorkout.fromDailyDate) {
+      api.completeDailyWorkout(activeWorkout.fromDailyDate)
+        .then(() => {
+          void queryClient.invalidateQueries({ queryKey: dailyWorkoutKeys.all });
+        })
+        .catch(() => {});
+    }
+
     navigate('/history');
   }
 
@@ -710,6 +983,47 @@ export default function ActiveWorkout() {
             </span>
             <span>{completedSets}/{totalSets} sets done</span>
           </div>
+        </div>
+
+        {/* Circuit navigation — step between cards or jump to any of them */}
+        <div className="flex items-center gap-2 mt-2.5">
+          <button
+            type="button"
+            aria-label="Previous circuit"
+            onClick={() => goToCircuit(currentCircuitIndex - 1)}
+            disabled={currentCircuitIndex <= (hasWarmup ? WARMUP_CIRCUIT_INDEX : 0)}
+            className="h-9 w-9 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-white disabled:opacity-30 disabled:hover:text-[#8E8E93] transition-colors flex-shrink-0"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setShowCircuitPicker(true)}
+            className="flex-1 min-w-0 h-9 rounded-xl bg-[#2c2c2e] border border-[#38383A] px-3 flex items-center gap-2 hover:bg-[#3a3a3c] transition-colors"
+          >
+            <span className="text-xs font-semibold text-white truncate">
+              {currentCircuit
+                ? currentCircuit.kind === 'superset'
+                  ? `${currentCircuit.label}: ${currentCircuit.memberNames.join(' + ')}`
+                  : currentCircuit.memberNames[0]
+                : 'Circuit'}
+            </span>
+            <span className="ml-auto text-[10px] text-[#8E8E93] tabular-nums flex-shrink-0">
+              {currentCircuitIndex + 1}/{circuits.length}
+            </span>
+            <ChevronDown className="h-3.5 w-3.5 text-[#8E8E93] flex-shrink-0" />
+          </button>
+
+          <button
+            type="button"
+            aria-label="Next circuit"
+            onClick={() => goToCircuit(currentCircuitIndex + 1)}
+            disabled={currentCircuitIndex >= circuits.length - 1}
+            className="h-9 w-9 rounded-xl bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] hover:text-white disabled:opacity-30 disabled:hover:text-[#8E8E93] transition-colors flex-shrink-0"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -1028,20 +1342,24 @@ export default function ActiveWorkout() {
             {currentExercise.sets.map((set, si) => {
               const isCurrent = si === currentTurn.setIndex;
               return (
-                <SetRow
+                <div
                   key={`${currentTurn.exerciseIndex}-${si}`}
-                  set={set}
-                  isActive={isCurrent && !set.completed}
-                  equipment={currentExercise.exercise.equipment}
-                  onComplete={(weight, reps) => {
-                    // Allow completing any not-yet-done set, not just the
-                    // strict current — handles tap-lag and set order mismatches
-                    if (!set.completed) handleSetComplete(weight, reps);
-                  }}
-                  onChange={(field, value) => {
-                    if (isCurrent) handleSetUpdate(field, value);
-                  }}
-                />
+                  ref={isCurrent ? activeSetRef : undefined}
+                >
+                  <SetRow
+                    set={set}
+                    isActive={isCurrent && !set.completed}
+                    equipment={currentExercise.exercise.equipment}
+                    onComplete={(weight, reps) => {
+                      // Only the active set can be completed — completion always
+                      // applies to the current turn, so other rows must not fire
+                      if (isCurrent && !set.completed) handleSetComplete(weight, reps);
+                    }}
+                    onChange={(field, value) => {
+                      if (isCurrent) handleSetUpdate(field, value);
+                    }}
+                  />
+                </div>
               );
             })}
             {/* Add Set button */}
@@ -1060,20 +1378,16 @@ export default function ActiveWorkout() {
       {!isResting && !isTransitioning && (
         <div className="sticky bottom-[83px] px-4 py-3 bg-[#0a0a0a]/95 backdrop-blur-xl border-t border-[#38383A]">
           <div className="flex gap-2">
-            {/* Go Back — previous set, or back to warmup from set 1 */}
-            {(currentTurnIndex > 0 || (activeWorkout?.warmup?.length ?? 0) > 0) && (
+            {/* Step back one set and re-open it — circuit-level moves live in the header */}
+            {currentTurnIndex > 0 && (
               <Button
                 variant="outline"
                 size="lg"
                 className="flex-1 px-4"
-                onClick={
-                  currentTurnIndex > 0
-                    ? handleGoBack
-                    : () => setShowWarmup(true)
-                }
+                onClick={handleGoBack}
               >
                 <ChevronLeft className="h-4 w-4 mr-1" />
-                {currentTurnIndex === 0 ? 'Warmup' : 'Back'}
+                Undo Set
               </Button>
             )}
 
@@ -1102,6 +1416,16 @@ export default function ActiveWorkout() {
           </div>
         </div>
       )}
+
+      <CircuitPickerSheet
+        open={showCircuitPicker}
+        circuits={circuits}
+        currentIndex={currentCircuitIndex}
+        hasWarmup={hasWarmup}
+        warmupComplete={activeWorkout.warmupStatus === 'completed'}
+        onSelect={goToCircuit}
+        onClose={() => setShowCircuitPicker(false)}
+      />
 
       {/* Swap exercise sheet */}
       {currentExercise && showSwapSheet && (

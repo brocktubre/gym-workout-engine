@@ -122,6 +122,8 @@ export interface Workout {
   version?: number;
   /** Cognito sub of the user who created this workout — used to isolate per-user queries */
   userId?: string;
+  /** Local calendar date of the daily plan this session was started from */
+  fromDailyDate?: string;
 }
 
 export interface UserSettings {
@@ -138,6 +140,8 @@ export interface UserSettings {
   includeWarmup?: boolean;
   /** Allow superset pairings in generated workouts */
   allowSupersets?: boolean;
+  /** Speak workout cues via Amazon Polly (warmup, sets, rest, etc.) */
+  voiceCoachingEnabled?: boolean;
 }
 
 export interface GenerateWorkoutRequest {

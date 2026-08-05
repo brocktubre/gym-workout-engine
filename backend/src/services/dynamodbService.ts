@@ -34,6 +34,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   preferCompound: true,
   includeWarmup: true,
   allowSupersets: true,
+  voiceCoachingEnabled: true,
 };
 
 export async function getSettings(): Promise<UserSettings> {
@@ -365,4 +366,51 @@ export async function saveFeatureFlags(flags: Partial<FeatureFlags>): Promise<Fe
     },
   }));
   return updated;
+}
+
+// ---------------------------------------------------------------------------
+// Per-user daily workout plan
+// PK: USER#<sub>  SK: DAILY#YYYY-MM-DD  (client local calendar date)
+// Generated once per day; survives start/pause; cleared when marked completed.
+// ---------------------------------------------------------------------------
+
+export interface DailyWorkoutRecord {
+  localDate: string;
+  status: 'available' | 'completed';
+  targetMuscleGroups: MuscleGroup[];
+  workout: Workout;
+  createdAt: string;
+  completedAt?: string;
+}
+
+export async function getDailyWorkout(
+  sub: string,
+  localDate: string,
+): Promise<DailyWorkoutRecord | null> {
+  try {
+    const result = await client.send(new GetCommand({
+      TableName: TABLE_NAME,
+      Key: { PK: `USER#${sub}`, SK: `DAILY#${localDate}` },
+    }));
+    if (!result.Item) return null;
+    const { PK, SK, entityType, ...record } = result.Item;
+    return record as DailyWorkoutRecord;
+  } catch {
+    return null;
+  }
+}
+
+export async function saveDailyWorkout(
+  sub: string,
+  record: DailyWorkoutRecord,
+): Promise<void> {
+  await client.send(new PutCommand({
+    TableName: TABLE_NAME,
+    Item: {
+      PK: `USER#${sub}`,
+      SK: `DAILY#${record.localDate}`,
+      entityType: 'DailyWorkout',
+      ...record,
+    },
+  }));
 }

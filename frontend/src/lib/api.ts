@@ -17,6 +17,11 @@ export interface CoachingNote {
 }
 
 import { getApiBaseUrl } from '@/lib/apiBase';
+import {
+  authService,
+  isTokenExpiringSoon,
+  notifySessionExpired,
+} from '@/lib/auth';
 
 const BASE_URL = getApiBaseUrl();
 
@@ -30,29 +35,91 @@ export class ApiError extends Error {
   }
 }
 
+/** Shared in-flight refresh so concurrent 401s only hit Cognito once. */
+let refreshInFlight: Promise<string | null> | null = null;
+
+async function refreshIdToken(): Promise<string | null> {
+  if (!refreshInFlight) {
+    refreshInFlight = authService
+      .refreshSession()
+      .then((tokens) => tokens.idToken)
+      .catch(() => null)
+      .finally(() => {
+        refreshInFlight = null;
+      });
+  }
+  return refreshInFlight;
+}
+
+function isAuthFailureMessage(message: string): boolean {
+  const lower = message.toLowerCase();
+  return (
+    lower.includes('invalid')
+    || lower.includes('expired')
+    || lower.includes('authentication required')
+    || lower.includes('unauthorized')
+  );
+}
+
+async function resolveIdToken(): Promise<string | null> {
+  const current = authService.getIdToken();
+  if (!current) return null;
+  if (!isTokenExpiringSoon(current)) return current;
+  // Proactively refresh before the request if the JWT is near expiry
+  return (await refreshIdToken()) ?? current;
+}
+
+async function parseErrorMessage(response: Response): Promise<string> {
+  let message = `HTTP ${response.status}`;
+  try {
+    const body = (await response.json()) as { error?: string; message?: string };
+    message = body.error ?? body.message ?? message;
+  } catch {
+    // ignore parse errors
+  }
+  return message;
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
 ): Promise<T> {
   const url = `${BASE_URL}${path}`;
-  const idToken = localStorage.getItem('gym_id_token');
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string> | undefined),
   };
+
+  const idToken = await resolveIdToken();
   if (idToken) headers.Authorization = `Bearer ${idToken}`;
-  const response = await fetch(url, {
+
+  let response = await fetch(url, {
     ...options,
     headers,
   });
 
+  // Expired / invalid JWT — try one silent refresh, then retry once
+  if (response.status === 401 && idToken) {
+    const message = await parseErrorMessage(response.clone());
+    if (isAuthFailureMessage(message)) {
+      const refreshed = await refreshIdToken();
+      if (refreshed) {
+        headers.Authorization = `Bearer ${refreshed}`;
+        response = await fetch(url, {
+          ...options,
+          headers,
+        });
+      } else {
+        notifySessionExpired();
+        throw new ApiError(401, message);
+      }
+    }
+  }
+
   if (!response.ok) {
-    let message = `HTTP ${response.status}`;
-    try {
-      const body = (await response.json()) as { error?: string; message?: string };
-      message = body.error ?? body.message ?? message;
-    } catch {
-      // ignore parse errors
+    const message = await parseErrorMessage(response);
+    if (response.status === 401 && idToken && isAuthFailureMessage(message)) {
+      notifySessionExpired();
     }
     throw new ApiError(response.status, message);
   }
@@ -107,6 +174,26 @@ export const api = {
     return request('/engine/generate', {
       method: 'POST',
       body: JSON.stringify(req),
+    });
+  },
+
+  async getDailyWorkout(localDate: string): Promise<{
+    daily: {
+      localDate: string;
+      status: 'available' | 'completed';
+      targetMuscleGroups: string[];
+      workout: Workout;
+      createdAt: string;
+      completedAt?: string;
+    };
+  }> {
+    return request(`/engine/daily?date=${encodeURIComponent(localDate)}`);
+  },
+
+  async completeDailyWorkout(localDate: string): Promise<void> {
+    await request('/engine/daily/complete', {
+      method: 'POST',
+      body: JSON.stringify({ date: localDate }),
     });
   },
 

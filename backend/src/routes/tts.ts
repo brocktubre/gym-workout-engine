@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
     const command = new SynthesizeSpeechCommand({
       Text: text.trim(),
       OutputFormat: OutputFormat.MP3,
-      VoiceId: VoiceId.Joanna,
+      VoiceId: VoiceId.Stephen,
       Engine: Engine.NEURAL,
     });
 
@@ -43,8 +43,11 @@ router.post('/', async (req, res) => {
 
     res.json({ audio });
   } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
     console.error('Polly TTS error:', err);
-    res.status(500).json({ error: 'TTS synthesis failed' });
+    // Surface the AWS reason in non-prod so local IAM issues are obvious
+    const detail = process.env.STAGE === 'prod' ? 'TTS synthesis failed' : `TTS synthesis failed: ${message}`;
+    res.status(500).json({ error: detail });
   }
 });
 

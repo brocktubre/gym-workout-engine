@@ -46,6 +46,7 @@ const DEFAULT_PREFERENCES: UserPreferences = {
   preferCompound: true,
   includeWarmup: true,
   allowSupersets: true,
+  voiceCoachingEnabled: true,
   weightUnit: 'lbs',
   soundEnabled: true,
   notificationsEnabled: false,

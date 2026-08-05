@@ -3,6 +3,7 @@ import {
   CognitoUser,
   AuthenticationDetails,
   CognitoUserSession,
+  CognitoRefreshToken,
 } from 'amazon-cognito-identity-js';
 import { getApiBaseUrl } from '@/lib/apiBase';
 
@@ -13,6 +14,12 @@ const ACCESS_TOKEN_KEY = 'gym_access_token';
 const ID_TOKEN_KEY = 'gym_id_token';
 const REFRESH_TOKEN_KEY = 'gym_refresh_token';
 const EMAIL_KEY = 'gym_user_email';
+
+/** Shown on the login screen after a forced logout from token expiry. */
+export const SESSION_EXPIRED_MESSAGE_KEY = 'gym_session_expired_message';
+export const SESSION_EXPIRED_EVENT = 'gym:session-expired';
+export const DEFAULT_SESSION_EXPIRED_MESSAGE =
+  "You've been logged out because your session expired. Please sign in again.";
 
 const userPool = new CognitoUserPool({
   UserPoolId: COGNITO_USER_POOL_ID,
@@ -45,6 +52,34 @@ function clearTokens() {
   localStorage.removeItem(EMAIL_KEY);
   // Clear user-specific data so it doesn't bleed to the next account
   localStorage.removeItem('gym_display_name');
+}
+
+/** Decode JWT payload without verifying — used only for local expiry checks. */
+export function getTokenExpiryMs(token: string | null | undefined): number | null {
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1] ?? '')) as { exp?: number };
+    return typeof payload.exp === 'number' ? payload.exp * 1000 : null;
+  } catch {
+    return null;
+  }
+}
+
+/** True when the token is missing, invalid, or expires within `skewSeconds`. */
+export function isTokenExpiringSoon(
+  token: string | null | undefined,
+  skewSeconds = 120,
+): boolean {
+  const expMs = getTokenExpiryMs(token);
+  if (expMs == null) return true;
+  return expMs <= Date.now() + skewSeconds * 1000;
+}
+
+export function notifySessionExpired(
+  message: string = DEFAULT_SESSION_EXPIRED_MESSAGE,
+): void {
+  sessionStorage.setItem(SESSION_EXPIRED_MESSAGE_KEY, message);
+  window.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
 }
 
 export const authService = {
@@ -190,14 +225,42 @@ export const authService = {
 
   refreshSession(): Promise<AuthTokens> {
     return new Promise((resolve, reject) => {
-      const cognitoUser = userPool.getCurrentUser();
+      const email = localStorage.getItem(EMAIL_KEY);
+      const storedRefresh = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const cognitoUser =
+        userPool.getCurrentUser()
+        ?? (email ? new CognitoUser({ Username: email, Pool: userPool }) : null);
+
       if (!cognitoUser) return reject(new Error('No current user'));
-      cognitoUser.getSession((err: Error | null, session: CognitoUserSession | null) => {
-        if (err || !session) return reject(err ?? new Error('No session'));
-        const refreshToken = session.getRefreshToken();
+
+      const refreshWithToken = (refreshToken: CognitoRefreshToken) => {
         cognitoUser.refreshSession(refreshToken, (refreshErr, newSession: CognitoUserSession) => {
           if (refreshErr) return reject(refreshErr);
-          persistTokens(newSession);
+          persistTokens(newSession, email ?? undefined);
+          resolve({
+            accessToken: newSession.getAccessToken().getJwtToken(),
+            idToken: newSession.getIdToken().getJwtToken(),
+            refreshToken: newSession.getRefreshToken().getToken(),
+          });
+        });
+      };
+
+      const refreshFromStorage = () => {
+        if (!storedRefresh) return reject(new Error('No refresh token'));
+        refreshWithToken(new CognitoRefreshToken({ RefreshToken: storedRefresh }));
+      };
+
+      cognitoUser.getSession((err: Error | null, session: CognitoUserSession | null) => {
+        if (err || !session) {
+          refreshFromStorage();
+          return;
+        }
+        cognitoUser.refreshSession(session.getRefreshToken(), (refreshErr, newSession: CognitoUserSession) => {
+          if (refreshErr) {
+            refreshFromStorage();
+            return;
+          }
+          persistTokens(newSession, email ?? undefined);
           resolve({
             accessToken: newSession.getAccessToken().getJwtToken(),
             idToken: newSession.getIdToken().getJwtToken(),

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPersonRunning, faCheck, faForwardStep } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@/components/ui/button';
+import { getWarmupDisplayName } from '@/lib/warmup';
 import type { WarmupItem } from '@/types';
 
 interface WarmupPhaseProps {
@@ -183,7 +184,9 @@ export function WarmupPhase({ warmup, onComplete, onSkipAll }: WarmupPhaseProps)
           exit={{ opacity: 0, y: -12 }}
           className="text-center mb-6"
         >
-          <h2 className="text-2xl font-bold text-white mb-3">{currentItem.name}</h2>
+          <h2 className="text-2xl font-bold text-white mb-3">
+            {getWarmupDisplayName(currentItem.name)}
+          </h2>
           <div className="flex items-center justify-center gap-2 flex-wrap">
             <span
               className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest ${typeStyle.bg} ${typeStyle.text}`}

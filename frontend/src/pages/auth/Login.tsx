@@ -1,10 +1,11 @@
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Dumbbell, RefreshCw, LogIn, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
+import { SESSION_EXPIRED_MESSAGE_KEY } from '@/lib/auth';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -14,15 +15,24 @@ export default function Login() {
   const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
   const [error, setError]       = useState<string | null>(null);
+  const [sessionNotice, setSessionNotice] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const locationState    = (location.state as { returnUrl?: string; restoredWorkout?: unknown } | null);
   const returnUrl        = locationState?.returnUrl ?? '/';
   const restoredWorkout  = locationState?.restoredWorkout;
 
+  useEffect(() => {
+    const message = sessionStorage.getItem(SESSION_EXPIRED_MESSAGE_KEY);
+    if (!message) return;
+    sessionStorage.removeItem(SESSION_EXPIRED_MESSAGE_KEY);
+    setSessionNotice(message);
+  }, []);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setSessionNotice(null);
     setIsLoading(true);
     try {
       await signIn(email.trim().toLowerCase(), password);
@@ -50,6 +60,12 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-white">Gym Workout Engine</h1>
           <p className="text-sm text-[#8E8E93] mt-1">How would you like to continue?</p>
         </div>
+
+        {sessionNotice && (
+          <div className="mb-4 text-sm text-[#FF9F0A] bg-[#FF9F0A]/10 border border-[#FF9F0A]/30 rounded-xl px-3 py-2.5">
+            {sessionNotice}
+          </div>
+        )}
 
         {/* ── Two choice cards ─────────────────────────────────────── */}
         <div className="space-y-3 mb-8">
