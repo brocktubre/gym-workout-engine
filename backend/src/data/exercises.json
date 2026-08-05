@@ -114,7 +114,7 @@
   },
   {
     "id": "ex_push_up",
-    "name": "Push-Up",
+    "name": "Push Up",
     "primaryMuscle": "chest",
     "secondaryMuscles": [
       "shoulders",
@@ -327,7 +327,7 @@
   },
   {
     "id": "ex_pull_up",
-    "name": "Pull-Up",
+    "name": "Pull Up",
     "primaryMuscle": "back",
     "secondaryMuscles": [
       "biceps",
@@ -1172,7 +1172,7 @@
   },
   {
     "id": "ex_diamond_push_up",
-    "name": "Diamond Push-Up",
+    "name": "Diamond Push Up",
     "primaryMuscle": "triceps",
     "secondaryMuscles": [
       "chest"
@@ -2679,7 +2679,7 @@
   },
   {
     "id": "ex_ring_push_up",
-    "name": "Ring Push-Up",
+    "name": "Ring Push Up",
     "primaryMuscle": "chest",
     "secondaryMuscles": [
       "shoulders",
@@ -2802,7 +2802,7 @@
   },
   {
     "id": "ex_ring_pike_push_up",
-    "name": "Ring Pike Push-Up",
+    "name": "Ring Pike Push Up",
     "primaryMuscle": "shoulders",
     "secondaryMuscles": [
       "triceps",
@@ -2873,7 +2873,7 @@
   },
   {
     "id": "ex_weighted_pull_up",
-    "name": "Weighted Pull-Up",
+    "name": "Weighted Pull Up",
     "primaryMuscle": "back",
     "secondaryMuscles": [
       "biceps",
@@ -2897,7 +2897,7 @@
   },
   {
     "id": "ex_l_sit_pull_up",
-    "name": "L-Sit Pull-Up",
+    "name": "L-Sit Pull Up",
     "primaryMuscle": "back",
     "secondaryMuscles": [
       "biceps",
@@ -5102,7 +5102,7 @@
   },
   {
     "id": "ex_side_to_side_pushup",
-    "name": "Side-to-Side Push-Up",
+    "name": "Side-to-Side Push Up",
     "primaryMuscle": "chest",
     "secondaryMuscles": [
       "triceps",
@@ -5376,7 +5376,7 @@
   },
   {
     "id": "ex_side_to_side_pullup",
-    "name": "Side-to-Side Pull-Up",
+    "name": "Side-to-Side Pull Up",
     "primaryMuscle": "back",
     "secondaryMuscles": [
       "biceps",
@@ -5691,7 +5691,7 @@
   },
   {
     "id": "ex_pushup_with_reach",
-    "name": "Push-Up with Reach",
+    "name": "Push Up with Reach",
     "primaryMuscle": "chest",
     "secondaryMuscles": [
       "core",
