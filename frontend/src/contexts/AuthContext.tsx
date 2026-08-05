@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, Re
 import { useQueryClient } from '@tanstack/react-query';
 import { authService, friendlyAuthError, type AuthUser } from '@/lib/auth';
 import { api } from '@/lib/api';
+import { migrateLegacyWorkout } from '@/lib/workoutMigrations';
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -50,11 +51,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { state } = await api.getActiveWorkout();
       if (state?.workout) {
+        const migration = migrateLegacyWorkout(state.workout);
+        const workout = migration.workout;
         // Restore this user's in-progress workout from DynamoDB
-        localStorage.setItem('gym_active_workout', JSON.stringify(state.workout));
+        localStorage.setItem('gym_active_workout', JSON.stringify(workout));
         localStorage.setItem('gym_turn_index', String(state.turnIndex ?? 0));
         if (state.isPaused) {
           localStorage.setItem('gym_paused_at', String(Date.now()));
+        }
+        if (migration.changed) {
+          // Upgrade the cloud snapshot so the generic exercise cannot return
+          // on the next device or sign-in.
+          api.setActiveWorkout(workout, state.turnIndex ?? 0, state.isPaused).catch(() => {});
         }
         // Notify useActiveWorkout instances to re-sync from localStorage
         window.dispatchEvent(new StorageEvent('storage', { key: 'gym_active_workout' }));

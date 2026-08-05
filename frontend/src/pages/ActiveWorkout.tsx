@@ -17,6 +17,7 @@ import { WorkoutTimer, RestTimer } from '@/components/workout/WorkoutTimer';
 import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useActiveWorkout, useWorkoutTimer, useRestCountdown } from '@/hooks/useWorkoutEngine';
 import { ApiError } from '@/lib/api';
+import { cn } from '@/lib/utils';
 import { useCompleteWorkout, useUpdateWorkout, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
@@ -40,6 +41,12 @@ const BETWEEN_EXERCISE_REST = 60; // 1 minute always between different movements
 // Superset movements have no rest between them, so show the upcoming movement
 // briefly instead of snapping straight to it
 const SUPERSET_TRANSITION_SECONDS = 3;
+
+function formatSetTarget(set?: WorkoutSet): string {
+  if (set?.targetDurationSeconds !== undefined) return `${set.targetDurationSeconds}s`;
+  if (set?.targetHoldSeconds !== undefined) return `Hold ${set.targetHoldSeconds}s`;
+  return `${set?.targetReps ?? '?'} reps`;
+}
 
 function buildTurns(exercises: WorkoutExercise[]): WorkoutTurn[] {
   const turns: WorkoutTurn[] = [];
@@ -460,7 +467,7 @@ export default function ActiveWorkout() {
 
   // ── Event handlers ─────────────────────────────────────────────────────────
 
-  function handleSetUpdate(field: 'weight' | 'reps' | 'hold', value: number) {
+  function handleSetUpdate(field: 'weight' | 'reps' | 'hold' | 'duration', value: number) {
     if (!currentTurn) return;
     if (!activeWorkout) return;
     const updated = { ...activeWorkout, exercises: [...(activeWorkout.exercises ?? [])] };
@@ -469,9 +476,10 @@ export default function ActiveWorkout() {
       setObj.completedWeight = value;
     } else if (field === 'reps') {
       setObj.completedReps = value;
-    } else {
-      // 'hold' — update the target hold duration
+    } else if (field === 'hold') {
       setObj.targetHoldSeconds = value;
+    } else {
+      setObj.targetDurationSeconds = value;
     }
     if (updated.exercises[currentTurn.exerciseIndex]) {
       updated.exercises[currentTurn.exerciseIndex] = { ...updated.exercises[currentTurn.exerciseIndex] };
@@ -490,11 +498,14 @@ export default function ActiveWorkout() {
       ...(existingSet ?? {}),
       targetReps: existingSet?.targetReps ?? 0,
       completedWeight: weight,
-      completedReps: reps,
+      completedReps: existingSet?.targetDurationSeconds === undefined ? reps : undefined,
       completed: true,
       // For hold exercises, record the actual hold duration
       ...(existingSet?.targetHoldSeconds !== undefined
         ? { completedHoldSeconds: existingSet.targetHoldSeconds }
+        : {}),
+      ...(existingSet?.targetDurationSeconds !== undefined
+        ? { completedDurationSeconds: existingSet.targetDurationSeconds }
         : {}),
     };
     updated.exercises[currentTurn.exerciseIndex].sets[currentTurn.setIndex] = set;
@@ -551,6 +562,7 @@ export default function ActiveWorkout() {
       completedReps: undefined,
       completedWeight: undefined,
       completedHoldSeconds: undefined,
+      completedDurationSeconds: undefined,
     };
     updated.exercises[prevTurn.exerciseIndex] = {
       ...updated.exercises[prevTurn.exerciseIndex],
@@ -622,6 +634,8 @@ export default function ActiveWorkout() {
       setNumber: exercise.sets.length + 1,
       targetReps: lastSet?.targetReps ?? 10,
       targetWeight: lastSet?.targetWeight,
+      targetHoldSeconds: lastSet?.targetHoldSeconds,
+      targetDurationSeconds: lastSet?.targetDurationSeconds,
       completed: false,
       restSeconds: configuredRest,
     };
@@ -875,7 +889,7 @@ export default function ActiveWorkout() {
                             <div>
                               <p className="text-xs font-semibold text-white leading-tight">{m.exercise.name}</p>
                               <p className="text-[10px] text-[#8E8E93]">
-                                {exSet?.targetReps ?? '?'} reps
+                                {formatSetTarget(exSet)}
                                 {hasWeight ? ` · ${exSet!.targetWeight} lbs` : ''}
                               </p>
                             </div>
@@ -932,7 +946,7 @@ export default function ActiveWorkout() {
                           </div>
                           <div className="flex items-center gap-2 mt-2.5 flex-wrap">
                             <span className="text-xs font-semibold bg-[#2c2c2e] text-white px-3 py-1 rounded-full">
-                              {exSet?.targetReps ?? '?'} reps
+                              {formatSetTarget(exSet)}
                             </span>
                             {hasWeight && (
                               <span className="text-xs font-semibold bg-[#FF375F]/15 text-[#FF375F] px-3 py-1 rounded-full">
@@ -989,7 +1003,7 @@ export default function ActiveWorkout() {
                   </p>
                   <div className="flex items-center gap-2 mt-2 flex-wrap">
                     <span className="text-xs font-semibold bg-[#2c2c2e] text-white px-3 py-1 rounded-full">
-                      {transitionSet?.targetReps ?? '?'} reps
+                      {formatSetTarget(transitionSet)}
                     </span>
                     {!!transitionSet?.targetWeight && transitionSet.targetWeight > 0 && (
                       <span className="text-xs font-semibold bg-[#FF375F]/15 text-[#FF375F] px-3 py-1 rounded-full">
@@ -1050,7 +1064,8 @@ export default function ActiveWorkout() {
             {(currentTurnIndex > 0 || (activeWorkout?.warmup?.length ?? 0) > 0) && (
               <Button
                 variant="outline"
-                className="flex-1"
+                size="lg"
+                className="flex-1 px-4"
                 onClick={
                   currentTurnIndex > 0
                     ? handleGoBack
@@ -1065,7 +1080,8 @@ export default function ActiveWorkout() {
             {!isLastTurn ? (
               <Button
                 variant="outline"
-                className={currentTurnIndex > 0 ? 'flex-1' : 'w-full'}
+                size="lg"
+                className={cn('px-4', currentTurnIndex > 0 ? 'flex-1' : 'w-full')}
                 onClick={handleSkipSet}
               >
                 <SkipForward className="h-4 w-4 mr-2" />
@@ -1073,7 +1089,7 @@ export default function ActiveWorkout() {
               </Button>
             ) : (
               <Button
-                className={currentTurnIndex > 0 ? 'flex-1' : 'w-full'}
+                className={cn('px-4', currentTurnIndex > 0 ? 'flex-1' : 'w-full')}
                 size="lg"
                 variant="success"
                 onClick={handleCompleteWorkout}

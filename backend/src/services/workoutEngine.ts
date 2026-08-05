@@ -327,6 +327,18 @@ function buildSets(
   restSeconds: number,
   recentWorkouts: Workout[],
 ): { sets: WorkoutSet[]; progressionNote?: string } {
+  // ── Active timed exercises (jump rope, timed cardio intervals, etc.) ───────
+  if (exercise.durationSeconds) {
+    const sets: WorkoutSet[] = Array.from({ length: config.sets }, (_, i) => ({
+      setNumber: i + 1,
+      targetReps: 1,
+      targetDurationSeconds: exercise.durationSeconds,
+      completed: false,
+      restSeconds,
+    }));
+    return { sets };
+  }
+
   // ── Static hold exercises (plank, dead hang, ring support hold, etc.) ──────
   if (exercise.isHold && exercise.holdSeconds) {
     const sets: WorkoutSet[] = Array.from({ length: config.sets }, (_, i) => ({

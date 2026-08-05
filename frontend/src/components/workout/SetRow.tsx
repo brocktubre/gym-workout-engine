@@ -12,7 +12,7 @@ const NO_WEIGHT_EQUIPMENT = new Set([
 interface SetRowProps {
   set: WorkoutSet;
   onComplete: (weight: number, reps: number) => void;
-  onChange: (field: 'weight' | 'reps' | 'hold', value: number) => void;
+  onChange: (field: 'weight' | 'reps' | 'hold' | 'duration', value: number) => void;
   isActive?: boolean;
   /** Equipment type — hides lbs adjuster when no external weight is used */
   equipment?: string;
@@ -28,14 +28,16 @@ function fmtSeconds(s: number) {
 
 export function SetRow({ set, onComplete, onChange, isActive = false, equipment }: SetRowProps) {
   const isHold = set.targetHoldSeconds !== undefined;
+  const isTimed = set.targetDurationSeconds !== undefined;
   const holdSecs = set.completedHoldSeconds ?? set.targetHoldSeconds ?? 30;
+  const durationSecs = set.completedDurationSeconds ?? set.targetDurationSeconds ?? 30;
   const weight = set.completedWeight ?? set.targetWeight ?? 0;
   const reps   = set.completedReps   ?? set.targetReps;
-  const showWeight = !isHold && (!equipment || !NO_WEIGHT_EQUIPMENT.has(equipment));
+  const showWeight = !isHold && !isTimed && (!equipment || !NO_WEIGHT_EQUIPMENT.has(equipment));
 
   const handleComplete = () => {
     if (!set.completed) {
-      onComplete(isHold ? 0 : weight, isHold ? holdSecs : reps);
+      onComplete(isHold || isTimed ? 0 : weight, isHold ? holdSecs : isTimed ? durationSecs : reps);
     }
   };
 
@@ -52,6 +54,8 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
         <div className="flex-1 text-sm font-medium text-white">
           {isHold
             ? `Hold · ${fmtSeconds(set.completedHoldSeconds ?? set.targetHoldSeconds ?? 30)}`
+            : isTimed
+              ? `Time · ${fmtSeconds(set.completedDurationSeconds ?? set.targetDurationSeconds ?? 30)}`
             : `${showWeight && weight > 0 ? `${weight} lbs × ` : ''}${set.completedReps ?? set.targetReps} reps`}
         </div>
         <div className="h-8 w-8 rounded-full bg-[#30D158] flex items-center justify-center flex-shrink-0">
@@ -73,6 +77,8 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
           <span className="text-xs text-[#48484A]">
             {isHold
               ? `Target: ${fmtSeconds(set.targetHoldSeconds ?? 30)}`
+              : isTimed
+                ? `Target: ${fmtSeconds(set.targetDurationSeconds ?? 30)}`
               : `Target: ${set.targetReps} reps${showWeight && set.targetWeight && set.targetWeight > 0 ? ` · ${set.targetWeight} lbs` : ''}`}
           </span>
         </div>
@@ -115,24 +121,34 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
             </div>
           )}
 
-          {/* Hold time panel */}
-          {isHold ? (
+          {/* Hold or active movement time panel */}
+          {isHold || isTimed ? (
             <div className="bg-[#1c1c1e] rounded-xl p-2.5">
-              <p className="text-[10px] text-[#8E8E93] uppercase tracking-wide text-center mb-2">Hold Time</p>
+              <p className="text-[10px] text-[#8E8E93] uppercase tracking-wide text-center mb-2">
+                {isHold ? 'Hold Time' : 'Movement Time'}
+              </p>
               <div className="flex items-center gap-1">
                 <button
                   className="h-10 w-10 rounded-xl bg-[#38383A] flex items-center justify-center text-white active:scale-90 transition-transform touch-manipulation flex-shrink-0"
-                  onClick={() => onChange('hold', Math.max(5, holdSecs - 5))}
+                  onClick={() => onChange(
+                    isHold ? 'hold' : 'duration',
+                    Math.max(5, (isHold ? holdSecs : durationSecs) - 5),
+                  )}
                 >
                   <Minus className="h-4 w-4" />
                 </button>
                 <div className="flex-1 text-center">
-                  <p className="text-base font-bold text-white">{fmtSeconds(holdSecs)}</p>
+                  <p className="text-base font-bold text-white">
+                    {fmtSeconds(isHold ? holdSecs : durationSecs)}
+                  </p>
                   <div className="text-[10px] text-[#8E8E93]">duration</div>
                 </div>
                 <button
                   className="h-10 w-10 rounded-xl bg-[#38383A] flex items-center justify-center text-white active:scale-90 transition-transform touch-manipulation flex-shrink-0"
-                  onClick={() => onChange('hold', holdSecs + 5)}
+                  onClick={() => onChange(
+                    isHold ? 'hold' : 'duration',
+                    (isHold ? holdSecs : durationSecs) + 5,
+                  )}
                 >
                   <Plus className="h-4 w-4" />
                 </button>
@@ -185,7 +201,7 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
           )}
         >
           <Check className="h-5 w-5" />
-          {isHold ? `Mark Hold Complete` : 'Mark Complete'}
+          {isHold ? 'Mark Hold Complete' : 'Mark Complete'}
         </button>
       </motion.div>
     );
@@ -203,6 +219,8 @@ export function SetRow({ set, onComplete, onChange, isActive = false, equipment 
       <div className="flex-1 text-sm text-[#48484A]">
         {isHold
           ? `Hold · ${fmtSeconds(set.targetHoldSeconds ?? 30)}`
+          : isTimed
+            ? `Time · ${fmtSeconds(set.targetDurationSeconds ?? 30)}`
           : `${showWeight && set.targetWeight && set.targetWeight > 0 ? `${set.targetWeight} lbs × ` : ''}${set.targetReps} reps`}
       </div>
       <button

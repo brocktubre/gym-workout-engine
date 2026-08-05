@@ -83,15 +83,15 @@
     "movementType": "push",
     "difficulty": "beginner",
     "instructions": [
-      "Start in high plank, hands slightly wider than shoulders",
-      "Lower chest toward floor, elbows at 45 degrees",
-      "Stop just before chest touches",
-      "Push back up to full arm extension"
+      "Place your hands firmly on the ground, directly under shoulders",
+      "Flatten your back so your entire body is straight and slowly lower your body",
+      "Draw shoulder blades back and down, keeping elbows tucked close to your body",
+      "Exhale as you push back to the starting position"
     ],
     "tips": [
-      "Keep core braced and body in straight line",
-      "Full range of motion beats half reps",
-      "Elevate feet to increase difficulty"
+      "Keep your body in a straight line from head to heels",
+      "Elbows close to the body \u2014 avoid flaring",
+      "Full range of motion beats half reps"
     ]
   },
   {
@@ -1185,25 +1185,26 @@
   },
   {
     "id": "ex_diamond_push_up",
-    "name": "Diamond Push Up",
+    "name": "Diamond Push Ups",
     "primaryMuscle": "triceps",
     "secondaryMuscles": [
-      "chest"
+      "chest",
+      "shoulders"
     ],
     "equipment": "bodyweight",
-    "category": "isolation",
+    "category": "compound",
     "movementType": "push",
-    "difficulty": "intermediate",
+    "difficulty": "beginner",
     "instructions": [
-      "Form diamond shape with hands under chest",
-      "Lower chest to hands, elbows track behind body",
-      "Press back up to full extension",
-      "Keep body rigid throughout"
+      "Position your index fingers and thumbs so they are touching, forming a diamond shape",
+      "Use a standard push up position",
+      "Lower your chest towards your hands, keep your elbows close to your body",
+      "Stop just before your chest touches the floor, then push back up to the starting position"
     ],
     "tips": [
-      "Harder than standard push-up on triceps",
-      "Keep hips from sagging",
-      "Great bodyweight tricep exercise when no equipment available"
+      "Elbows stay close to the torso throughout",
+      "A narrower diamond increases triceps emphasis",
+      "If wrists bother you, elevate the hands slightly"
     ]
   },
   {
@@ -2177,6 +2178,7 @@
     "category": "cardio",
     "movementType": "cardio",
     "difficulty": "beginner",
+    "durationSeconds": 30,
     "instructions": [
       "Hold handles, rope behind feet",
       "Jump on balls of feet, rope passes under",
@@ -5511,31 +5513,6 @@
     ]
   },
   {
-    "id": "ex_pushup_with_reach",
-    "name": "Push Up with Reach",
-    "primaryMuscle": "chest",
-    "secondaryMuscles": [
-      "core",
-      "shoulders",
-      "triceps"
-    ],
-    "equipment": "bodyweight",
-    "category": "compound",
-    "movementType": "push",
-    "difficulty": "intermediate",
-    "instructions": [
-      "Perform a standard push-up",
-      "At the top of the push-up, lift one arm and extend it straight ahead",
-      "Hold for 1-2 seconds, lower arm back down",
-      "Perform next push-up and reach with the other arm"
-    ],
-    "tips": [
-      "The reach forces major anti-rotation core engagement",
-      "Wider foot stance increases stability for beginners",
-      "Can also rotate the arm to the side into a T position instead of forward"
-    ]
-  },
-  {
     "id": "ex_neck_side_stretch",
     "name": "Neck Side Stretch",
     "primaryMuscle": "shoulders",
@@ -6331,6 +6308,155 @@
       "Press the floor away to keep shoulders stable under load",
       "Do not let hips sag once the plate is on",
       "Have a partner remove the plate before you drop to your knees"
+    ]
+  },
+  {
+    "id": "ex_incline_push_up",
+    "name": "Incline Push Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand facing bench or sturdy elevated platform",
+      "Place hands on edge of bench or platform, slightly wider than shoulder width",
+      "Slowly lower your body until your chest almost touches the bench",
+      "Push body up until arms are extended"
+    ],
+    "tips": [
+      "Higher elevation makes the movement easier",
+      "Keep a rigid plank from head to heels",
+      "Great regression toward a floor push up"
+    ]
+  },
+  {
+    "id": "ex_decline_push_up",
+    "name": "Decline Push Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "beginner",
+    "instructions": [
+      "Use a bench to elevate your feet",
+      "Put your hands slightly wider than shoulder-width",
+      "Slowly lower your body until your chest almost touches the ground",
+      "Raise your body until you almost lock your elbows"
+    ],
+    "tips": [
+      "Elevating the feet increases upper-chest demand",
+      "Keep hips level \u2014 do not sag",
+      "Start with a low elevation and progress higher"
+    ]
+  },
+  {
+    "id": "ex_weighted_push_ups",
+    "name": "Weighted Push Ups",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "plate",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Place your hands firmly on the ground, directly under shoulders. Place a plate on your back",
+      "Flatten your back so your entire body is straight and slowly lower your body",
+      "Draw shoulder blades back and down, keeping elbows tucked close to your body",
+      "Exhale as you push back to the starting position"
+    ],
+    "tips": [
+      "Have a partner place and remove the plate if needed",
+      "Start light \u2014 even a small plate changes the demand",
+      "Keep hips level so the plate stays centered"
+    ]
+  },
+  {
+    "id": "ex_bodyweight_clapping_push_up",
+    "name": "Bodyweight Clapping Push Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start in a push-up position",
+      "Lower your chest, explode up, clap hands",
+      "Land softly, repeat for reps"
+    ],
+    "tips": [
+      "Master a standard push up first",
+      "Absorb the landing with soft elbows",
+      "Generate power from the chest and triceps, not the hips"
+    ]
+  },
+  {
+    "id": "ex_bodyweight_elevated_push_up",
+    "name": "Bodyweight Elevated Push Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start by placing two plates or low boxes on the floor, about shoulder-width apart",
+      "Position yourself in a plank position with your hands on top of the boxes/plates, keeping your arms straight",
+      "Keep your feet together, with your toes resting on the floor",
+      "Engage your core and lower your body towards the floor by bending your arms, until your chest nearly touches the dumbbells",
+      "Push your body back up to the starting position, straightening your arms and engaging your chest, triceps and shoulders"
+    ],
+    "tips": [
+      "Elevation increases range of motion at the bottom",
+      "Keep the core braced so hips do not sag",
+      "Use stable plates or boxes that will not tip"
+    ]
+  },
+  {
+    "id": "ex_bodyweight_explosive_push_up",
+    "name": "Bodyweight Explosive Push Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "triceps",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "compound",
+    "movementType": "push",
+    "difficulty": "advanced",
+    "instructions": [
+      "Start in a push-up position",
+      "Lower your chest, explode up",
+      "Land softly, repeat for reps"
+    ],
+    "tips": [
+      "Hands leave the floor without needing a clap",
+      "Land soft and immediately control the next descent",
+      "Stop if form breaks \u2014 power before volume"
     ]
   }
 ]

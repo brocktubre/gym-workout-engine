@@ -295,7 +295,11 @@ export async function resolveExerciseVideo(params: {
   name: string;
   exerciseId?: string;
 }): Promise<{ muscleWikiId: number; matchedName: string; streamPath: string }> {
-  const name = params.name.trim();
+  // Older saved workouts can still contain the removed generic "Plank".
+  // Its original instructions described a forearm plank, so resolve it to the
+  // explicit MuscleWiki movement instead of accepting a fuzzy Plank IYTW hit.
+  const requestedName = params.name.trim();
+  const name = normalizeName(requestedName) === 'plank' ? 'Forearm Plank' : requestedName;
   if (!name) throw new VideoNotFoundError('Exercise name is required');
 
   const stored = await getMapping(params.exerciseId, name);

@@ -95,9 +95,11 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
                 <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
                 <span className="text-[#8E8E93] text-xs">
                   {totalSets} × 
-                  {sets[0]?.targetHoldSeconds !== undefined
-                    ? `Hold ${sets[0].targetHoldSeconds}s`
-                    : `${sets[0]?.targetReps ?? '?'} reps${sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}`}
+                  {sets[0]?.targetDurationSeconds !== undefined
+                    ? `${sets[0].targetDurationSeconds}s`
+                    : sets[0]?.targetHoldSeconds !== undefined
+                      ? `Hold ${sets[0].targetHoldSeconds}s`
+                      : `${sets[0]?.targetReps ?? '?'} reps${sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}`}
                 </span>
               </div>
               {progressionNote && (

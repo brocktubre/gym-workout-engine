@@ -53,6 +53,8 @@ export interface Exercise {
   isHold?: boolean;
   /** Default hold duration in seconds for isHold exercises */
   holdSeconds?: number;
+  /** Default work interval for active timed movements such as jump rope */
+  durationSeconds?: number;
 }
 
 export interface WorkoutSet {
@@ -67,6 +69,10 @@ export interface WorkoutSet {
   targetHoldSeconds?: number;
   /** For isHold exercises: actual hold duration completed */
   completedHoldSeconds?: number;
+  /** For active timed exercises: target work interval in seconds */
+  targetDurationSeconds?: number;
+  /** For active timed exercises: actual work interval completed */
+  completedDurationSeconds?: number;
 }
 
 export interface WorkoutExercise {

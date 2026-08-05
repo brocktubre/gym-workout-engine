@@ -188,7 +188,12 @@ export function WorkoutCard({ workout, expandable = false }: WorkoutCardProps) {
                       )}
                     </div>
                     <div className="text-[#8E8E93]">
-                      {we.sets.length} × {we.sets[0]?.targetReps ?? '?'} reps
+                      {we.sets.length} ×{' '}
+                      {we.sets[0]?.targetDurationSeconds !== undefined
+                        ? `${we.sets[0].targetDurationSeconds}s`
+                        : we.sets[0]?.targetHoldSeconds !== undefined
+                          ? `Hold ${we.sets[0].targetHoldSeconds}s`
+                          : `${we.sets[0]?.targetReps ?? '?'} reps`}
                       {we.sets[0]?.targetWeight ? ` @ ${we.sets[0].targetWeight}lbs` : ''}
                     </div>
                   </div>

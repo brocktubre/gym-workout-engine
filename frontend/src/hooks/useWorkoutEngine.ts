@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '@/lib/api';
+import { migrateLegacyWorkout } from '@/lib/workoutMigrations';
 import type { GenerateWorkoutRequest, Workout } from '@/types';
 
 const ACTIVE_WORKOUT_KEY = 'gym_active_workout';
@@ -27,10 +28,16 @@ function loadActiveWorkout(): Workout | null {
   try {
     const raw = localStorage.getItem(ACTIVE_WORKOUT_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Workout;
+    let parsed = JSON.parse(raw) as Workout;
     if (!parsed?.id || !parsed?.goal || !parsed?.status || !Array.isArray(parsed?.exercises)) {
       localStorage.removeItem(ACTIVE_WORKOUT_KEY);
       return null;
+    }
+
+    const migration = migrateLegacyWorkout(parsed);
+    if (migration.changed) {
+      parsed = migration.workout;
+      saveActiveWorkout(parsed);
     }
 
     // ── Migration: move legacy timer keys into the workout object ──
