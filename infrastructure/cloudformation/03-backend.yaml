@@ -57,6 +57,14 @@ Resources:
                 Action:
                   - secretsmanager:GetSecretValue
                 Resource: 'arn:aws:secretsmanager:us-east-1:381753457015:secret:open-claw-secrets-HI7kx1'
+        - PolicyName: PollyAccess
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - polly:SynthesizeSpeech
+                Resource: '*'
 
   ApiFunction:
     Type: AWS::Lambda::Function

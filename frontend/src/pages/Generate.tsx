@@ -19,6 +19,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { useGenerateWorkout, useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { useSettings } from '@/hooks/useSettings';
+import { useTTS } from '@/hooks/useTTS';
 import { toast } from '@/components/ui/use-toast';
 import { getTodayDate, formatDuration } from '@/lib/utils';
 import {
@@ -288,6 +289,7 @@ export default function Generate() {
   const generateMutation = useGenerateWorkout();
   const createWorkoutMutation = useCreateWorkout();
   const { startWorkout, hasActiveWorkout, isPaused } = useActiveWorkout();
+  const { speak } = useTTS();
 
   // Warmup item expand/collapse state (Generate preview)
   const [expandedWarmupItems, setExpandedWarmupItems] = useState<Set<number>>(new Set());
@@ -354,6 +356,15 @@ export default function Generate() {
       });
 
       startWorkout(workout);
+
+      // Announce the first warmup item via Polly TTS
+      const firstWarmup = workout.warmup?.[0];
+      if (firstWarmup) {
+        const minutes = Math.round(firstWarmup.durationSeconds / 60);
+        const announcement = `Warm Up. ${firstWarmup.name} - ${minutes} ${minutes === 1 ? 'minute' : 'minutes'}`;
+        speak(announcement);
+      }
+
       navigate('/active');
     } catch (err) {
       toast({

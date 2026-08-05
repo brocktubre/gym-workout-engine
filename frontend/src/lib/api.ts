@@ -191,6 +191,14 @@ export const api = {
     return res.note;
   },
 
+  // ── TTS ────────────────────────────────────────────────────────────────────
+  async synthesizeSpeech(text: string): Promise<{ audio: string }> {
+    return request('/tts', {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    });
+  },
+
   // ── Settings ────────────────────────────────────────────────────────────────
   async getSettings(): Promise<UserSettings> {
     const res = await request<{ settings: UserSettings }>('/settings');
