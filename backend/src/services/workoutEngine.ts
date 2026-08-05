@@ -4,6 +4,11 @@ import {
   WarmupItem,
 } from '../types';
 import { getExercisesForEquipment } from './exerciseService';
+import {
+  nextDumbbellWeight,
+  nextKettlebellWeight,
+  snapSuggestedWeight,
+} from './equipmentWeights';
 
 // ---------------------------------------------------------------------------
 // Volume config per goal — restSeconds is the default; actual rest used from
@@ -24,9 +29,6 @@ const SET_WORK_SECONDS = 40;
 // ---------------------------------------------------------------------------
 // Starting weights in lbs by muscle group + equipment
 // ---------------------------------------------------------------------------
-/** Fixed dumbbells available in the gym — never suggest anything outside this set. */
-const AVAILABLE_DUMBBELL_WEIGHTS = [10, 15, 20, 35, 50] as const;
-
 const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, number>>>> = {
   chest:      { barbell: 135, dumbbell: 50, machine: 90,  cable: 45,  rings: 0 },
   back:       { barbell: 185, dumbbell: 50, machine: 110, cable: 65,  kettlebell: 53, sled: 135 },
@@ -38,28 +40,6 @@ const STARTING_WEIGHTS: Partial<Record<MuscleGroup, Partial<Record<string, numbe
   glutes:     { barbell: 185, machine: 110, sled: 185,    kettlebell: 53 },
   core:       { 'medicine-ball': 20, sandbag: 45, rings: 0, kettlebell: 35 },
 };
-
-/** Snap a weight to the nearest available dumbbell (ties bias upward). */
-function snapToAvailableDumbbell(weight: number): number {
-  let best: number = AVAILABLE_DUMBBELL_WEIGHTS[0];
-  let bestDist = Math.abs(weight - best);
-  for (const option of AVAILABLE_DUMBBELL_WEIGHTS) {
-    const dist = Math.abs(weight - option);
-    if (dist < bestDist || (dist === bestDist && option > best)) {
-      best = option;
-      bestDist = dist;
-    }
-  }
-  return best;
-}
-
-/** Next heavier dumbbell after `weight`, or the heaviest if already at/above max. */
-function nextDumbbellWeight(weight: number): number {
-  for (const option of AVAILABLE_DUMBBELL_WEIGHTS) {
-    if (option > weight) return option;
-  }
-  return AVAILABLE_DUMBBELL_WEIGHTS[AVAILABLE_DUMBBELL_WEIGHTS.length - 1];
-}
 
 // ---------------------------------------------------------------------------
 // Warmup stretches by muscle group
@@ -201,14 +181,26 @@ const BODYWEIGHT_ACTIVATIONS: WarmupItem[] = [
 // ---------------------------------------------------------------------------
 // Build warmup phase — 3-round circuit + targeted static stretches
 // Structure: Opening cardio → 3 rounds of (cardio interval + activation + mobility) → static stretches
-// Target: ~15-20 minutes
 // ---------------------------------------------------------------------------
 function buildWarmup(
   targetMuscles: MuscleGroup[],
   availableEquipment: string[],
-  durationMinutes: number,
+  workoutDurationMinutes: number,
 ): WarmupItem[] {
   const warmup: WarmupItem[] = [];
+  // Pick a random duration in 5-second steps inclusive of min/max
+  const randomSeconds = (min: number, max: number) => {
+    const steps = Math.floor((max - min) / 5) + 1;
+    return min + Math.floor(Math.random() * steps) * 5;
+  };
+
+  // Scale the initial monostructural movement with the workout length.
+  // 30m → 2m, 45m → 2:30, 60m → 3m, longer than 60m → 5m.
+  const openingCardioSeconds =
+    workoutDurationMinutes <= 30 ? 120
+    : workoutDurationMinutes <= 45 ? 150
+    : workoutDurationMinutes <= 60 ? 180
+    : 300;
 
   // Build pool of ALL available cardio machines (not just the first match)
   const availableCardioPool = CARDIO_WARMUP_OPTIONS.filter(o =>
@@ -238,15 +230,15 @@ function buildWarmup(
   // Shuffle pool so each workout gets variety
   const shuffled = [...activationPool].sort(() => Math.random() - 0.5);
 
-  // ── Phase 1: Opening cardio (5 min) ─────────────────────────────────────
+  // ── Phase 1: Opening monostructural movement ─────────────────────────────
   const openingInstructions = openingCardio.equipment === 'bodyweight'
     ? buildDynamicCardioInstructions()
-    : [...openingCardio.instructions, 'Start easy for first 2 min, build to moderate pace'];
+    : [...openingCardio.instructions, 'Start easy, then build gradually to a moderate pace'];
 
   warmup.push({
     name: `${openingCardio.name} Warmup`,
     type: 'cardio',
-    durationSeconds: 300,
+    durationSeconds: openingCardioSeconds,
     targetMuscles: ['cardio' as MuscleGroup],
     equipment: openingCardio.equipment,
     instructions: openingInstructions,
@@ -276,11 +268,11 @@ function buildWarmup(
     // Each round rotates to the next machine in the pool (indices 1, 2, 3 — cycling)
     const roundCardio = getCardioForIndex(r + 1);
 
-    // 60s cardio interval
+    // Short monostructural interval inside each round
     warmup.push({
       name: `${roundCardio.shortName} — ${roundLabel}`,
       type: 'cardio',
-      durationSeconds: 60,
+      durationSeconds: 30,
       targetMuscles: ['cardio' as MuscleGroup],
       equipment: roundCardio.equipment,
       instructions: roundCardio.equipment === 'bodyweight'
@@ -297,13 +289,13 @@ function buildWarmup(
     // Banded / bodyweight activation
     const activation = shuffled[r % shuffled.length];
     if (activation) {
-      warmup.push({ ...activation });
+      warmup.push({ ...activation, durationSeconds: randomSeconds(15, 20) });
     }
 
     // Dynamic mobility
     const mobility = mobilityCircuit[r % mobilityCircuit.length];
     if (mobility) {
-      warmup.push({ ...mobility });
+      warmup.push({ ...mobility, durationSeconds: randomSeconds(20, 30) });
     }
   }
 
@@ -322,7 +314,10 @@ function buildWarmup(
 
   // Add up to 2 universal stretches
   for (let i = 0; i < Math.min(2, universalStretches.length); i++) {
-    warmup.push(universalStretches[i]);
+    warmup.push({
+      ...universalStretches[i],
+      durationSeconds: randomSeconds(20, 30),
+    });
   }
 
   // Add muscle-specific stretches for target muscles (up to 4 more)
@@ -334,7 +329,7 @@ function buildWarmup(
     // Pick both options if available (variety)
     for (const item of options) {
       if (stretched.size >= 4) break;
-      warmup.push(item);
+      warmup.push({ ...item, durationSeconds: randomSeconds(20, 30) });
     }
     stretched.add(muscle);
   }
@@ -395,6 +390,12 @@ function buildSets(
             progressionNote = bumped
               ? `↑ Up to ${suggestedWeight}lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`
               : `Same weight — already at heaviest dumbbell (${avgW}lbs × ${Math.round(avgR)} reps last time)`;
+          } else if (exercise.equipment === 'kettlebell') {
+            suggestedWeight = nextKettlebellWeight(avgW);
+            const bumped = suggestedWeight > avgW;
+            progressionNote = bumped
+              ? `↑ Up to ${suggestedWeight}lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`
+              : `Same weight — already at heaviest kettlebell (${avgW}lbs × ${Math.round(avgR)} reps last time)`;
           } else {
             suggestedWeight = avgW + 5;
             progressionNote = `↑ Up 5lbs from last session (was ${avgW}lbs × ${Math.round(avgR)} reps)`;
@@ -413,9 +414,9 @@ function buildSets(
     if (mw) suggestedWeight = mw[exercise.equipment] ?? mw['dumbbell'];
   }
 
-  // Always constrain dumbbell targets to the plates actually available
-  if (suggestedWeight !== undefined && exercise.equipment === 'dumbbell') {
-    suggestedWeight = snapToAvailableDumbbell(suggestedWeight);
+  // Always constrain free-weight targets to plates/bells that actually exist
+  if (suggestedWeight !== undefined && exercise.category !== 'cardio') {
+    suggestedWeight = snapSuggestedWeight(exercise.equipment, suggestedWeight);
   }
 
   const sets: WorkoutSet[] = Array.from({ length: config.sets }, (_, i) => ({
@@ -453,10 +454,7 @@ export async function generateWorkout(context: {
   const includeWarmup = request.includeWarmup ?? settings.includeWarmup ?? true;
   // Note: allowSupersets is handled by Claude's enhancement step (claudeService.ts)
 
-  // Warmup duration: 5 min default, 10 if workout ≥ 60 min
-  const warmupMinutes = includeWarmup ? 20 : 0; // 3-round circuit + stretches ≈ 15-20 min
-
-  // Warmup is ADDITIONAL time — 1h workout = 10min warmup + 1h of exercises
+  // Warmup is additional time; its opening movement scales with workout length.
   let budget = targetMinutes;
   if (goal === 'fat-loss') budget -= 8; // cardio finisher
 
@@ -516,7 +514,7 @@ export async function generateWorkout(context: {
 
   // 5. Build warmup
   const warmup = includeWarmup
-    ? buildWarmup(targetMuscles, settings.availableEquipment as string[], warmupMinutes)
+    ? buildWarmup(targetMuscles, settings.availableEquipment as string[], targetMinutes)
     : [];
 
   // 6. Build exercise list

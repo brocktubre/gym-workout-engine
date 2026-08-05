@@ -21,6 +21,7 @@ import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { useSettings } from '@/hooks/useSettings';
 import { useTTS } from '@/hooks/useTTS';
 import { toast } from '@/components/ui/use-toast';
+import { api } from '@/lib/api';
 import { getTodayDate, formatDuration } from '@/lib/utils';
 import {
   toBlocks,
@@ -234,32 +235,83 @@ export default function Generate() {
     setFormReady(true);
   }, [settings, settingsFetched]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleSwap = (newExercise: Exercise) => {
+  const handleSwap = async (newExercise: Exercise) => {
     if (!swapTarget || !generatedWorkout) return;
+    const targetId = swapTarget.exerciseId;
+    const firstSet = swapTarget.sets[0];
+
+    // Optimistic swap — keep set count until Claude returns a prescription
     setGeneratedWorkout(prev => {
       if (!prev) return prev;
       return {
         ...prev,
         exercises: prev.exercises.map(we =>
-          we.exerciseId === swapTarget.exerciseId
+          we.exerciseId === targetId
             ? {
                 ...we,
                 exerciseId: newExercise.id,
                 exercise: newExercise,
                 progressionNote: undefined,
-                // Keep sets structure; clear weight for bodyweight swaps
                 sets: we.sets.map(s => ({
                   ...s,
-                  targetWeight: newExercise.category === 'cardio' ? undefined
-                    : newExercise.equipment === 'bodyweight' || newExercise.equipment === 'rings'
-                    ? undefined
-                    : s.targetWeight,
+                  completed: false,
+                  completedReps: undefined,
+                  completedWeight: undefined,
+                  targetWeight:
+                    newExercise.category === 'cardio'
+                    || newExercise.equipment === 'bodyweight'
+                    || newExercise.equipment === 'rings'
+                    || newExercise.equipment === 'pull-up-bar'
+                      ? undefined
+                      : s.targetWeight,
+                  targetHoldSeconds: newExercise.isHold ? newExercise.holdSeconds : undefined,
+                  targetDurationSeconds: newExercise.durationSeconds,
                 })),
               }
             : we,
         ),
       };
     });
+    setSwapTarget(null);
+
+    try {
+      const { sets } = await api.swapPrescribe({
+        newExerciseId: newExercise.id,
+        replaced: {
+          name: swapTarget.exercise.name,
+          equipment: swapTarget.exercise.equipment,
+          sets: swapTarget.sets.length,
+          reps: firstSet?.targetReps ?? 10,
+          weight: firstSet?.targetWeight ?? 0,
+        },
+        goal: generatedWorkout.goal,
+        durationMinutes: generatedWorkout.targetDurationMinutes,
+        restSeconds: firstSet?.restSeconds,
+      });
+
+      setGeneratedWorkout(prev => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          exercises: prev.exercises.map(we =>
+            we.exerciseId === newExercise.id
+              ? {
+                  ...we,
+                  sets: sets.map((s, i) => ({
+                    ...s,
+                    // Preserve superset rest / metadata from the swapped slot
+                    restSeconds: s.restSeconds ?? firstSet?.restSeconds ?? 90,
+                    setNumber: i + 1,
+                  })),
+                }
+              : we,
+          ),
+        };
+      });
+      toast({ title: `Swapped to ${newExercise.name}`, description: 'Load recalculated', duration: 2000 });
+    } catch {
+      toast({ title: `Swapped to ${newExercise.name}`, duration: 2000 });
+    }
   };
 
   const handleRemove = (exerciseId: string) => {

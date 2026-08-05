@@ -15,8 +15,10 @@ import Settings from '@/pages/Settings';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
 import ForgotPassword from '@/pages/auth/ForgotPassword';
+import BodyOnboarding from '@/pages/auth/BodyOnboarding';
 import PrivacyPolicy from '@/pages/auth/PrivacyPolicy';
 import TermsOfService from '@/pages/auth/TermsOfService';
+import { BodyOnboardingGate } from '@/components/auth/BodyOnboardingGate';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,9 +67,17 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/onboarding/body"
+              element={
+                <ProtectedRoute>
+                  <BodyOnboarding />
+                </ProtectedRoute>
+              }
+            />
 
             {/* App shell routes */}
-            <Route element={<AppLayout />}>
+            <Route element={<BodyOnboardingGate><AppLayout /></BodyOnboardingGate>}>
               {/* Home, History, Settings — require auth */}
               <Route index element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
               <Route path="/history" element={<ProtectedRoute><History /></ProtectedRoute>} />

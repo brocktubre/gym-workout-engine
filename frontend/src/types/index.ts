@@ -142,6 +142,14 @@ export interface UserSettings {
   allowSupersets?: boolean;
   /** Speak workout cues via Amazon Polly (warmup, sets, rest, etc.) */
   voiceCoachingEnabled?: boolean;
+  /** Biological sex — used to scale suggested loads */
+  sex?: 'male' | 'female';
+  /** Standing height in total inches */
+  heightInches?: number;
+  /** Body weight in pounds */
+  bodyWeightLbs?: number;
+  /** User completed or skipped the first-login body profile prompt */
+  bodyProfileDismissed?: boolean;
 }
 
 export interface GenerateWorkoutRequest {

@@ -41,12 +41,11 @@ export default function Register() {
     setIsLoading(true);
     try {
       await signUp(email.trim().toLowerCase(), password, displayName);
-      if (restoredWorkout) {
-        // Send user back to Generate with their previously generated workout
-        navigate('/generate', { replace: true, state: { restoredWorkout } });
-      } else {
-        navigate('/', { replace: true });
-      }
+      // First-login body profile — skippable, editable later in Settings
+      navigate('/onboarding/body', {
+        replace: true,
+        state: restoredWorkout ? { restoredWorkout } : undefined,
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sign up failed');
     } finally {

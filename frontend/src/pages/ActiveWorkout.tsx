@@ -224,12 +224,20 @@ export default function ActiveWorkout() {
     }
   }
 
-  const handleSwapExercise = (newExercise: Exercise) => {
-    if (!activeWorkout || !currentTurn) return;
-    const idx = currentTurn.exerciseIndex;
-    const original = exercises[idx];
+  const { data: settings } = useSettings();
+
+  const handleSwapExercise = async (newExercise: Exercise) => {
+    if (!activeWorkout) return;
+    const workoutExercises = activeWorkout.exercises ?? [];
+    const turn = buildTurns(workoutExercises)[currentTurnIndex];
+    if (!turn) return;
+    const idx = turn.exerciseIndex;
+    const original = workoutExercises[idx];
     if (!original) return;
-    const updatedExercises = exercises.map((ex, i) =>
+    const firstSet = original.sets[0];
+
+    // Optimistic identity swap while Claude recalculates load
+    const optimistic = workoutExercises.map((ex, i) =>
       i === idx
         ? {
             ...ex,
@@ -238,22 +246,69 @@ export default function ActiveWorkout() {
             progressionNote: undefined,
             sets: ex.sets.map(s => ({
               ...s,
+              completed: false,
+              completedReps: undefined,
+              completedWeight: undefined,
+              completedHoldSeconds: undefined,
+              completedDurationSeconds: undefined,
               targetWeight:
-                newExercise.equipment === 'bodyweight' || newExercise.equipment === 'rings'
+                newExercise.equipment === 'bodyweight'
+                || newExercise.equipment === 'rings'
+                || newExercise.equipment === 'pull-up-bar'
+                || newExercise.category === 'cardio'
                   ? undefined
                   : s.targetWeight,
+              targetHoldSeconds: newExercise.isHold ? newExercise.holdSeconds : undefined,
+              targetDurationSeconds: newExercise.durationSeconds,
             })),
           }
         : ex,
     );
-    updateActiveWorkout({ exercises: updatedExercises });
-    toast({ title: `Swapped to ${newExercise.name}`, variant: 'success', duration: 2000 });
+    updateActiveWorkout({ exercises: optimistic });
+
+    try {
+      const { sets } = await api.swapPrescribe({
+        newExerciseId: newExercise.id,
+        replaced: {
+          name: original.exercise.name,
+          equipment: original.exercise.equipment,
+          sets: original.sets.length,
+          reps: firstSet?.targetReps ?? 10,
+          weight: firstSet?.targetWeight ?? 0,
+        },
+        goal: activeWorkout.goal,
+        durationMinutes: activeWorkout.targetDurationMinutes,
+        restSeconds: settings?.restBetweenSetsSeconds ?? firstSet?.restSeconds ?? 90,
+      });
+
+      updateActiveWorkout({
+        exercises: optimistic.map((ex, i) =>
+          i === idx
+            ? {
+                ...ex,
+                exerciseId: newExercise.id,
+                exercise: newExercise,
+                progressionNote: undefined,
+                sets: sets.map((s, si) => ({
+                  ...s,
+                  setNumber: si + 1,
+                  restSeconds: s.restSeconds ?? firstSet?.restSeconds ?? 90,
+                })),
+                supersetGroupId: original.supersetGroupId,
+                supersetOrder: original.supersetOrder,
+              }
+            : ex,
+        ),
+      });
+      toast({ title: `Swapped to ${newExercise.name}`, description: 'Load recalculated', duration: 2000 });
+    } catch {
+      toast({ title: `Swapped to ${newExercise.name}`, duration: 2000 });
+    }
   };
 
   // Timer is anchored to workout.startedAt — accurate across devices and restarts
   const { elapsed } = useWorkoutTimer(activeWorkout, isPaused);
   const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
-  const { data: settings } = useSettings();
   // The user's current setting wins over the value baked into the workout at
   // generation time, so changing it applies to workouts already in progress.
   const configuredRest = settings?.restBetweenSetsSeconds ?? 90;

@@ -1,7 +1,7 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Save, Target, BarChart2, Clock, RefreshCw, User, LogOut, KeyRound, ChevronRight } from 'lucide-react';
+import { Save, Target, BarChart2, Clock, RefreshCw, User, LogOut, KeyRound, ChevronRight, Ruler } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Input } from '@/components/ui/input';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -168,6 +168,10 @@ export default function Settings() {
       // Strip any undefined values before sending. displayName is intentionally
       // omitted — it's set at registration and this screen never edits it.
       const payload = JSON.parse(JSON.stringify(form)) as UserSettings;
+      // Completing body metrics here also clears the first-login prompt
+      if (payload.sex && payload.heightInches && payload.bodyWeightLbs) {
+        payload.bodyProfileDismissed = true;
+      }
       await updateMutation.mutateAsync(payload);
       setIsDirty(false);
       toast({ title: 'Settings saved!', variant: 'success' });
@@ -351,6 +355,120 @@ export default function Settings() {
               </Button>
             </div>
           )}
+        </motion.section>
+
+        <Separator className="bg-[#38383A]" />
+
+        {/* Body — used by Claude to scale suggested loads */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.03 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <SectionHeader icon={<Ruler className="h-full w-full" />} title="Body" />
+          <p className="text-xs text-[#8E8E93] mb-3">
+            Optional — helps suggest more accurate starting weights
+          </p>
+
+          <div className="space-y-3">
+            <div>
+              <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                Sex
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {([
+                  { value: 'male' as const, label: 'Male' },
+                  { value: 'female' as const, label: 'Female' },
+                ]).map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => update('sex', opt.value)}
+                    className={cn(
+                      'py-2.5 rounded-xl text-sm font-semibold border transition-colors',
+                      form.sex === opt.value
+                        ? 'bg-[#FF375F]/20 text-[#FF375F] border-[#FF375F]/40'
+                        : 'bg-[#2c2c2e] text-[#8E8E93] border-[#38383A] hover:text-white',
+                    )}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                  Height
+                </label>
+                <div className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      type="number"
+                      min={3}
+                      max={8}
+                      placeholder="ft"
+                      className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
+                      value={form.heightInches ? Math.floor(form.heightInches / 12) : ''}
+                      onChange={(e) => {
+                        const ft = parseInt(e.target.value, 10);
+                        const inches = (form.heightInches ?? 0) % 12;
+                        if (Number.isNaN(ft)) {
+                          update('heightInches', inches > 0 ? inches : undefined);
+                          return;
+                        }
+                        update('heightInches', ft * 12 + inches);
+                      }}
+                    />
+                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">ft</span>
+                  </div>
+                  <div className="relative flex-1">
+                    <Input
+                      type="number"
+                      min={0}
+                      max={11}
+                      placeholder="in"
+                      className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
+                      value={form.heightInches !== undefined ? form.heightInches % 12 : ''}
+                      onChange={(e) => {
+                        const inches = parseInt(e.target.value, 10);
+                        const ft = form.heightInches ? Math.floor(form.heightInches / 12) : 0;
+                        if (Number.isNaN(inches)) {
+                          update('heightInches', ft > 0 ? ft * 12 : undefined);
+                          return;
+                        }
+                        update('heightInches', ft * 12 + Math.min(11, Math.max(0, inches)));
+                      }}
+                    />
+                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">in</span>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-[#8E8E93] uppercase tracking-wider mb-1.5">
+                  Weight
+                </label>
+                <div className="relative">
+                  <Input
+                    type="number"
+                    min={50}
+                    max={500}
+                    placeholder="lbs"
+                    className="bg-[#2c2c2e] border-[#38383A] text-white pr-10"
+                    value={form.bodyWeightLbs ?? ''}
+                    onChange={(e) => {
+                      const v = parseInt(e.target.value, 10);
+                      update('bodyWeightLbs', Number.isNaN(v) ? undefined : Math.max(0, v));
+                    }}
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">lbs</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.section>
 
         <Separator className="bg-[#38383A]" />

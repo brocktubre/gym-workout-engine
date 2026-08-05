@@ -2,10 +2,10 @@ import { Router, Request, Response } from 'express';
 import { getRecentWorkouts, getDailyWorkout, saveDailyWorkout } from '../services/dynamodbService';
 import { resolveUserSettings } from '../services/userService';
 import { generateWorkout } from '../services/workoutEngine';
-import { enhanceWorkoutWithClaude } from '../services/claudeService';
-import { filterExercises } from '../services/exerciseService';
+import { enhanceWorkoutWithClaude, prescribeSwapLoad } from '../services/claudeService';
+import { filterExercises, getExerciseById } from '../services/exerciseService';
 import { musclesForLocalDate } from '../services/dailyWorkout';
-import { GenerateWorkoutRequest, MuscleGroup, Equipment } from '../types';
+import { GenerateWorkoutRequest, MuscleGroup, Equipment, WorkoutGoal } from '../types';
 import { requireAuth } from '../middleware/auth';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -26,8 +26,11 @@ router.post('/generate', async (req: Request, res: Response) => {
 
     const { exercises: ruleExercises, warmup } = await generateWorkout({ settings, recentWorkouts, request });
 
-    // Hybrid: rule engine generates candidates, Claude refines order + supersets
-    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts);
+    // Hybrid: rule engine drafts, one Claude call refines supersets + load
+    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts, {
+      durationMinutes: request.durationMinutes,
+      goal: request.goal || settings.goal,
+    });
 
     const today = new Date().toISOString().split('T')[0];
     const workout = {
@@ -93,7 +96,10 @@ router.get('/daily', requireAuth, async (req: Request, res: Response) => {
       recentWorkouts,
       request,
     });
-    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts);
+    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts, {
+      durationMinutes,
+      goal: settings.goal,
+    });
 
     const workout = {
       id: uuidv4(),
@@ -201,6 +207,94 @@ router.post('/swap-suggest', async (req: Request, res: Response) => {
   } catch (err: any) {
     console.error('Swap suggest error:', err);
     res.status(500).json({ error: 'Failed to get swap suggestions', details: err.message });
+  }
+});
+
+// ---------------------------------------------------------------------------
+// POST /api/engine/swap-prescribe
+// After the user swaps a movement, ask Claude for sets/reps/weight for the
+// replacement — same inventory constraints as generation, tiny token budget.
+// ---------------------------------------------------------------------------
+router.post('/swap-prescribe', async (req: Request, res: Response) => {
+  try {
+    const {
+      newExerciseId,
+      replaced,
+      goal,
+      durationMinutes,
+      restSeconds,
+    }: {
+      newExerciseId?: string;
+      replaced?: { name?: string; equipment?: string; sets?: number; reps?: number; weight?: number };
+      goal?: WorkoutGoal;
+      durationMinutes?: number;
+      restSeconds?: number;
+    } = req.body ?? {};
+
+    if (!newExerciseId) {
+      res.status(400).json({ error: 'newExerciseId is required' });
+      return;
+    }
+
+    const newExercise = getExerciseById(newExerciseId);
+    if (!newExercise) {
+      res.status(404).json({ error: 'Exercise not found' });
+      return;
+    }
+
+    const [settings, recentWorkouts] = await Promise.all([
+      resolveUserSettings(req.user?.sub),
+      getRecentWorkouts(14, req.user?.sub),
+    ]);
+
+    // Last completed performance for the NEW exercise, if any
+    let lastPerformance: [number, number] | undefined;
+    for (const w of recentWorkouts) {
+      if (w.status !== 'completed') continue;
+      const prev = w.exercises.find(e => e.exerciseId === newExerciseId);
+      if (!prev) continue;
+      const done = prev.sets.filter(s => s.completed);
+      if (!done.length) continue;
+      const avgW = done.reduce((s, x) => s + (x.completedWeight || 0), 0) / done.length;
+      const avgR = done.reduce((s, x) => s + (x.completedReps || x.targetReps), 0) / done.length;
+      lastPerformance = [Math.round(avgW), Math.round(avgR)];
+      break;
+    }
+
+    const resolvedGoal = goal ?? settings.goal;
+    const { sets, source } = await prescribeSwapLoad({
+      newExercise: {
+        id: newExercise.id,
+        name: newExercise.name,
+        primaryMuscle: newExercise.primaryMuscle,
+        equipment: newExercise.equipment,
+        category: newExercise.category,
+        isHold: newExercise.isHold,
+        holdSeconds: newExercise.holdSeconds,
+        durationSeconds: newExercise.durationSeconds,
+      },
+      replaced: {
+        name: replaced?.name ?? 'previous',
+        equipment: replaced?.equipment ?? 'unknown',
+        sets: replaced?.sets ?? 3,
+        reps: replaced?.reps ?? 10,
+        weight: replaced?.weight ?? 0,
+      },
+      settings,
+      goal: resolvedGoal,
+      durationMinutes: durationMinutes ?? settings.defaultDurationMinutes,
+      lastPerformance,
+      restSeconds: restSeconds ?? settings.restBetweenSetsSeconds ?? 90,
+    });
+
+    res.json({
+      exercise: newExercise,
+      sets,
+      source,
+    });
+  } catch (err: any) {
+    console.error('Swap prescribe error:', err);
+    res.status(500).json({ error: 'Failed to prescribe swap load', details: err.message });
   }
 });
 

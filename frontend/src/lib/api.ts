@@ -2,6 +2,7 @@ import type {
   Exercise,
   GenerateWorkoutRequest,
   Workout,
+  WorkoutSet,
   WorkoutStats,
   UserSettings,
   MuscleGroup,
@@ -270,6 +271,26 @@ export const api = {
       body: JSON.stringify(params),
     });
     return res.suggestions;
+  },
+
+  /** Recalculate sets/reps/weight after swapping a movement. */
+  async swapPrescribe(params: {
+    newExerciseId: string;
+    replaced: {
+      name: string;
+      equipment: string;
+      sets: number;
+      reps: number;
+      weight: number;
+    };
+    goal?: WorkoutGoal;
+    durationMinutes?: number;
+    restSeconds?: number;
+  }): Promise<{ exercise: Exercise; sets: WorkoutSet[]; source: 'claude' | 'fallback' }> {
+    return request('/engine/swap-prescribe', {
+      method: 'POST',
+      body: JSON.stringify(params),
+    });
   },
 
   // ── Coaching ─────────────────────────────────────────────────────────────────
