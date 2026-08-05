@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight, Trash2 } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
@@ -16,6 +16,14 @@ interface ExerciseItemProps {
   supersetMemberCount?: number;
   /** When provided, shows a swap button and calls this on tap */
   onSwap?: () => void;
+  /** When provided, shows a remove button (Generate preview) */
+  onRemove?: () => void;
+  /** Disable remove (e.g. last exercise in the workout) */
+  removeDisabled?: boolean;
+  /** Optional drag handle rendered before the main row content */
+  dragHandle?: ReactNode;
+  /** Hide the per-card superset badge (parent block already shows group chrome) */
+  hideSupersetBadge?: boolean;
 }
 
 /** Derive the superset type label from member count */
@@ -25,7 +33,17 @@ function supersetLabel(count: number) {
   return 'Superset';
 }
 
-export function ExerciseItem({ workoutExercise, index, showProgress = false, supersetMemberCount, onSwap }: ExerciseItemProps) {
+export function ExerciseItem({
+  workoutExercise,
+  index,
+  showProgress = false,
+  supersetMemberCount,
+  onSwap,
+  onRemove,
+  removeDisabled = false,
+  dragHandle,
+  hideSupersetBadge = false,
+}: ExerciseItemProps) {
   const [expanded, setExpanded] = useState(false);
   const { exercise, sets, progressionNote, supersetGroupId, supersetOrder } = workoutExercise;
 
@@ -35,13 +53,13 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
   const memberCount = supersetMemberCount ?? 2;
   // Letter for this exercise in the superset: A, B, C, D
   const supersetLetter = supersetGroupId && supersetOrder
-    ? String.fromCharCode(64 + supersetOrder)
+    ? String.fromCharCode(64 + (supersetOrder ?? 0))
     : '';
 
   return (
     <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
       {/* Superset / Tri-Set / Giant Set badge — shown for ALL positions (A, B, C, D) */}
-      {supersetGroupId && supersetOrder !== undefined && (
+      {!hideSupersetBadge && supersetGroupId && supersetOrder !== undefined && (
         <div className="px-4 pt-3 pb-0">
           {supersetOrder === 1 ? (
             // First member: show type name + full sequence  A → B → C ...
@@ -74,6 +92,7 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
 
       {/* Main row */}
       <div className="flex items-start justify-between gap-2 p-4">
+          {dragHandle}
           <button
             type="button"
             className="flex items-start flex-1 min-w-0 text-left"
@@ -86,6 +105,9 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
                   <span className="text-xs font-bold text-[#8E8E93]">
                     #{index + 1}
                   </span>
+                )}
+                {hideSupersetBadge && supersetLetter && (
+                  <span className="text-xs font-bold text-[#0A84FF]">{supersetLetter}</span>
                 )}
                 <span className={cn('font-semibold text-sm', isFullyDone && showProgress ? 'text-[#30D158]' : 'text-white')}>
                   {exercise.name}
@@ -136,6 +158,22 @@ export function ExerciseItem({ workoutExercise, index, showProgress = false, sup
                 title="Swap exercise"
               >
                 <ArrowLeftRight className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {onRemove && (
+              <button
+                type="button"
+                onClick={onRemove}
+                disabled={removeDisabled}
+                className={cn(
+                  'h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center transition-colors',
+                  removeDisabled
+                    ? 'text-[#48484A] cursor-not-allowed'
+                    : 'text-[#8E8E93] hover:text-[#FF375F] hover:bg-[#FF375F]/10',
+                )}
+                title={removeDisabled ? 'Keep at least one exercise' : 'Remove exercise'}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
               </button>
             )}
             <button

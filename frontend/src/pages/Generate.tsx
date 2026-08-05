@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Zap, RefreshCw, Play, Clock, ChevronDown, ChevronUp, Check } from 'lucide-react';
+import { motion, AnimatePresence, Reorder, useDragControls } from 'framer-motion';
+import { Zap, RefreshCw, Play, Clock, ChevronDown, ChevronUp, Check, GripVertical, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { useAuth } from '@/contexts/AuthContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,12 +14,21 @@ import { Switch } from '@/components/ui/switch';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ExerciseItem } from '@/components/workout/ExerciseItem';
 import { SwapExerciseSheet } from '@/components/workout/SwapExerciseSheet';
+import { AddExerciseSheet } from '@/components/workout/AddExerciseSheet';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { useGenerateWorkout, useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 import { getTodayDate, formatDuration } from '@/lib/utils';
+import {
+  toBlocks,
+  flattenBlocks,
+  removeExercise,
+  reorderBlocksByIds,
+  type WorkoutBlock,
+} from '@/lib/workoutBlocks';
+import { buildWorkoutExercise } from '@/lib/buildWorkoutExercise';
 import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem, Exercise } from '@/types';
 import { cn } from '@/lib/utils';
 
@@ -44,6 +53,112 @@ const MUSCLE_OPTIONS: { value: MuscleGroup; label: string }[] = [
   { value: 'calves', label: 'Calves' },
   { value: 'core', label: 'Core' },
 ];
+
+function DragHandle({ onPointerDown }: { onPointerDown: (e: React.PointerEvent) => void }) {
+  return (
+    <button
+      type="button"
+      aria-label="Drag to reorder"
+      className="mt-0.5 h-7 w-7 rounded-lg bg-[#2c2c2e] flex items-center justify-center text-[#8E8E93] touch-manipulation cursor-grab active:cursor-grabbing flex-shrink-0"
+      onPointerDown={onPointerDown}
+      // Prevent click from expanding the card
+      onClick={(e) => e.stopPropagation()}
+    >
+      <GripVertical className="h-4 w-4" />
+    </button>
+  );
+}
+
+function supersetLabel(count: number) {
+  if (count === 3) return 'Tri-Set';
+  if (count >= 4) return 'Giant Set';
+  return 'Superset';
+}
+
+interface ReorderBlockItemProps {
+  block: WorkoutBlock;
+  startIndex: number;
+  canRemove: boolean;
+  onSwap: (we: WorkoutExercise) => void;
+  onRemove: (exerciseId: string) => void;
+}
+
+function ReorderBlockItem({ block, startIndex, canRemove, onSwap, onRemove }: ReorderBlockItemProps) {
+  const controls = useDragControls();
+
+  const dragHandle = (
+    <DragHandle
+      onPointerDown={(e) => {
+        e.preventDefault();
+        controls.start(e);
+      }}
+    />
+  );
+
+  if (block.kind === 'single') {
+    return (
+      <Reorder.Item
+        value={block.id}
+        dragListener={false}
+        dragControls={controls}
+        className="list-none"
+      >
+        <ExerciseItem
+          workoutExercise={block.exercise}
+          index={startIndex}
+          onSwap={() => onSwap(block.exercise)}
+          onRemove={() => onRemove(block.exercise.exerciseId)}
+          removeDisabled={!canRemove}
+          dragHandle={dragHandle}
+        />
+      </Reorder.Item>
+    );
+  }
+
+  const memberCount = block.members.length;
+  return (
+    <Reorder.Item
+      value={block.id}
+      dragListener={false}
+      dragControls={controls}
+      className="list-none"
+    >
+      <div className="rounded-2xl border border-[#0A84FF]/25 bg-[#0A84FF]/5 overflow-hidden">
+        <div className="flex items-center gap-2 px-3 pt-3 pb-1">
+          {dragHandle}
+          <div className="flex items-center gap-2 px-2 py-1 bg-[#0A84FF]/10 rounded-lg border border-[#0A84FF]/20">
+            <FontAwesomeIcon icon={faArrowRightArrowLeft} className="text-[#0A84FF] text-xs" />
+            <span className="text-xs font-bold text-[#0A84FF] uppercase tracking-wider">
+              {supersetLabel(memberCount)}
+            </span>
+            <div className="flex items-center gap-0.5 ml-1">
+              {Array.from({ length: memberCount }, (_, i) => (
+                <span key={i} className="text-[10px] font-bold text-[#0A84FF]/80">
+                  {i > 0 && <span className="text-[#0A84FF]/40 mx-0.5">→</span>}
+                  {String.fromCharCode(65 + i)}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="space-y-2 p-2 pt-1">
+          {block.members.map((member, i) => (
+            <ExerciseItem
+              key={member.exerciseId}
+              workoutExercise={member}
+              index={startIndex + i}
+              supersetMemberCount={memberCount}
+              hideSupersetBadge
+              onSwap={() => onSwap(member)}
+              onRemove={() => onRemove(member.exerciseId)}
+              removeDisabled={!canRemove}
+            />
+          ))}
+        </div>
+      </div>
+    </Reorder.Item>
+  );
+}
 
 interface GeneratedWorkout {
   id?: string;
@@ -79,6 +194,7 @@ export default function Generate() {
     locationState.restoredWorkout ?? null,
   );
   const [swapTarget, setSwapTarget] = useState<WorkoutExercise | null>(null);
+  const [addSheetOpen, setAddSheetOpen] = useState(false);
   const [signInPromptOpen, setSignInPromptOpen] = useState(false);
   const { isAuthenticated } = useAuth();
 
@@ -121,6 +237,50 @@ export default function Generate() {
       };
     });
   };
+
+  const handleRemove = (exerciseId: string) => {
+    if (!generatedWorkout) return;
+    if (generatedWorkout.exercises.length <= 1) {
+      toast({ title: 'Keep at least one exercise in the workout' });
+      return;
+    }
+    const removed = generatedWorkout.exercises.find((we) => we.exerciseId === exerciseId);
+    setGeneratedWorkout((prev) => {
+      if (!prev) return prev;
+      return { ...prev, exercises: removeExercise(prev.exercises, exerciseId) };
+    });
+    toast({ title: `Removed ${removed?.exercise.name ?? 'exercise'}`, duration: 2000 });
+  };
+
+  const handleReorder = (orderedIds: string[]) => {
+    setGeneratedWorkout((prev) => {
+      if (!prev) return prev;
+      const blocks = toBlocks(prev.exercises);
+      return {
+        ...prev,
+        exercises: flattenBlocks(reorderBlocksByIds(blocks, orderedIds)),
+      };
+    });
+  };
+
+  const handleAddExercise = (exercise: Exercise) => {
+    if (!generatedWorkout) return;
+    const next = buildWorkoutExercise(
+      exercise,
+      generatedWorkout.goal,
+      settings?.restBetweenSetsSeconds,
+    );
+    setGeneratedWorkout((prev) => {
+      if (!prev) return prev;
+      return { ...prev, exercises: [...prev.exercises, next] };
+    });
+    toast({ title: `Added ${exercise.name}`, duration: 2000 });
+  };
+
+  const workoutBlocks = useMemo(
+    () => (generatedWorkout ? toBlocks(generatedWorkout.exercises) : []),
+    [generatedWorkout],
+  );
 
   const generateMutation = useGenerateWorkout();
   const createWorkoutMutation = useCreateWorkout();
@@ -290,7 +450,7 @@ export default function Generate() {
               <FontAwesomeIcon icon={faPersonRunning} className="text-[#FF375F] w-4" />
               <div>
                 <p className="text-sm font-semibold text-white">Include Warmup</p>
-                <p className="text-xs text-[#8E8E93]">5-10 min cardio + stretching</p>
+                <p className="text-xs text-[#8E8E93]">Cardio + stretching before your workout</p>
               </div>
             </div>
             <Switch checked={includeWarmup} onCheckedChange={setIncludeWarmup} />
@@ -481,23 +641,43 @@ export default function Generate() {
                 </div>
               )}
 
-              {/* Exercise list */}
-              <div className="space-y-2">
-                {generatedWorkout.exercises.map((we, i) => {
-                  const memberCount = we.supersetGroupId
-                    ? generatedWorkout.exercises.filter(e => e.supersetGroupId === we.supersetGroupId).length
-                    : undefined;
+              {/* Exercise list — reorderable by block; warmup stays above */}
+              <Reorder.Group
+                axis="y"
+                values={workoutBlocks.map((b) => b.id)}
+                onReorder={handleReorder}
+                as="div"
+                className="space-y-2"
+              >
+                {workoutBlocks.map((block, blockIndex) => {
+                  const startIndex = workoutBlocks
+                    .slice(0, blockIndex)
+                    .reduce(
+                      (sum, b) => sum + (b.kind === 'single' ? 1 : b.members.length),
+                      0,
+                    );
                   return (
-                    <ExerciseItem
-                      key={we.exerciseId}
-                      workoutExercise={we}
-                      index={i}
-                      supersetMemberCount={memberCount}
-                      onSwap={() => setSwapTarget(we)}
+                    <ReorderBlockItem
+                      key={block.id}
+                      block={block}
+                      startIndex={startIndex}
+                      canRemove={generatedWorkout.exercises.length > 1}
+                      onSwap={setSwapTarget}
+                      onRemove={handleRemove}
                     />
                   );
                 })}
-              </div>
+              </Reorder.Group>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-12 border-dashed border-[#48484A] text-[#8E8E93] hover:text-white hover:border-[#8E8E93]"
+                onClick={() => setAddSheetOpen(true)}
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Movement
+              </Button>
 
               {/* Action buttons */}
               <div className="flex gap-3 pt-2">
@@ -533,6 +713,15 @@ export default function Generate() {
           allExerciseIds={generatedWorkout.exercises.map(e => e.exerciseId)}
           onSwap={handleSwap}
           onClose={() => setSwapTarget(null)}
+        />
+      )}
+
+      {generatedWorkout && (
+        <AddExerciseSheet
+          open={addSheetOpen}
+          excludeIds={generatedWorkout.exercises.map((e) => e.exerciseId)}
+          onAdd={handleAddExercise}
+          onClose={() => setAddSheetOpen(false)}
         />
       )}
 

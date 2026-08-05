@@ -608,7 +608,7 @@ export default function Settings() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-white">Include Warmup</h3>
-              <p className="text-xs text-[#8E8E93] mt-0.5">5-10 min cardio + muscle-specific stretching before workouts</p>
+              <p className="text-xs text-[#8E8E93] mt-0.5">Cardio + muscle-specific stretching before workouts</p>
             </div>
             <Switch
               checked={form.includeWarmup ?? true}
