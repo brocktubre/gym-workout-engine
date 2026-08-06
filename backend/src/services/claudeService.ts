@@ -44,6 +44,47 @@ const LOAD_BANDS: Record<WorkoutGoal, { sets: [number, number]; reps: [number, n
   'fat-loss':  { sets: [2, 4], reps: [10, 20] },
 };
 
+/**
+ * Heavy barbell compounds that should ramp weight across sets
+ * (warmup → working weight; typically last 2 sets at top load).
+ */
+const BARBELL_RAMP_NAME_RE =
+  /\b(squat|deadlift|bench|overhead press|ohp|press|clean|snatch|jerk)\b/i;
+
+export function isBarbellRampCompound(exercise: {
+  name: string;
+  equipment: string;
+  category: string;
+}): boolean {
+  if (exercise.equipment !== 'barbell') return false;
+  if (exercise.category !== 'compound') return false;
+  return BARBELL_RAMP_NAME_RE.test(exercise.name);
+}
+
+/** Build a sensible ramp ending with topWeight on the last 1–2 sets. */
+function buildDefaultRamp(topWeight: number, setCount: number, equipment: string): number[] {
+  const fractions =
+    setCount <= 1 ? [1]
+    : setCount === 2 ? [0.85, 1]
+    : setCount === 3 ? [0.75, 0.9, 1]
+    : setCount === 4 ? [0.7, 0.85, 1, 1]
+    : [0.65, 0.8, 0.9, 1, 1]; // 5+ — pad with 1.0 for extras
+
+  const ramp: number[] = [];
+  for (let i = 0; i < setCount; i++) {
+    const fraction = fractions[Math.min(i, fractions.length - 1)];
+    ramp.push(snapSuggestedWeight(equipment, topWeight * fraction));
+  }
+  // Ensure non-decreasing and last equals snapped top
+  const top = snapSuggestedWeight(equipment, topWeight);
+  for (let i = 1; i < ramp.length; i++) {
+    if (ramp[i] < ramp[i - 1]) ramp[i] = ramp[i - 1];
+  }
+  if (ramp.length) ramp[ramp.length - 1] = top;
+  if (ramp.length >= 2) ramp[ramp.length - 2] = Math.min(ramp[ramp.length - 2], top);
+  return ramp;
+}
+
 // ---------------------------------------------------------------------------
 // Muscle families used by the deterministic superset fallback. Each entry is
 // ordered by how well the muscles pair, so a group grown from the front stays
@@ -73,10 +114,11 @@ interface SupersetGroup {
 interface ClaudeGroupResponse {
   groups: SupersetGroup[];
   /**
-   * Compact load map: exerciseId → [sets, reps, weightLbs].
+   * Compact load map: exerciseId → [sets, reps, weightLbs | weightLbs[]].
    * weightLbs 0 = bodyweight / no external load.
+   * Array weight = per-set ramp (for heavy barbell compounds).
    */
-  load?: Record<string, [number, number, number]>;
+  load?: Record<string, [number, number, number | number[]]>;
   reasoning?: string;
 }
 
@@ -279,20 +321,26 @@ function applyFallbackSupersets(exercises: WorkoutExercise[]): WorkoutExercise[]
 }
 
 /**
- * Apply Claude's compact [sets, reps, weight] prescriptions onto the draft.
+ * Apply Claude's compact [sets, reps, weight|weight[]] prescriptions onto the draft.
  * Invalid / missing entries keep the rule-engine numbers. DB/KB snaps always run.
+ * Barbell ramp compounds get a climbing weight array (last 1–2 sets at top load).
  */
 function applyLoadPrescriptions(
   exercises: WorkoutExercise[],
-  load: Record<string, [number, number, number]> | undefined,
+  load: Record<string, [number, number, number | number[]]> | undefined,
   goal: WorkoutGoal,
 ): WorkoutExercise[] {
-  if (!load) return exercises;
+  if (!load) {
+    // Still expand flat draft weights into ramps for barbell compounds
+    return exercises.map((we) => ensureBarbellRamp(we));
+  }
   const band = LOAD_BANDS[goal] ?? LOAD_BANDS.hypertrophy;
 
   return exercises.map((we) => {
     const prescription = load[we.exerciseId];
-    if (!prescription || prescription.length < 3) return we;
+    if (!prescription || prescription.length < 3) {
+      return ensureBarbellRamp(we);
+    }
 
     // Holds and timed intervals keep their duration targets — only set count may change
     const isHold = we.sets.some(s => s.targetHoldSeconds !== undefined);
@@ -324,29 +372,169 @@ function applyLoadPrescriptions(
     const noExternalLoad = equipment === 'bodyweight' || equipment === 'rings' || equipment === 'pull-up-bar'
       || we.exercise.category === 'cardio';
 
-    let weight: number | undefined;
+    const restSeconds = we.sets[0]?.restSeconds ?? 90;
+    const wantsRamp = isBarbellRampCompound(we.exercise);
+
+    let weights: (number | undefined)[];
+
     if (noExternalLoad) {
-      weight = undefined;
+      weights = Array.from({ length: setCount }, () => undefined);
+    } else if (Array.isArray(rawWeight)) {
+      const snapped = rawWeight.map((w) => {
+        const n = Number(w);
+        if (!Number.isFinite(n) || n <= 0) return we.sets[0]?.targetWeight ?? 0;
+        return snapSuggestedWeight(equipment, n);
+      });
+      // Pad / trim to setCount
+      weights = Array.from({ length: setCount }, (_, i) => {
+        if (i < snapped.length) return snapped[i];
+        return snapped[snapped.length - 1] ?? we.sets[0]?.targetWeight;
+      });
     } else {
       const numeric = Number(rawWeight);
+      let top: number | undefined;
       if (!Number.isFinite(numeric) || numeric <= 0) {
-        weight = we.sets[0]?.targetWeight;
+        top = we.sets[0]?.targetWeight;
       } else {
-        weight = snapSuggestedWeight(equipment, numeric);
+        top = snapSuggestedWeight(equipment, numeric);
+      }
+      if (wantsRamp && top && top > 0) {
+        weights = buildDefaultRamp(top, setCount, equipment);
+      } else {
+        weights = Array.from({ length: setCount }, () => top);
       }
     }
 
-    const restSeconds = we.sets[0]?.restSeconds ?? 90;
+    // If Claude returned a flat number for a ramp lift, buildDefaultRamp already ran.
+    // If Claude returned an array that's all identical on a ramp lift, leave it (user intent).
+
     const sets: WorkoutSet[] = Array.from({ length: setCount }, (_, i) => ({
       setNumber: i + 1,
       targetReps: reps,
-      targetWeight: weight,
+      targetWeight: weights[i],
       completed: false,
       restSeconds,
     }));
 
     return { ...we, sets };
   });
+}
+
+/** If a barbell compound still has a flat weight, expand it into a warmup ramp. */
+function ensureBarbellRamp(we: WorkoutExercise): WorkoutExercise {
+  if (!isBarbellRampCompound(we.exercise)) return we;
+  if (we.sets.length === 0) return we;
+  const isHold = we.sets.some(s => s.targetHoldSeconds !== undefined);
+  const isTimed = we.sets.some(s => s.targetDurationSeconds !== undefined);
+  if (isHold || isTimed) return we;
+
+  const weights = we.sets.map(s => s.targetWeight ?? 0);
+  const unique = new Set(weights.filter(w => w > 0));
+  if (unique.size > 1) return we; // already ramped
+
+  const top = weights.find(w => w > 0) ?? we.sets[0]?.targetWeight;
+  if (!top || top <= 0) return we;
+
+  const ramp = buildDefaultRamp(top, we.sets.length, we.exercise.equipment);
+  return {
+    ...we,
+    sets: we.sets.map((s, i) => ({
+      ...s,
+      targetWeight: ramp[i],
+    })),
+  };
+}
+
+// ---------------------------------------------------------------------------
+// When a focus-muscle pool can't fill the duration, ask Claude which catalog
+// movements best complement the session (ids only — engine builds sets).
+// ---------------------------------------------------------------------------
+export async function suggestComplementaryExercises(input: {
+  focusMuscles: MuscleGroup[];
+  existingIds: string[];
+  existingNames: string[];
+  candidates: Array<{ id: string; n: string; m: string; eq: string; c: string }>;
+  slotsNeeded: number;
+  remainingMinutes: number;
+  goal: WorkoutGoal;
+}): Promise<string[]> {
+  const {
+    focusMuscles,
+    existingIds,
+    existingNames,
+    candidates,
+    slotsNeeded,
+    remainingMinutes,
+    goal,
+  } = input;
+
+  if (slotsNeeded <= 0 || !candidates.length) return [];
+
+  // Cap candidate list so the prompt stays cheap
+  const MAX_CANDIDATES = 80;
+  const trimmed = candidates.length > MAX_CANDIDATES
+    ? candidates
+      .slice()
+      .sort((a, b) => {
+        // Prefer non-focus muscles first so Claude sees complements
+        const aFocus = focusMuscles.includes(a.m as MuscleGroup) ? 1 : 0;
+        const bFocus = focusMuscles.includes(b.m as MuscleGroup) ? 1 : 0;
+        return aFocus - bFocus;
+      })
+      .slice(0, MAX_CANDIDATES)
+    : candidates;
+
+  const candidateIds = new Set(trimmed.map(c => c.id));
+
+  try {
+    const apiKey = await getAnthropicApiKey();
+    const client = new Anthropic({ apiKey, timeout: 12_000 });
+
+    const systemPrompt = `Expert trainer. User focused on ${focusMuscles.join(', ')} but still has ~${remainingMinutes} minutes left (${slotsNeeded} more exercises needed for a ${goal} session).
+Pick complementary catalog exercises that round out the workout without abandoning the focus (e.g. core focus → add anti-rotation, hips, posture, light upper that support bracing).
+Rules: return ONLY ids from candidates. Never invent ids. Prefer compounds that support the focus, then useful accessories. Avoid pure cardio. No duplicates of existing.
+JSON only: {"ids":["id1","id2",...],"reasoning":"1 sentence"}
+Return exactly ${slotsNeeded} ids when possible, fewer only if the catalog is thin.`;
+
+    const userMessage = JSON.stringify({
+      focus: focusMuscles,
+      existing: existingNames.slice(0, 20),
+      existingIds: existingIds.slice(0, 20),
+      need: slotsNeeded,
+      minsLeft: remainingMinutes,
+      goal,
+      candidates: trimmed,
+    });
+
+    const response = await client.messages.create({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 400,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }],
+    });
+
+    const rawText = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
+    const parsed = JSON.parse(extractJson(rawText)) as { ids?: unknown };
+    if (!Array.isArray(parsed.ids)) return [];
+
+    const seen = new Set(existingIds);
+    const out: string[] = [];
+    for (const raw of parsed.ids) {
+      if (typeof raw !== 'string') continue;
+      if (!candidateIds.has(raw) || seen.has(raw)) continue;
+      seen.add(raw);
+      out.push(raw);
+      if (out.length >= slotsNeeded) break;
+    }
+
+    if (out.length) {
+      console.log(`[Claude] Complements: ${out.join(', ')} (${out.length}/${slotsNeeded})`);
+    }
+    return out;
+  } catch (err: any) {
+    console.warn('[Claude] Complement pick failed:', err?.message ?? err);
+    return [];
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -405,6 +593,7 @@ export async function enhanceWorkoutWithClaude(
         r: first?.targetReps ?? 0,
         w: first?.targetWeight ?? 0,
       };
+      if (isBarbellRampCompound(we.exercise)) row.ramp = 1;
       if (first?.targetHoldSeconds) row.h = first.targetHoldSeconds;
       if (first?.targetDurationSeconds) row.d = first.targetDurationSeconds;
       const last = lastById.get(we.exerciseId);
@@ -428,12 +617,14 @@ export async function enhanceWorkoutWithClaude(
 
 GROUPS: type "superset"|"standalone". Superset=2-4 ids. Each id once. No 2 barbells in one group. Prefer antagonist pairings; use 3-4 when safe. If ss=0 every group is standalone. Heavy barbell compounds usually standalone.
 
-LOAD: for EVERY id return load[id]=[sets,reps,weightLbs]. weight 0 = bodyweight/no load. Holds/timed: keep duration, sets only.
+LOAD: for EVERY id return load[id]=[sets,reps,weight]. weight 0 = bodyweight/no load. Holds/timed: keep duration, sets only.
+If exercise has ramp=1 (heavy barbell squat/deadlift/bench/press/clean/snatch), weight MUST be an ARRAY of length sets that climbs to a working weight — typically the last 2 sets equal the top weight. Example: [5,5,[95,115,125,135,135]]. Round barbell to 5 lb plates.
+Other equipment: single weight number for all sets.
 DB only ${AVAILABLE_DUMBBELL_WEIGHTS.join(',')}. KB only ${AVAILABLE_KETTLEBELL_WEIGHTS.join(',')}. Never invent other DB/KB.
 Use sex/wt/ht/level + goal + draft s/r/w + last[w,r] when present. Prefer progressing from last when completed well.
 Rep ranges: strength 2-6, hypertrophy 6-15, endurance 12-25, fat-loss 10-20.
 
-Format: {"groups":[{"type":"superset","exercises":["id1","id2"]}],"load":{"id1":[4,10,50]},"reasoning":"1 sentence"}`;
+Format: {"groups":[{"type":"superset","exercises":["id1","id2"]}],"load":{"id1":[4,10,50],"id2":[5,5,[95,115,125,135,135]]},"reasoning":"1 sentence"}`;
 
     const userMessage = JSON.stringify({ user, exercises });
 
@@ -541,7 +732,7 @@ Format: {"groups":[{"type":"superset","exercises":["id1","id2"]}],"load":{"id1":
     return withLoad;
   } catch (err: any) {
     console.error('[Claude] Enhancement failed, using fallback:', err?.message ?? err);
-    return applyFallbackSupersets(draftExercises);
+    return applyLoadPrescriptions(applyFallbackSupersets(draftExercises), undefined, goal);
   }
 }
 
@@ -582,7 +773,7 @@ function buildSetsFromPrescription(
   input: SwapPrescribeInput,
   sets: number,
   reps: number,
-  weight: number | undefined,
+  weight: number | number[] | undefined,
 ): WorkoutSet[] {
   const restSeconds = input.restSeconds ?? 90;
   const ex = input.newExercise;
@@ -606,10 +797,28 @@ function buildSetsFromPrescription(
     }));
   }
 
+  const wantsRamp = isBarbellRampCompound({
+    name: ex.name,
+    equipment: ex.equipment,
+    category: ex.category,
+  });
+
+  let weights: (number | undefined)[];
+  if (Array.isArray(weight)) {
+    const snapped = weight.map((w) => snapSuggestedWeight(ex.equipment, w));
+    weights = Array.from({ length: sets }, (_, i) =>
+      i < snapped.length ? snapped[i] : snapped[snapped.length - 1],
+    );
+  } else if (weight !== undefined && weight > 0 && wantsRamp) {
+    weights = buildDefaultRamp(weight, sets, ex.equipment);
+  } else {
+    weights = Array.from({ length: sets }, () => weight);
+  }
+
   return Array.from({ length: sets }, (_, i) => ({
     setNumber: i + 1,
     targetReps: reps,
-    targetWeight: weight,
+    targetWeight: weights[i],
     completed: false,
     restSeconds,
   }));
@@ -666,6 +875,12 @@ export async function prescribeSwapLoad(input: SwapPrescribeInput): Promise<{
     if (input.settings.bodyWeightLbs) user.wt = input.settings.bodyWeightLbs;
     if (input.settings.heightInches) user.ht = input.settings.heightInches;
 
+    const wantsRamp = isBarbellRampCompound({
+      name: ex.name,
+      equipment: ex.equipment,
+      category: ex.category,
+    });
+
     const payload = {
       user,
       replace: {
@@ -681,39 +896,45 @@ export async function prescribeSwapLoad(input: SwapPrescribeInput): Promise<{
         eq: ex.equipment,
         m: ex.primaryMuscle,
         c: ex.category,
+        ...(wantsRamp ? { ramp: 1 } : {}),
         ...(input.lastPerformance ? { last: input.lastPerformance } : {}),
       },
     };
 
     const systemPrompt = `Prescribe load for ONE swapped exercise. JSON only.
-Return {"s":sets,"r":reps,"w":weightLbs}. w=0 means bodyweight/no load.
+Return {"s":sets,"r":reps,"w":weightLbsOrArray}. w=0 means bodyweight/no load.
+If neu.ramp=1, w MUST be an array of length s climbing to a top working weight (last 2 sets equal). Example w:[95,115,125,135,135]. Round barbell to 5s.
 DB only ${AVAILABLE_DUMBBELL_WEIGHTS.join(',')}. KB only ${AVAILABLE_KETTLEBELL_WEIGHTS.join(',')}.
 Match goal rep bands. Use sex/wt/ht/level + replace load + neu.last when present.`;
 
     const response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 80,
+      max_tokens: 120,
       system: systemPrompt,
       messages: [{ role: 'user', content: JSON.stringify(payload) }],
     });
 
     const rawText = response.content[0]?.type === 'text' ? response.content[0].text.trim() : '';
-    const parsed = JSON.parse(extractJson(rawText)) as { s?: number; r?: number; w?: number };
+    const parsed = JSON.parse(extractJson(rawText)) as { s?: number; r?: number; w?: number | number[] };
 
     const setCount = Math.min(band.sets[1], Math.max(band.sets[0], Math.round(Number(parsed.s) || input.replaced.sets || 3)));
     const reps = Math.min(band.reps[1], Math.max(band.reps[0], Math.round(Number(parsed.r) || 10)));
 
     const noLoad = ['bodyweight', 'rings', 'pull-up-bar'].includes(ex.equipment)
       || ex.category === 'cardio';
-    let weight: number | undefined;
+    let weight: number | number[] | undefined;
     if (!noLoad) {
-      const numeric = Number(parsed.w);
-      if (Number.isFinite(numeric) && numeric > 0) {
-        weight = snapSuggestedWeight(ex.equipment, numeric);
+      if (Array.isArray(parsed.w)) {
+        weight = parsed.w.map((w) => snapSuggestedWeight(ex.equipment, Number(w) || 0));
+      } else {
+        const numeric = Number(parsed.w);
+        if (Number.isFinite(numeric) && numeric > 0) {
+          weight = snapSuggestedWeight(ex.equipment, numeric);
+        }
       }
     }
 
-    console.log(`[Claude swap] ${ex.name}: ${setCount}×${reps} @ ${weight ?? 0}`);
+    console.log(`[Claude swap] ${ex.name}: ${setCount}×${reps} @ ${JSON.stringify(weight ?? 0)}`);
     return { sets: buildSetsFromPrescription(input, setCount, reps, weight), source: 'claude' };
   } catch (err: any) {
     console.warn('[Claude swap] failed, using fallback:', err?.message ?? err);

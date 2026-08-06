@@ -9,6 +9,7 @@ import {
   nextKettlebellWeight,
   snapSuggestedWeight,
 } from './equipmentWeights';
+import { suggestComplementaryExercises } from './claudeService';
 
 // ---------------------------------------------------------------------------
 // Volume config per goal — restSeconds is the default; actual rest used from
@@ -25,6 +26,23 @@ const VOLUME_CONFIG: Record<WorkoutGoal, {
 
 // Average work time per set in seconds (30s execution + transition buffer)
 const SET_WORK_SECONDS = 40;
+/** Wall-clock rest between circuits / movements (matches ActiveWorkout). */
+const BETWEEN_EXERCISE_MINUTES = 1;
+
+/** Complementary muscles when a focus group can't fill the duration alone. */
+const COMPLEMENT_MUSCLES: Record<MuscleGroup, MuscleGroup[]> = {
+  core: ['shoulders', 'glutes', 'back', 'chest', 'quads'],
+  chest: ['triceps', 'shoulders', 'back', 'core'],
+  back: ['biceps', 'core', 'shoulders', 'chest'],
+  shoulders: ['core', 'triceps', 'back', 'chest'],
+  biceps: ['back', 'core', 'shoulders'],
+  triceps: ['chest', 'shoulders', 'core'],
+  quads: ['glutes', 'hamstrings', 'core', 'calves'],
+  hamstrings: ['glutes', 'quads', 'core', 'back'],
+  glutes: ['hamstrings', 'quads', 'core', 'back'],
+  calves: ['quads', 'hamstrings', 'glutes', 'core'],
+  cardio: ['core', 'quads', 'glutes', 'shoulders'],
+};
 
 // ---------------------------------------------------------------------------
 // Starting weights in lbs by muscle group + equipment
@@ -438,6 +456,24 @@ function minutesForExercise(sets: number, restSeconds: number): number {
   return (sets * SET_WORK_SECONDS + Math.max(0, sets - 1) * restSeconds) / 60;
 }
 
+/** Minutes consumed when adding the next movement (includes between-circuit rest). */
+function costForNextMovement(alreadyCount: number, minsPerExercise: number): number {
+  const between = alreadyCount > 0 ? BETWEEN_EXERCISE_MINUTES : 0;
+  return minsPerExercise + between;
+}
+
+function pushBuiltExercise(
+  result: WorkoutExercise[],
+  exercise: Exercise,
+  goal: WorkoutGoal,
+  config: { sets: number; minReps: number; maxReps: number; restSeconds: number },
+  restSeconds: number,
+  recentWorkouts: Workout[],
+): void {
+  const { sets, progressionNote } = buildSets(exercise, goal, config, restSeconds, recentWorkouts);
+  result.push({ exerciseId: exercise.id, exercise, sets, progressionNote });
+}
+
 // ---------------------------------------------------------------------------
 // Main generator
 // ---------------------------------------------------------------------------
@@ -489,12 +525,13 @@ export async function generateWorkout(context: {
     'quads', 'hamstrings', 'glutes', 'core',
   ];
 
+  const userPickedMuscles = Boolean(request.targetMuscleGroups?.length);
   let targetMuscles: MuscleGroup[];
   if (request.targetMuscleGroups?.length) {
     targetMuscles = request.targetMuscleGroups;
   } else {
     const fresh = ALL_MUSCLES.filter(m => !fatiguedMuscles.has(m));
-    const estimatedExercises = Math.floor(budget / minsPerExercise);
+    const estimatedExercises = Math.max(2, Math.floor(budget / (minsPerExercise + BETWEEN_EXERCISE_MINUTES)));
     const muscleSlots = Math.min(5, Math.max(2, Math.floor(estimatedExercises / 1.5)));
 
     const push = fresh.filter(m => ['chest', 'shoulders', 'triceps'].includes(m));
@@ -517,77 +554,172 @@ export async function generateWorkout(context: {
     ? buildWarmup(targetMuscles, settings.availableEquipment as string[], targetMinutes)
     : [];
 
-  // 6. Build exercise list
+  // 6. Build exercise list — fill the duration, not just one slot per muscle
   const result: WorkoutExercise[] = [];
   const exclude = new Set(request.excludeExerciseIds || []);
-  const processedMuscles = new Set<MuscleGroup>();
+  const usedIds = new Set<string>(exclude);
 
-  // Seeded random shuffle so regenerate produces different exercises each time
-  const shuffleSeed = Date.now();
-  const seededRandom = (i: number) => ((shuffleSeed * (i + 1) * 2654435761) >>> 0) / 4294967296;
   const shuffle = <T,>(arr: T[]): T[] =>
-    [...arr].sort((_, __, i = Math.random()) => i - 0.5);
+    [...arr].sort(() => Math.random() - 0.5);
 
-  const pickExercise = (muscle: MuscleGroup, preferCompound: boolean, excludeIds: Set<string>) => {
+  const pickExercise = (
+    muscle: MuscleGroup,
+    preferCompound: boolean,
+  ): Exercise | undefined => {
     const pool = shuffle(available.filter(e =>
       e.primaryMuscle === muscle &&
-      e.category !== 'mobility' && // never auto-select stretches for workout sets
+      e.category !== 'mobility' &&
       !recentIds.has(e.id) &&
-      !excludeIds.has(e.id) &&
-      !exclude.has(e.id)
+      !usedIds.has(e.id),
     ));
+    // Prefer unused recent-filtered pool; if empty, allow recentIds (still unique)
+    const fallbackPool = pool.length
+      ? pool
+      : shuffle(available.filter(e =>
+        e.primaryMuscle === muscle &&
+        e.category !== 'mobility' &&
+        !usedIds.has(e.id),
+      ));
     if (preferCompound) {
-      return pool.find(e => e.category === 'compound') ?? pool[0];
+      return fallbackPool.find(e => e.category === 'compound') ?? fallbackPool[0];
     }
-    return pool[0];
+    // Alternate compounds and isolations for variety within one muscle focus
+    const compounds = fallbackPool.filter(e => e.category === 'compound');
+    const isolations = fallbackPool.filter(e => e.category === 'isolation');
+    if (result.filter(r => r.exercise.primaryMuscle === muscle).length % 2 === 0) {
+      return compounds[0] ?? isolations[0] ?? fallbackPool[0];
+    }
+    return isolations[0] ?? compounds[0] ?? fallbackPool[0];
   };
 
-  // Process muscles — create supersets where possible
-  const remainingMuscles = [...targetMuscles];
+  const canAffordAnother = () =>
+    budget >= costForNextMovement(result.length, minsPerExercise) * 0.85;
 
-  while (remainingMuscles.length > 0 && budget > minsPerExercise * 0.8) {
-    const muscle = remainingMuscles.shift()!;
-    if (processedMuscles.has(muscle)) continue;
+  // Round-robin across selected muscles until the time budget is spent
+  const muscleQueue = [...targetMuscles];
+  let cursor = 0;
+  let preferCompoundPass = settings.preferCompound;
 
-    const usedIds = new Set<string>(exclude);
-    const primaryEx = pickExercise(muscle, settings.preferCompound, usedIds);
-    if (!primaryEx) continue;
+  while (muscleQueue.length > 0 && canAffordAnother()) {
+    const muscle = muscleQueue[cursor % muscleQueue.length];
+    const picked = pickExercise(muscle, preferCompoundPass);
+    if (!picked) {
+      muscleQueue.splice(cursor % muscleQueue.length, 1);
+      if (muscleQueue.length === 0) break;
+      continue;
+    }
 
-    // === STANDARD EXERCISE (Claude will assign supersets later) ===
-    const { sets, progressionNote } = buildSets(primaryEx, goal, config, restSeconds, recentWorkouts);
-    result.push({ exerciseId: primaryEx.id, exercise: primaryEx, sets, progressionNote });
-    budget -= minsPerExercise;
-    processedMuscles.add(muscle);
+    usedIds.add(picked.id);
+    budget -= costForNextMovement(result.length, minsPerExercise);
+    pushBuiltExercise(result, picked, goal, config, restSeconds, recentWorkouts);
+    cursor++;
+    // After the first compound per muscle cycle, lean into accessories
+    if (cursor >= targetMuscles.length) preferCompoundPass = false;
+  }
 
-    // Optional isolation accessory for this muscle group
-    if (budget > minsPerExercise * 0.9) {
-      const isoPool = available.filter(e =>
-        e.primaryMuscle === muscle &&
-        e.category === 'isolation' &&
-        e.id !== primaryEx.id &&
-        !recentIds.has(e.id) &&
-        !exclude.has(e.id)
-      );
-      if (isoPool.length) {
-        const { sets: isoSets, progressionNote: isoNote } = buildSets(isoPool[0], goal, config, restSeconds, recentWorkouts);
-        result.push({ exerciseId: isoPool[0].id, exercise: isoPool[0], sets: isoSets, progressionNote: isoNote });
-        budget -= minsPerExercise;
+  // If focus muscles couldn't fill the session, add complementary movements
+  if (canAffordAnother()) {
+    const slotsLeft = Math.max(
+      1,
+      Math.floor(budget / (minsPerExercise + BETWEEN_EXERCISE_MINUTES)),
+    );
+    const candidatePool = available.filter(e =>
+      e.category !== 'mobility' &&
+      e.primaryMuscle !== 'cardio' &&
+      !usedIds.has(e.id),
+    );
+
+    let complementIds: string[] = [];
+    try {
+      complementIds = await suggestComplementaryExercises({
+        focusMuscles: targetMuscles,
+        existingIds: result.map(r => r.exerciseId),
+        existingNames: result.map(r => r.exercise.name),
+        candidates: candidatePool.map(e => ({
+          id: e.id,
+          n: e.name,
+          m: e.primaryMuscle,
+          eq: e.equipment,
+          c: e.category,
+        })),
+        slotsNeeded: slotsLeft,
+        remainingMinutes: Math.round(budget),
+        goal,
+      });
+    } catch (err) {
+      console.warn('[Engine] Complement suggestion failed:', err);
+    }
+
+    // Reserve Claude picks so fallback doesn't re-select them
+    for (const id of complementIds) usedIds.add(id);
+
+    const fallbackMuscles: MuscleGroup[] = [];
+    for (const m of targetMuscles) {
+      for (const c of COMPLEMENT_MUSCLES[m] ?? []) {
+        if (!targetMuscles.includes(c) && !fallbackMuscles.includes(c)) {
+          fallbackMuscles.push(c);
+        }
       }
+    }
+    for (const m of ALL_MUSCLES) {
+      if (!fallbackMuscles.includes(m) && !targetMuscles.includes(m)) {
+        fallbackMuscles.push(m);
+      }
+    }
+
+    // Top up if Claude returned nothing / too few — round-robin complements
+    if (complementIds.length < slotsLeft && fallbackMuscles.length) {
+      let fbCursor = 0;
+      let stall = 0;
+      while (complementIds.length < slotsLeft && stall < fallbackMuscles.length * 3) {
+        const muscle = fallbackMuscles[fbCursor % fallbackMuscles.length];
+        fbCursor++;
+        const picked = pickExercise(muscle, false);
+        if (!picked) {
+          stall++;
+          continue;
+        }
+        if (complementIds.includes(picked.id) || usedIds.has(picked.id)) {
+          stall++;
+          continue;
+        }
+        // Reserve so the next pickExercise call doesn't re-pick the same id
+        usedIds.add(picked.id);
+        complementIds.push(picked.id);
+        stall = 0;
+      }
+    }
+
+    for (const id of complementIds) {
+      if (!canAffordAnother()) break;
+      const exercise = available.find(e => e.id === id);
+      if (!exercise || exercise.category === 'mobility') continue;
+      // usedIds may already contain fallback picks; Claude picks still need marking
+      if (!usedIds.has(id)) usedIds.add(id);
+      // Skip if already in the workout (shouldn't happen, but safe)
+      if (result.some(r => r.exerciseId === id)) continue;
+      budget -= costForNextMovement(result.length, minsPerExercise);
+      pushBuiltExercise(result, exercise, goal, config, restSeconds, recentWorkouts);
     }
   }
 
-  // Core finisher (if not already included and time remains)
-  if (!processedMuscles.has('core') && budget > minsPerExercise * 0.7) {
-    const core = available.filter(e => e.primaryMuscle === 'core' && !recentIds.has(e.id));
-    if (core.length) {
-      const { sets, progressionNote } = buildSets(core[0], goal, config, restSeconds, recentWorkouts);
-      result.push({ exerciseId: core[0].id, exercise: core[0], sets, progressionNote });
+  // Core finisher only when the user didn't already focus core / include it
+  if (
+    !userPickedMuscles &&
+    !result.some(r => r.exercise.primaryMuscle === 'core') &&
+    canAffordAnother()
+  ) {
+    const core = pickExercise('core', false);
+    if (core) {
+      usedIds.add(core.id);
+      budget -= costForNextMovement(result.length, minsPerExercise);
+      pushBuiltExercise(result, core, goal, config, restSeconds, recentWorkouts);
     }
   }
 
   // Cardio finisher for fat-loss
   if (goal === 'fat-loss') {
-    const cardio = available.filter(e => e.primaryMuscle === 'cardio');
+    const cardio = available.filter(e => e.primaryMuscle === 'cardio' && !usedIds.has(e.id));
     if (cardio.length) {
       result.push({
         exerciseId: cardio[0].id, exercise: cardio[0],
