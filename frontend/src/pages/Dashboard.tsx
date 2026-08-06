@@ -56,7 +56,7 @@ export default function Dashboard() {
         >
           <p className="text-[#8E8E93] text-sm">{dateLabel}</p>
           <h1 className="text-2xl font-bold text-white mt-0.5">
-            {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}! 👋
+            {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}!
           </h1>
         </motion.div>
       </div>

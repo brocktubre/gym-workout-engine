@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, Clock, RefreshCw, Pencil } from 'lucide-react';
@@ -9,9 +9,10 @@ import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useTTS } from '@/hooks/useTTS';
 import { toast } from '@/components/ui/use-toast';
-import { formatDuration, getTodayDate } from '@/lib/utils';
+import { cn, formatDuration, getTodayDate } from '@/lib/utils';
 import { getWarmupAnnouncement } from '@/lib/warmup';
 import { initialWorkoutAnnouncement } from '@/lib/workoutSpeech';
+import { toBlocks, type WorkoutBlock } from '@/lib/workoutBlocks';
 import type { DailyWorkout } from '@/hooks/useDailyWorkout';
 import type { WorkoutExercise } from '@/types';
 
@@ -30,6 +31,142 @@ function setTargetLabel(we: WorkoutExercise): string {
       ? ` @ ${set.targetWeight}lbs`
       : '';
   return `${setCount} × ${set.targetReps ?? '?'} reps${weight}`;
+}
+
+function circuitLabel(count: number) {
+  if (count === 3) return 'Tri-Set';
+  if (count >= 4) return 'Giant Set';
+  return 'Superset';
+}
+
+/** Rotate accents so adjacent circuits read as distinct groups. */
+const CIRCUIT_ACCENTS = [
+  {
+    border: 'border-[#0A84FF]/35',
+    bg: 'bg-[#0A84FF]/8',
+    rail: 'bg-[#0A84FF]',
+    text: 'text-[#0A84FF]',
+    chip: 'bg-[#0A84FF]/15 border-[#0A84FF]/25',
+    soft: 'text-[#0A84FF]/55',
+  },
+  {
+    border: 'border-[#30D158]/35',
+    bg: 'bg-[#30D158]/8',
+    rail: 'bg-[#30D158]',
+    text: 'text-[#30D158]',
+    chip: 'bg-[#30D158]/15 border-[#30D158]/25',
+    soft: 'text-[#30D158]/55',
+  },
+  {
+    border: 'border-[#FF9F0A]/35',
+    bg: 'bg-[#FF9F0A]/8',
+    rail: 'bg-[#FF9F0A]',
+    text: 'text-[#FF9F0A]',
+    chip: 'bg-[#FF9F0A]/15 border-[#FF9F0A]/25',
+    soft: 'text-[#FF9F0A]/55',
+  },
+  {
+    border: 'border-[#64D2FF]/35',
+    bg: 'bg-[#64D2FF]/8',
+    rail: 'bg-[#64D2FF]',
+    text: 'text-[#64D2FF]',
+    chip: 'bg-[#64D2FF]/15 border-[#64D2FF]/25',
+    soft: 'text-[#64D2FF]/55',
+  },
+] as const;
+
+function MovementRow({
+  we,
+  letter,
+  accentClass,
+}: {
+  we: WorkoutExercise;
+  letter?: string;
+  accentClass?: string;
+}) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-1.5">
+      <p className="text-sm text-white truncate min-w-0 flex items-center gap-1.5">
+        {letter && (
+          <span
+            className={cn(
+              'inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md text-[10px] font-bold',
+              accentClass ?? 'bg-[#0A84FF]/15 text-[#0A84FF]',
+            )}
+          >
+            {letter}
+          </span>
+        )}
+        <span className="truncate">{we.exercise.name}</span>
+      </p>
+      <span className="text-xs text-[#8E8E93] flex-shrink-0 tabular-nums">
+        {setTargetLabel(we)}
+      </span>
+    </div>
+  );
+}
+
+function CircuitBlock({ block, accentIndex }: { block: WorkoutBlock; accentIndex: number }) {
+  const accent = CIRCUIT_ACCENTS[accentIndex % CIRCUIT_ACCENTS.length];
+
+  if (block.kind === 'single') {
+    return (
+      <div
+        className={cn(
+          'relative rounded-xl border pl-3 pr-3 py-1.5 overflow-hidden',
+          'border-[#38383A] bg-[#2c2c2e]/40',
+        )}
+      >
+        <span
+          className={cn('absolute left-0 top-1.5 bottom-1.5 w-0.5 rounded-full', accent.rail)}
+          aria-hidden
+        />
+        <MovementRow we={block.exercise} />
+      </div>
+    );
+  }
+
+  const memberCount = block.members.length;
+  return (
+    <div
+      className={cn(
+        'rounded-xl border overflow-hidden',
+        accent.border,
+        accent.bg,
+      )}
+    >
+      <div className="flex items-center gap-2 px-3 pt-2.5 pb-1">
+        <div
+          className={cn(
+            'inline-flex items-center gap-1.5 rounded-lg border px-2 py-0.5',
+            accent.chip,
+          )}
+        >
+          <span className={cn('text-[10px] font-bold uppercase tracking-wider', accent.text)}>
+            {circuitLabel(memberCount)}
+          </span>
+          <span className={cn('text-[10px] font-bold', accent.text)}>
+            {Array.from({ length: memberCount }, (_, i) => (
+              <span key={i}>
+                {i > 0 && <span className={cn('mx-0.5', accent.soft)}>→</span>}
+                {String.fromCharCode(65 + i)}
+              </span>
+            ))}
+          </span>
+        </div>
+      </div>
+      <div className="px-3 pb-2 divide-y divide-white/5">
+        {block.members.map((member, i) => (
+          <MovementRow
+            key={member.exerciseId}
+            we={member}
+            letter={String.fromCharCode(65 + i)}
+            accentClass={cn(accent.chip, accent.text)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 }
 
 interface DailyWorkoutCardProps {
@@ -52,6 +189,8 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
 
   const { workout } = daily;
   const muscles = daily.targetMuscleGroups.slice(0, 4);
+  const circuits = useMemo(() => toBlocks(workout.exercises), [workout.exercises]);
+  const circuitCount = circuits.length;
 
   const handleStart = async () => {
     if (hasActiveWorkout) {
@@ -139,30 +278,17 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
               ))}
               <span className="text-[10px] text-[#8E8E93] flex items-center gap-1 ml-1">
                 <Clock className="h-3 w-3" />
-                {workout.exercises.length} movements
+                {circuitCount} circuit{circuitCount === 1 ? '' : 's'} · {workout.exercises.length}{' '}
+                movements
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="px-4 py-2 divide-y divide-[#2c2c2e]">
-        {workout.exercises.map((we) => (
-          <div key={we.exerciseId} className="flex items-center justify-between gap-3 py-2">
-            <p className="text-sm text-white truncate min-w-0">
-              {we.supersetOrder && we.supersetOrder > 1 ? (
-                <span className="text-[#0A84FF] text-xs font-bold mr-1.5">
-                  {String.fromCharCode(64 + we.supersetOrder)}
-                </span>
-              ) : we.supersetGroupId ? (
-                <span className="text-[#0A84FF] text-xs font-bold mr-1.5">A</span>
-              ) : null}
-              {we.exercise.name}
-            </p>
-            <span className="text-xs text-[#8E8E93] flex-shrink-0 tabular-nums">
-              {setTargetLabel(we)}
-            </span>
-          </div>
+      <div className="px-4 py-3 space-y-2">
+        {circuits.map((block, i) => (
+          <CircuitBlock key={block.id} block={block} accentIndex={i} />
         ))}
       </div>
 

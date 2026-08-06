@@ -265,39 +265,59 @@ export function useRestCountdown() {
   const [restSeconds, setRestSeconds] = useState<number>(0);
   const [isResting, setIsResting] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  /** Fired when rest ends via timer or an explicit "continue" skip — not on cancel. */
+  const onCompleteRef = useRef<(() => void) | null>(null);
 
-  const startRest = useCallback((seconds: number) => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
+  const clearTimer = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  }, []);
+
+  const endRest = useCallback((invokeComplete: boolean) => {
+    clearTimer();
+    setRestSeconds(0);
+    setIsResting(false);
+    const cb = onCompleteRef.current;
+    onCompleteRef.current = null;
+    if (invokeComplete) cb?.();
+  }, [clearTimer]);
+
+  const startRest = useCallback((seconds: number, onComplete?: () => void) => {
+    clearTimer();
+    onCompleteRef.current = onComplete ?? null;
     setRestSeconds(seconds);
     setIsResting(true);
 
     intervalRef.current = setInterval(() => {
       setRestSeconds((prev) => {
         if (prev <= 1) {
-          clearInterval(intervalRef.current!);
-          intervalRef.current = null;
-          setIsResting(false);
+          // Finish outside the updater — nested setState here was unreliable
+          // and could skip the isResting→false transition Polly depends on.
+          queueMicrotask(() => endRest(true));
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
-  }, []);
+  }, [clearTimer, endRest]);
 
+  /** Cancel rest without advancing (circuit jump, undo set, etc.). */
   const skipRest = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    setRestSeconds(0);
-    setIsResting(false);
-  }, []);
+    endRest(false);
+  }, [endRest]);
+
+  /** Skip rest and run the same completion path as the timer hitting zero. */
+  const skipRestAndContinue = useCallback(() => {
+    endRest(true);
+  }, [endRest]);
 
   useEffect(() => {
     return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
+      clearTimer();
     };
-  }, []);
+  }, [clearTimer]);
 
-  return { restSeconds, isResting, startRest, skipRest };
+  return { restSeconds, isResting, startRest, skipRest, skipRestAndContinue };
 }

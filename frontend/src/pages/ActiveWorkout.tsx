@@ -109,9 +109,14 @@ function formatTurnAnnouncement(
       members.length === 2 ? 'superset'
       : members.length === 3 ? 'tri-set'
       : 'giant set';
-    const setCount = Math.max(...members.map((member) => member.sets.length));
-    const setWord = setCount === 1 ? 'set' : 'sets';
-    return `Next up is a ${groupType} of ${joinMovementNames(members)}. ${setCount} ${setWord}. ${setAnnouncement}`;
+    const setCounts = members.map((member) => member.sets.length);
+    const minSets = Math.min(...setCounts);
+    const maxSets = Math.max(...setCounts);
+    const setWord = maxSets === 1 ? 'set' : 'sets';
+    const setPhrase = minSets === maxSets
+      ? `${maxSets} ${setWord}`
+      : `up to ${maxSets} ${setWord}, with shorter movements dropping out first`;
+    return `Next up is a ${groupType} of ${joinMovementNames(members)}. ${setPhrase}. ${setAnnouncement}`;
   }
 
   if (previousTurn?.exerciseIndex === turn.exerciseIndex) return setAnnouncement;
@@ -308,11 +313,10 @@ export default function ActiveWorkout() {
 
   // Timer is anchored to workout.startedAt — accurate across devices and restarts
   const { elapsed } = useWorkoutTimer(activeWorkout, isPaused);
-  const { restSeconds, isResting, startRest, skipRest } = useRestCountdown();
+  const { restSeconds, isResting, startRest, skipRest, skipRestAndContinue } = useRestCountdown();
   // The user's current setting wins over the value baked into the workout at
   // generation time, so changing it applies to workouts already in progress.
   const configuredRest = settings?.restBetweenSetsSeconds ?? 90;
-  const wasRestingRef = useRef(false);
   const activeSetRef = useRef<HTMLDivElement | null>(null);
   // null until the first scroll pass, so mount can be told apart from a movement change
   const lastScrolledExerciseRef = useRef<number | null>(null);
@@ -394,9 +398,7 @@ export default function ActiveWorkout() {
       const previousTurn = turns[currentTurnIndex];
       if (target === currentTurnIndex && !warmupPending) return;
 
-      // Clearing wasResting stops the rest-end effect from advancing a turn on
-      // top of the jump we're about to make.
-      wasRestingRef.current = false;
+      // Cancel rest without the completion callback — we jump ourselves.
       skipRest();
       setTransitionTurnIndex(null);
 
@@ -451,21 +453,21 @@ export default function ActiveWorkout() {
     activeSetRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }, [currentTurnIndex, turns, warmupPending]);
 
-  useEffect(() => {
-    if (!isResting && wasRestingRef.current) {
-      wasRestingRef.current = false;
-      setCurrentTurnIndex((i) => {
-        const nextIndex = Math.min(i + 1, turns.length - 1);
-        const previousTurn = turns[i];
-        const nextTurn = turns[nextIndex];
-        if (nextTurn && nextIndex !== i) {
-          speak(formatTurnAnnouncement(exercises, nextTurn, previousTurn));
-        }
-        return nextIndex;
-      });
+  // Advance + announce after rest — shared by timer expiry and Skip Rest
+  const currentTurnIndexRef = useRef(currentTurnIndex);
+  currentTurnIndexRef.current = currentTurnIndex;
+  const handleRestComplete = useCallback(() => {
+    const i = currentTurnIndexRef.current;
+    const nextIndex = Math.min(i + 1, turns.length - 1);
+    const previousTurn = turns[i];
+    const nextTurn = turns[nextIndex];
+    if (nextTurn && nextIndex !== i) {
+      speak(formatTurnAnnouncement(exercises, nextTurn, previousTurn));
     }
-    if (isResting) wasRestingRef.current = true;
-  }, [exercises, isResting, speak, turns]);
+    setCurrentTurnIndex(nextIndex);
+  }, [exercises, speak, turns]);
+  const handleRestCompleteRef = useRef(handleRestComplete);
+  handleRestCompleteRef.current = handleRestComplete;
 
   // Hold on the upcoming superset movement, then hand over to it
   useEffect(() => {
@@ -834,12 +836,12 @@ export default function ActiveWorkout() {
       // restSeconds === 0 means the movement is structured with no rest at all
       // (e.g. the cardio finisher), which isn't a preference to override.
       const restSecs = currentTurn.betweenExercise
-        ? Math.min(BETWEEN_EXERCISE_REST, configuredRest)
+        ? BETWEEN_EXERCISE_REST
         : (set.restSeconds === 0 ? 0 : configuredRest);
       restTotalRef.current = restSecs;
       if (restSecs > 0) {
         speak(formatRestAnnouncement(restSecs));
-        startRest(restSecs);
+        startRest(restSecs, () => handleRestCompleteRef.current());
       } else {
         speak(formatTurnAnnouncement(exercises, nextTurn, currentTurn));
         setCurrentTurnIndex((i) => Math.min(i + 1, turns.length - 1));
@@ -1222,7 +1224,7 @@ export default function ActiveWorkout() {
                 <div className="flex flex-col items-center gap-1">
                   {currentTurn.betweenExercise && (
                     <p className="text-xs font-semibold text-[#FF9F0A] uppercase tracking-wider">
-                      Rest between exercises
+                      Rest Between Circuits
                     </p>
                   )}
                   {endOfSupersetRound && (
@@ -1233,7 +1235,7 @@ export default function ActiveWorkout() {
                   <RestTimer
                     seconds={restSeconds}
                     totalSeconds={restTotalRef.current}
-                    onSkip={skipRest}
+                    onSkip={skipRestAndContinue}
                   />
                 </div>
 

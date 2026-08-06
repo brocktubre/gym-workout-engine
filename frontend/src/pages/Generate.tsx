@@ -33,7 +33,7 @@ import {
 import { buildWorkoutExercise } from '@/lib/buildWorkoutExercise';
 import { getWarmupAnnouncement, getWarmupDisplayName } from '@/lib/warmup';
 import { initialWorkoutAnnouncement } from '@/lib/workoutSpeech';
-import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem, Exercise } from '@/types';
+import type { MuscleGroup, WorkoutGoal, WorkoutExercise, WarmupItem, Exercise, WorkoutSet } from '@/types';
 import { cn } from '@/lib/utils';
 
 const DURATION_OPTIONS = [30, 45, 60, 90];
@@ -86,9 +86,17 @@ interface ReorderBlockItemProps {
   canRemove: boolean;
   onSwap: (we: WorkoutExercise) => void;
   onRemove: (exerciseId: string) => void;
+  onPrescriptionChange: (exerciseId: string, sets: WorkoutExercise['sets']) => void;
 }
 
-function ReorderBlockItem({ block, startIndex, canRemove, onSwap, onRemove }: ReorderBlockItemProps) {
+function ReorderBlockItem({
+  block,
+  startIndex,
+  canRemove,
+  onSwap,
+  onRemove,
+  onPrescriptionChange,
+}: ReorderBlockItemProps) {
   const controls = useDragControls();
 
   const dragHandle = (
@@ -117,6 +125,9 @@ function ReorderBlockItem({ block, startIndex, canRemove, onSwap, onRemove }: Re
           onRemove={() => onRemove(block.exercise.exerciseId)}
           removeDisabled={!canRemove}
           dragHandle={dragHandle}
+          onPrescriptionChange={(sets) =>
+            onPrescriptionChange(block.exercise.exerciseId, sets)
+          }
         />
       </Reorder.Item>
     );
@@ -159,6 +170,9 @@ function ReorderBlockItem({ block, startIndex, canRemove, onSwap, onRemove }: Re
               onSwap={() => onSwap(member)}
               onRemove={() => onRemove(member.exerciseId)}
               removeDisabled={!canRemove}
+              onPrescriptionChange={(sets) =>
+                onPrescriptionChange(member.exerciseId, sets)
+              }
             />
           ))}
         </div>
@@ -353,6 +367,20 @@ export default function Generate() {
     toast({ title: `Added ${exercise.name}`, duration: 2000 });
   };
 
+  const handlePrescriptionChange = (exerciseId: string, sets: WorkoutSet[]) => {
+    setGeneratedWorkout((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        exercises: prev.exercises.map((we) =>
+          we.exerciseId === exerciseId
+            ? { ...we, sets, progressionNote: undefined }
+            : we,
+        ),
+      };
+    });
+  };
+
   const workoutBlocks = useMemo(
     () => (generatedWorkout ? toBlocks(generatedWorkout.exercises) : []),
     [generatedWorkout],
@@ -464,10 +492,21 @@ export default function Generate() {
     ? Math.round(generatedWorkout.warmup.reduce((acc, item) => acc + item.durationSeconds, 0) / 60)
     : 0;
 
+  const isDailyEdit = Boolean(fromDailyDate && generatedWorkout);
+  const goalLabel = GOAL_OPTIONS.find((g) => g.value === goal)?.label ?? goal;
+  const muscleSummary =
+    targetMuscles.length === 0
+      ? 'Engine pick'
+      : isFullBodySelected
+        ? 'Full body'
+        : targetMuscles
+            .map((m) => MUSCLE_OPTIONS.find((o) => o.value === m)?.label ?? m)
+            .join(', ');
+
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
       <PageHeader
-        title="Generate Workout"
+        title="Workout"
         subtitle={fromDailyDate ? 'Edit today’s daily workout' : 'Build your perfect session'}
       />
 
@@ -494,6 +533,43 @@ export default function Generate() {
       )}
 
       <div className="px-4 space-y-5 pb-6">
+        {isDailyEdit ? (
+          /* Read-only snapshot of the settings used for today’s daily plan */
+          <section className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4 space-y-3">
+            <h3 className="text-sm font-semibold text-[#8E8E93] uppercase tracking-wider">
+              Today’s plan settings
+            </h3>
+            <dl className="space-y-2.5">
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-sm text-[#8E8E93]">Duration</dt>
+                <dd className="text-sm font-semibold text-white">
+                  {formatDuration(generatedWorkout!.targetDurationMinutes)}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-sm text-[#8E8E93]">Goal</dt>
+                <dd className="text-sm font-semibold text-white">{goalLabel}</dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-sm text-[#8E8E93]">Include Warmup</dt>
+                <dd className="text-sm font-semibold text-white">
+                  {(generatedWorkout!.warmup?.length ?? 0) > 0 ? 'On' : 'Off'}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-3">
+                <dt className="text-sm text-[#8E8E93]">Allow Supersets</dt>
+                <dd className="text-sm font-semibold text-white">
+                  {allowSupersets ? 'On' : 'Off'}
+                </dd>
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <dt className="text-sm text-[#8E8E93] shrink-0">Target Muscles</dt>
+                <dd className="text-sm font-semibold text-white text-right">{muscleSummary}</dd>
+              </div>
+            </dl>
+          </section>
+        ) : (
+          <>
         {/* Duration */}
         <section>
           <h3 className="text-sm font-semibold text-[#8E8E93] uppercase tracking-wider mb-3">
@@ -630,6 +706,8 @@ export default function Generate() {
             </>
           )}
         </Button>
+          </>
+        )}
 
         {/* Generated workout preview */}
         <AnimatePresence>
@@ -764,6 +842,7 @@ export default function Generate() {
                       canRemove={generatedWorkout.exercises.length > 1}
                       onSwap={setSwapTarget}
                       onRemove={handleRemove}
+                      onPrescriptionChange={handlePrescriptionChange}
                     />
                   );
                 })}
@@ -781,17 +860,19 @@ export default function Generate() {
 
               {/* Action buttons */}
               <div className="flex gap-3 pt-2">
+                {!isDailyEdit && (
+                  <Button
+                    variant="outline"
+                    className="flex-1 h-14 text-sm"
+                    onClick={() => handleGenerate(generatedWorkout?.exercises.map(e => e.exerciseId))}
+                    disabled={generateMutation.isPending || hasActiveWorkout}
+                  >
+                    <RefreshCw className="h-4 w-4 mr-2" />
+                    Regenerate
+                  </Button>
+                )}
                 <Button
-                  variant="outline"
-                  className="flex-1 h-14 text-sm"
-                  onClick={() => handleGenerate(generatedWorkout?.exercises.map(e => e.exerciseId))}
-                  disabled={generateMutation.isPending || hasActiveWorkout}
-                >
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                  Regenerate
-                </Button>
-                <Button
-                  className="flex-[2] h-14"
+                  className={cn('h-14', isDailyEdit ? 'w-full' : 'flex-[2]')}
                   size="lg"
                   onClick={handleStartWorkout}
                   disabled={createWorkoutMutation.isPending}

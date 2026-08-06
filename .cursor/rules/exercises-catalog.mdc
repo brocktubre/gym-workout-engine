@@ -1,0 +1,14 @@
+---
+description: Rules for adding/editing movements in exercises.json
+globs: backend/src/data/exercises.json
+alwaysApply: false
+---
+
+# Exercise catalog updates
+
+When analyzing or expanding `backend/src/data/exercises.json`:
+
+- **Never add** movements whose name includes **Landmine** or **Vitruvian** (skip those variants from external sources like MuscleWiki).
+- Match existing schema: `id`, `name`, `primaryMuscle`, `secondaryMuscles`, `equipment`, `category`, `movementType`, `difficulty`, `instructions`, `tips`.
+- Prefer equipment-specific names (e.g. `Dumbbell Thruster` over a generic `Thruster`).
+- Keep `id` stable when renaming an existing movement so saved workouts still resolve.

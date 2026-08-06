@@ -1,12 +1,13 @@
 import { useState, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight, Trash2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, Info, TrendingUp, ArrowLeftRight, Trash2, Pencil } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { MuscleGroupBadge } from './MuscleGroupBadge';
 import { ExerciseVideoButton } from './ExerciseVideoButton';
+import { PrescriptionEditor } from './PrescriptionEditor';
 import { cn } from '@/lib/utils';
-import type { WorkoutExercise } from '@/types';
+import type { WorkoutExercise, WorkoutSet } from '@/types';
 
 interface ExerciseItemProps {
   workoutExercise: WorkoutExercise;
@@ -24,6 +25,8 @@ interface ExerciseItemProps {
   dragHandle?: ReactNode;
   /** Hide the per-card superset badge (parent block already shows group chrome) */
   hideSupersetBadge?: boolean;
+  /** When provided, shows an edit icon to tweak set/rep/weight/hold before start */
+  onPrescriptionChange?: (sets: WorkoutSet[]) => void;
 }
 
 /** Derive the superset type label from member count */
@@ -31,6 +34,37 @@ function supersetLabel(count: number) {
   if (count === 3) return 'Tri-Set';
   if (count >= 4) return 'Giant Set';
   return 'Superset';
+}
+
+function summaryWithoutWeight(sets: WorkoutSet[]): string {
+  const totalSets = sets.length;
+  const first = sets[0];
+  if (!first) return `${totalSets} sets`;
+  if (first.targetDurationSeconds !== undefined) {
+    return `${totalSets} × ${first.targetDurationSeconds}s`;
+  }
+  if (first.targetHoldSeconds !== undefined) {
+    return `${totalSets} × Hold ${first.targetHoldSeconds}s`;
+  }
+  const reps = first.targetReps ?? '?';
+  const allSameReps = sets.every((s) => s.targetReps === first.targetReps);
+  return allSameReps
+    ? `${totalSets} × ${reps} reps`
+    : `${totalSets} sets`;
+}
+
+function formatSetLoadLine(set: WorkoutSet): string {
+  if (set.targetDurationSeconds !== undefined) {
+    return `Set ${set.setNumber}: ${set.targetDurationSeconds}s`;
+  }
+  if (set.targetHoldSeconds !== undefined) {
+    return `Set ${set.setNumber}: Hold ${set.targetHoldSeconds}s`;
+  }
+  const reps = `${set.targetReps} reps`;
+  if (set.targetWeight !== undefined && set.targetWeight > 0) {
+    return `Set ${set.setNumber}: ${reps} @ ${set.targetWeight} lbs`;
+  }
+  return `Set ${set.setNumber}: ${reps}`;
 }
 
 export function ExerciseItem({
@@ -43,8 +77,10 @@ export function ExerciseItem({
   removeDisabled = false,
   dragHandle,
   hideSupersetBadge = false,
+  onPrescriptionChange,
 }: ExerciseItemProps) {
   const [expanded, setExpanded] = useState(false);
+  const [editing, setEditing] = useState(false);
   const { exercise, sets, progressionNote, supersetGroupId, supersetOrder } = workoutExercise;
 
   const completedSets = sets.filter((s) => s.completed).length;
@@ -55,6 +91,14 @@ export function ExerciseItem({
   const supersetLetter = supersetGroupId && supersetOrder
     ? String.fromCharCode(64 + (supersetOrder ?? 0))
     : '';
+
+  const hasLoadDetails = sets.some(
+    (s) =>
+      (s.targetWeight !== undefined && s.targetWeight > 0)
+      || s.targetHoldSeconds !== undefined
+      || s.targetDurationSeconds !== undefined
+      || s.targetReps !== undefined,
+  );
 
   return (
     <div className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] overflow-hidden">
@@ -90,7 +134,7 @@ export function ExerciseItem({
         </div>
       )}
 
-      {/* Main row */}
+      {/* Main row — name + sets×reps only (weights live in the expanded section) */}
       <div className="flex items-start justify-between gap-2 p-4">
           {dragHandle}
           <button
@@ -114,14 +158,8 @@ export function ExerciseItem({
                 </span>
               </div>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
                 <span className="text-[#8E8E93] text-xs">
-                  {totalSets} × 
-                  {sets[0]?.targetDurationSeconds !== undefined
-                    ? `${sets[0].targetDurationSeconds}s`
-                    : sets[0]?.targetHoldSeconds !== undefined
-                      ? `Hold ${sets[0].targetHoldSeconds}s`
-                      : `${sets[0]?.targetReps ?? '?'} reps${sets[0]?.targetWeight ? ` @ ${sets[0].targetWeight}lbs` : ''}`}
+                  {summaryWithoutWeight(sets)}
                 </span>
               </div>
               {progressionNote && (
@@ -145,11 +183,25 @@ export function ExerciseItem({
                 {completedSets}/{totalSets}
               </span>
             )}
-            <ExerciseVideoButton
-              name={exercise.name}
-              exerciseId={exercise.id}
-              className="h-7 w-7 rounded-lg"
-            />
+            {onPrescriptionChange && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditing((v) => !v);
+                }}
+                className={cn(
+                  'h-7 w-7 rounded-lg flex items-center justify-center transition-colors',
+                  editing
+                    ? 'bg-[#FF375F]/20 text-[#FF375F]'
+                    : 'bg-[#2c2c2e] text-[#8E8E93] hover:text-white',
+                )}
+                title={editing ? 'Done editing' : 'Edit sets & reps'}
+                aria-pressed={editing}
+              >
+                <Pencil className="h-3.5 w-3.5" />
+              </button>
+            )}
             {onSwap && (
               <button
                 type="button"
@@ -192,7 +244,26 @@ export function ExerciseItem({
           </div>
       </div>
 
-      {/* Expanded instructions */}
+      <AnimatePresence>
+        {onPrescriptionChange && editing && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="overflow-hidden"
+          >
+            <PrescriptionEditor
+              sets={sets}
+              equipment={exercise.equipment}
+              onChange={onPrescriptionChange}
+              onSaved={() => setEditing(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Expanded: per-set loads, muscle, video, instructions */}
       <AnimatePresence>
         {expanded && (
           <motion.div
@@ -203,6 +274,36 @@ export function ExerciseItem({
             className="overflow-hidden"
           >
             <div className="px-4 pb-4 border-t border-[#38383A] pt-3 space-y-3">
+              {hasLoadDetails && (
+                <div className="space-y-1">
+                  <p className="text-[10px] font-semibold text-[#636366] uppercase tracking-wider">
+                    Targets
+                  </p>
+                  <ul className="space-y-0.5">
+                    {sets.map((set) => (
+                      <li key={set.setNumber} className="text-xs text-[#8E8E93] tabular-nums">
+                        {formatSetLoadLine(set)}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              <div className="flex items-center gap-2 flex-wrap">
+                <MuscleGroupBadge muscle={exercise.primaryMuscle} size="sm" />
+                {exercise.secondaryMuscles.length > 0 && (
+                  exercise.secondaryMuscles.map((m) => (
+                    <MuscleGroupBadge key={m} muscle={m} size="sm" />
+                  ))
+                )}
+              </div>
+
+              <ExerciseVideoButton
+                name={exercise.name}
+                exerciseId={exercise.id}
+                label="Watch video"
+                className="h-9 rounded-xl px-3 gap-2 w-full justify-center bg-[#2c2c2e] text-[#8E8E93] hover:text-[#0A84FF] hover:bg-[#0A84FF]/10"
+              />
               {exercise.instructions.length > 0 && (
                 <div>
                   <div className="flex items-center gap-1.5 mb-2">
@@ -232,16 +333,6 @@ export function ExerciseItem({
                       </li>
                     ))}
                   </ul>
-                </div>
-              )}
-              {exercise.secondaryMuscles.length > 0 && (
-                <div>
-                  <span className="text-xs text-[#8E8E93]">Also works: </span>
-                  <div className="inline-flex flex-wrap gap-1 mt-1">
-                    {exercise.secondaryMuscles.map((m) => (
-                      <MuscleGroupBadge key={m} muscle={m} size="sm" />
-                    ))}
-                  </div>
                 </div>
               )}
             </div>

@@ -24,7 +24,7 @@ export function BottomNav() {
     {
       to: '/generate',
       icon: <Zap className="h-5 w-5" />,
-      label: 'Generate',
+      label: 'Workout',
     },
     {
       to: '/active',

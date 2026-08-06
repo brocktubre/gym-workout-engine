@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Save, Target, BarChart2, Clock, RefreshCw, User, LogOut, KeyRound, ChevronRight, Ruler } from 'lucide-react';
@@ -22,6 +22,14 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { useSettings, useUpdateSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 import { cn, formatElapsedTime } from '@/lib/utils';
+import {
+  getBodyMetricFieldErrors,
+  sanitizeDigitInput,
+  heightInchesFromParts,
+  HEIGHT_FT_MAX_CHARS,
+  HEIGHT_IN_MAX_CHARS,
+  WEIGHT_MAX_CHARS,
+} from '@/lib/bodyProfile';
 import type { Equipment, WorkoutGoal, Difficulty, UserSettings } from '@/types';
 
 const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNode; category: string }[] = [
@@ -107,6 +115,9 @@ export default function Settings() {
 
   const [form, setForm] = useState<UserSettings>(DEFAULT_SETTINGS);
   const [isDirty, setIsDirty] = useState(false);
+  const [heightFt, setHeightFt] = useState('');
+  const [heightIn, setHeightIn] = useState('');
+  const [weightLbs, setWeightLbs] = useState('');
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [oldPassword, setOldPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -148,6 +159,21 @@ export default function Settings() {
           ? serverSettings.availableEquipment
           : DEFAULT_SETTINGS.availableEquipment,
       });
+      setHeightFt(
+        serverSettings.heightInches !== undefined
+          ? String(Math.floor(serverSettings.heightInches / 12))
+          : '',
+      );
+      setHeightIn(
+        serverSettings.heightInches !== undefined
+          ? String(serverSettings.heightInches % 12)
+          : '',
+      );
+      setWeightLbs(
+        serverSettings.bodyWeightLbs !== undefined
+          ? String(serverSettings.bodyWeightLbs)
+          : '',
+      );
       setIsDirty(false);
     }
   }, [serverSettings]);
@@ -157,6 +183,24 @@ export default function Settings() {
     setIsDirty(true);
   }
 
+  const bodyTouched =
+    Boolean(form.sex) ||
+    heightFt.trim() !== '' ||
+    heightIn.trim() !== '' ||
+    weightLbs.trim() !== '';
+  const bodyFieldErrors = useMemo(
+    () => getBodyMetricFieldErrors(
+      { heightFt, heightIn, weightLbs },
+      { requireComplete: bodyTouched },
+    ),
+    [heightFt, heightIn, weightLbs, bodyTouched],
+  );
+  const bodyMetricsInvalid = bodyTouched && (
+    !form.sex ||
+    Boolean(bodyFieldErrors.height) ||
+    Boolean(bodyFieldErrors.weight)
+  );
+
   const toggleEquipment = (eq: Equipment) => {
     const current = form.availableEquipment;
     const next = current.includes(eq) ? current.filter((e) => e !== eq) : [...current, eq];
@@ -164,14 +208,35 @@ export default function Settings() {
   };
 
   const handleSave = async () => {
+    if (bodyMetricsInvalid) {
+      toast({
+        title: 'Fix body metrics',
+        description: !form.sex
+          ? 'Select male or female when saving body metrics'
+          : (bodyFieldErrors.height ?? bodyFieldErrors.weight),
+        variant: 'error',
+      });
+      return;
+    }
+
     try {
       // Strip any undefined values before sending. displayName is intentionally
       // omitted — it's set at registration and this screen never edits it.
       const payload = JSON.parse(JSON.stringify(form)) as UserSettings;
-      // Completing body metrics here also clears the first-login prompt
-      if (payload.sex && payload.heightInches && payload.bodyWeightLbs) {
+
+      if (bodyTouched) {
+        const ft = parseInt(heightFt, 10);
+        const inches = parseInt(heightIn, 10);
+        const lbs = parseInt(weightLbs, 10);
+        payload.heightInches = heightInchesFromParts(ft, inches);
+        payload.bodyWeightLbs = lbs;
         payload.bodyProfileDismissed = true;
+      } else {
+        delete payload.sex;
+        delete payload.heightInches;
+        delete payload.bodyWeightLbs;
       }
+
       await updateMutation.mutateAsync(payload);
       setIsDirty(false);
       toast({ title: 'Settings saved!', variant: 'success' });
@@ -206,7 +271,11 @@ export default function Settings() {
         subtitle="Customize your training"
         action={
           isDirty && (
-            <Button size="sm" onClick={handleSave} disabled={updateMutation.isPending}>
+            <Button
+              size="sm"
+              onClick={handleSave}
+              disabled={updateMutation.isPending || bodyMetricsInvalid}
+            >
               {updateMutation.isPending ? (
                 <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
               ) : (
@@ -406,45 +475,42 @@ export default function Settings() {
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Input
-                      type="number"
-                      min={3}
-                      max={8}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="off"
                       placeholder="ft"
+                      maxLength={HEIGHT_FT_MAX_CHARS}
                       className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
-                      value={form.heightInches ? Math.floor(form.heightInches / 12) : ''}
+                      value={heightFt}
                       onChange={(e) => {
-                        const ft = parseInt(e.target.value, 10);
-                        const inches = (form.heightInches ?? 0) % 12;
-                        if (Number.isNaN(ft)) {
-                          update('heightInches', inches > 0 ? inches : undefined);
-                          return;
-                        }
-                        update('heightInches', ft * 12 + inches);
+                        setHeightFt(sanitizeDigitInput(e.target.value, HEIGHT_FT_MAX_CHARS));
+                        setIsDirty(true);
                       }}
                     />
                     <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">ft</span>
                   </div>
                   <div className="relative flex-1">
                     <Input
-                      type="number"
-                      min={0}
-                      max={11}
+                      type="text"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="off"
                       placeholder="in"
+                      maxLength={HEIGHT_IN_MAX_CHARS}
                       className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
-                      value={form.heightInches !== undefined ? form.heightInches % 12 : ''}
+                      value={heightIn}
                       onChange={(e) => {
-                        const inches = parseInt(e.target.value, 10);
-                        const ft = form.heightInches ? Math.floor(form.heightInches / 12) : 0;
-                        if (Number.isNaN(inches)) {
-                          update('heightInches', ft > 0 ? ft * 12 : undefined);
-                          return;
-                        }
-                        update('heightInches', ft * 12 + Math.min(11, Math.max(0, inches)));
+                        setHeightIn(sanitizeDigitInput(e.target.value, HEIGHT_IN_MAX_CHARS));
+                        setIsDirty(true);
                       }}
                     />
                     <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">in</span>
                   </div>
                 </div>
+                {bodyFieldErrors.height && (
+                  <p className="text-xs text-red-400 mt-1.5">{bodyFieldErrors.height}</p>
+                )}
               </div>
 
               <div>
@@ -453,21 +519,29 @@ export default function Settings() {
                 </label>
                 <div className="relative">
                   <Input
-                    type="number"
-                    min={50}
-                    max={500}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="off"
                     placeholder="lbs"
+                    maxLength={WEIGHT_MAX_CHARS}
                     className="bg-[#2c2c2e] border-[#38383A] text-white pr-10"
-                    value={form.bodyWeightLbs ?? ''}
+                    value={weightLbs}
                     onChange={(e) => {
-                      const v = parseInt(e.target.value, 10);
-                      update('bodyWeightLbs', Number.isNaN(v) ? undefined : Math.max(0, v));
+                      setWeightLbs(sanitizeDigitInput(e.target.value, WEIGHT_MAX_CHARS));
+                      setIsDirty(true);
                     }}
                   />
                   <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">lbs</span>
                 </div>
+                {bodyFieldErrors.weight && (
+                  <p className="text-xs text-red-400 mt-1.5">{bodyFieldErrors.weight}</p>
+                )}
               </div>
             </div>
+            {bodyTouched && !form.sex && (
+              <p className="text-xs text-red-400 mt-2">Select male or female</p>
+            )}
           </div>
         </motion.section>
 

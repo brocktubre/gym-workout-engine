@@ -1,4 +1,4 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Ruler, RefreshCw } from 'lucide-react';
@@ -7,7 +7,15 @@ import { Input } from '@/components/ui/input';
 import { useUpdateSettings, useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
-import { needsBodyOnboarding } from '@/lib/bodyProfile';
+import {
+  needsBodyOnboarding,
+  getBodyMetricFieldErrors,
+  sanitizeDigitInput,
+  heightInchesFromParts,
+  HEIGHT_FT_MAX_CHARS,
+  HEIGHT_IN_MAX_CHARS,
+  WEIGHT_MAX_CHARS,
+} from '@/lib/bodyProfile';
 import type { UserSettings } from '@/types';
 
 /**
@@ -31,6 +39,7 @@ export default function BodyOnboarding() {
   const [error, setError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [attempted, setAttempted] = useState(false);
 
   // Prefill if the user partially saved earlier; bail if already dismissed
   useEffect(() => {
@@ -50,6 +59,14 @@ export default function BodyOnboarding() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFetched, existing, hydrated]);
 
+  const fieldErrors = useMemo(
+    () => getBodyMetricFieldErrors({ heightFt, heightIn, weightLbs }, { requireComplete: true }),
+    [heightFt, heightIn, weightLbs],
+  );
+  const metricsInvalid = Boolean(fieldErrors.height || fieldErrors.weight);
+  // Show field errors once the user has typed something or tried to continue
+  const showFieldErrors = attempted || heightFt !== '' || heightIn !== '' || weightLbs !== '';
+
   const finish = (restoredWorkout?: unknown) => {
     if (restoredWorkout) {
       navigate('/generate', { replace: true, state: { restoredWorkout } });
@@ -68,32 +85,23 @@ export default function BodyOnboarding() {
   const handleContinue = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
+    setAttempted(true);
 
     if (!sex) {
       setError('Please select male or female');
       return;
     }
+    if (metricsInvalid) return;
+
     const ft = parseInt(heightFt, 10);
     const inches = parseInt(heightIn, 10);
     const lbs = parseInt(weightLbs, 10);
-    if (!Number.isFinite(ft) || ft < 3 || ft > 8) {
-      setError('Enter a valid height in feet');
-      return;
-    }
-    if (!Number.isFinite(inches) || inches < 0 || inches > 11) {
-      setError('Inches must be between 0 and 11');
-      return;
-    }
-    if (!Number.isFinite(lbs) || lbs < 50 || lbs > 500) {
-      setError('Enter a valid body weight in pounds');
-      return;
-    }
 
     setSaving(true);
     try {
       await persist({
         sex,
-        heightInches: ft * 12 + inches,
+        heightInches: heightInchesFromParts(ft, inches),
         bodyWeightLbs: lbs,
         bodyProfileDismissed: true,
       });
@@ -170,31 +178,36 @@ export default function BodyOnboarding() {
             <div className="flex gap-2">
               <div className="relative flex-1">
                 <Input
-                  type="number"
-                  min={3}
-                  max={8}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="off"
                   placeholder="5"
+                  maxLength={HEIGHT_FT_MAX_CHARS}
                   className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
                   value={heightFt}
-                  onChange={(e) => setHeightFt(e.target.value)}
-                  required
+                  onChange={(e) => setHeightFt(sanitizeDigitInput(e.target.value, HEIGHT_FT_MAX_CHARS))}
                 />
                 <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">ft</span>
               </div>
               <div className="relative flex-1">
                 <Input
-                  type="number"
-                  min={0}
-                  max={11}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  autoComplete="off"
                   placeholder="10"
+                  maxLength={HEIGHT_IN_MAX_CHARS}
                   className="bg-[#2c2c2e] border-[#38383A] text-white pr-8"
                   value={heightIn}
-                  onChange={(e) => setHeightIn(e.target.value)}
-                  required
+                  onChange={(e) => setHeightIn(sanitizeDigitInput(e.target.value, HEIGHT_IN_MAX_CHARS))}
                 />
                 <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">in</span>
               </div>
             </div>
+            {showFieldErrors && fieldErrors.height && (
+              <p className="text-xs text-red-400 mt-1.5">{fieldErrors.height}</p>
+            )}
           </div>
 
           <div>
@@ -203,17 +216,21 @@ export default function BodyOnboarding() {
             </label>
             <div className="relative">
               <Input
-                type="number"
-                min={50}
-                max={500}
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                 placeholder="180"
+                maxLength={WEIGHT_MAX_CHARS}
                 className="bg-[#2c2c2e] border-[#38383A] text-white pr-10"
                 value={weightLbs}
-                onChange={(e) => setWeightLbs(e.target.value)}
-                required
+                onChange={(e) => setWeightLbs(sanitizeDigitInput(e.target.value, WEIGHT_MAX_CHARS))}
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-[#8E8E93]">lbs</span>
             </div>
+            {showFieldErrors && fieldErrors.weight && (
+              <p className="text-xs text-red-400 mt-1.5">{fieldErrors.weight}</p>
+            )}
           </div>
 
           {error && (
@@ -222,7 +239,12 @@ export default function BodyOnboarding() {
             </div>
           )}
 
-          <Button type="submit" size="lg" className="w-full" disabled={saving}>
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full"
+            disabled={saving || !sex || metricsInvalid}
+          >
             {saving ? (
               <>
                 <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
