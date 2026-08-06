@@ -1,9 +1,10 @@
 import { useState, useEffect, FormEvent, useMemo } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Ruler, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AppLogo } from '@/components/brand/AppLogo';
 import { useUpdateSettings, useSettings } from '@/hooks/useSettings';
 import { toast } from '@/components/ui/use-toast';
 import { cn } from '@/lib/utils';
@@ -135,10 +136,8 @@ export default function BodyOnboarding() {
         className="w-full max-w-sm"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-[#FF375F] flex items-center justify-center mb-4 shadow-lg shadow-[#FF375F]/30">
-            <Ruler className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white text-center">Tell us about you</h1>
+          <AppLogo size="xl" />
+          <h1 className="text-2xl font-bold text-white text-center mt-3">Tell us about you</h1>
           <p className="text-sm text-[#8E8E93] mt-2 text-center leading-relaxed">
             Sex, height, and weight help us suggest better starting loads for your workouts
           </p>

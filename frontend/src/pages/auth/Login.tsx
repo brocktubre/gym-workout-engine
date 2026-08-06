@@ -1,9 +1,10 @@
 import { useState, FormEvent, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Dumbbell, RefreshCw, LogIn, Zap } from 'lucide-react';
+import { RefreshCw, LogIn, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AppLogo } from '@/components/brand/AppLogo';
 import { useAuth } from '@/contexts/AuthContext';
 import { SESSION_EXPIRED_MESSAGE_KEY } from '@/lib/auth';
 
@@ -54,10 +55,7 @@ export default function Login() {
       >
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-[#FF375F] flex items-center justify-center mb-4 shadow-lg shadow-[#FF375F]/30">
-            <Dumbbell className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Gym Workout Engine</h1>
+          <AppLogo size="xl" wordmark />
           <p className="text-sm text-[#8E8E93] mt-1">How would you like to continue?</p>
         </div>
 

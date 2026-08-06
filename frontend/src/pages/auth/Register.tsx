@@ -1,9 +1,10 @@
 import { useState, FormEvent } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Dumbbell, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AppLogo } from '@/components/brand/AppLogo';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function Register() {
@@ -62,10 +63,8 @@ export default function Register() {
         className="w-full max-w-sm"
       >
         <div className="flex flex-col items-center mb-8">
-          <div className="h-14 w-14 rounded-2xl bg-[#FF375F] flex items-center justify-center mb-4 shadow-lg shadow-[#FF375F]/30">
-            <Dumbbell className="h-7 w-7 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold text-white">Create Account</h1>
+          <AppLogo size="xl" />
+          <h1 className="text-2xl font-bold text-white mt-3">Create Account</h1>
           <p className="text-sm text-[#8E8E93] mt-1">Start tracking your workouts</p>
         </div>
 

@@ -14,30 +14,32 @@
     color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* Keep layout locked to the device width — vertical scroll only */
-    overflow-x: hidden;
     width: 100%;
     max-width: 100%;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    /* Clip horizontal bleed without trapping vertical document scroll */
+    overflow-x: clip;
+    overflow-y: auto;
   }
 
   body {
     margin: 0;
     padding: 0;
     min-height: 100dvh;
-    overscroll-behavior: none;
-    overflow-x: hidden;
+    overscroll-behavior-y: none;
     width: 100%;
     max-width: 100%;
-    position: relative;
+    overflow-x: clip;
+    /* Let the document (html) own vertical scrolling */
+    overflow-y: visible;
   }
 
   #root {
-    overflow-x: hidden;
     width: 100%;
     max-width: 100%;
     min-height: 100dvh;
+    /* Do not create a nested scroll container — desktop wheel scroll breaks */
   }
 
   /*
@@ -49,6 +51,13 @@
     textarea,
     select {
       font-size: 16px !important;
+    }
+
+    /* Hide scrollbars on phones; keep wheel/touch scrolling */
+    ::-webkit-scrollbar {
+      width: 0;
+      height: 0;
+      background: transparent;
     }
   }
 
@@ -68,9 +77,26 @@
     -moz-appearance: textfield;
   }
 
-  ::-webkit-scrollbar {
-    width: 0;
-    background: transparent;
+  /* Visible scrollbars on desktop so vertical scroll is obvious */
+  @media (hover: hover) and (pointer: fine) {
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #0a0a0a;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #38383A;
+      border-radius: 999px;
+      border: 2px solid #0a0a0a;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #636366;
+    }
   }
 }
 

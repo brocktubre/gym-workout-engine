@@ -10,6 +10,7 @@ import { StatsCard } from '@/components/dashboard/StatsCard';
 import { StreakDisplay } from '@/components/dashboard/StreakDisplay';
 import { RecentWorkout } from '@/components/dashboard/RecentWorkout';
 import { DailyWorkoutCard } from '@/components/dashboard/DailyWorkoutCard';
+import { AppLogo } from '@/components/brand/AppLogo';
 import { useWorkoutHistory, useWorkoutStats, useDeleteWorkout } from '@/hooks/useWorkouts';
 import { useDailyWorkout } from '@/hooks/useDailyWorkout';
 import { useAuth } from '@/contexts/AuthContext';
@@ -53,11 +54,15 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
+          className="flex items-start gap-3"
         >
-          <p className="text-[#8E8E93] text-sm">{dateLabel}</p>
-          <h1 className="text-2xl font-bold text-white mt-0.5">
-            {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}!
-          </h1>
+          <AppLogo size="md" className="mt-0.5" />
+          <div className="min-w-0 flex-1">
+            <p className="text-[#8E8E93] text-sm">{dateLabel}</p>
+            <h1 className="text-2xl font-bold text-white mt-0.5">
+              {greeting}{user?.displayName ? `, ${user.displayName.split(' ')[0]}` : ''}!
+            </h1>
+          </div>
         </motion.div>
       </div>
 
