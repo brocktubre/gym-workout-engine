@@ -68,7 +68,7 @@ function Field({
           maxLength={maxLength}
           value={value}
           onChange={(e) => onChange(e.target.value.replace(/\D/g, '').slice(0, maxLength))}
-          className="w-full h-9 rounded-lg bg-[#0a0a0a] border border-[#38383A] px-2.5 text-sm font-bold text-white tabular-nums focus:outline-none focus:border-[#FF375F]/60"
+          className="w-full h-10 rounded-lg bg-[#0a0a0a] border border-[#38383A] px-2.5 text-base font-bold text-white tabular-nums focus:outline-none focus:border-[#FF375F]/60"
         />
         {suffix && (
           <span className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-[#636366]">

@@ -14,6 +14,12 @@
     color: #ffffff;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Keep layout locked to the device width — vertical scroll only */
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
@@ -21,6 +27,35 @@
     padding: 0;
     min-height: 100dvh;
     overscroll-behavior: none;
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    position: relative;
+  }
+
+  #root {
+    overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+    min-height: 100dvh;
+  }
+
+  /*
+   * iOS Safari auto-zooms focused form controls when computed font-size is
+   * under 16px. Force 16px on touch / coarse pointers so focus never zooms.
+   */
+  @media (hover: none), (pointer: coarse) {
+    input,
+    textarea,
+    select {
+      font-size: 16px !important;
+    }
+  }
+
+  input,
+  textarea,
+  select {
+    touch-action: manipulation;
   }
 
   input[type="number"]::-webkit-inner-spin-button,
