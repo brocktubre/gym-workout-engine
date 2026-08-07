@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { getTodayDate } from '@/lib/utils';
@@ -42,4 +42,22 @@ export function useInvalidateDailyWorkout() {
   return () => {
     void queryClient.invalidateQueries({ queryKey: dailyWorkoutKeys.all });
   };
+}
+
+export function useRegenerateDailyWorkout() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (localDate: string) => {
+      const { daily } = await api.regenerateDailyWorkout(localDate);
+      return {
+        ...daily,
+        targetMuscleGroups: daily.targetMuscleGroups as MuscleGroup[],
+      } satisfies DailyWorkout;
+    },
+    onSuccess: (daily) => {
+      queryClient.setQueryData(dailyWorkoutKeys.date(daily.localDate), daily);
+      void queryClient.invalidateQueries({ queryKey: dailyWorkoutKeys.all });
+    },
+  });
 }

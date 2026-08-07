@@ -130,6 +130,106 @@ router.get('/daily', requireAuth, async (req: Request, res: Response) => {
 });
 
 // ---------------------------------------------------------------------------
+// POST /api/engine/daily/regenerate  { date: YYYY-MM-DD }
+// Replace today’s daily plan with a freshly generated workout (setting-gated).
+// ---------------------------------------------------------------------------
+router.post('/daily/regenerate', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const sub = req.user?.sub;
+    if (!sub) {
+      res.status(401).json({ error: 'Authentication required' });
+      return;
+    }
+
+    const localDate = String(req.body?.date ?? '');
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(localDate)) {
+      res.status(400).json({ error: 'date must be YYYY-MM-DD' });
+      return;
+    }
+
+    const [settings, existing, recentWorkouts] = await Promise.all([
+      resolveUserSettings(sub),
+      getDailyWorkout(sub, localDate),
+      getRecentWorkouts(14, sub),
+    ]);
+
+    if (!settings.allowDailyRegenerate) {
+      res.status(403).json({ error: 'Daily regenerate is disabled in settings' });
+      return;
+    }
+
+    if (!existing) {
+      res.status(404).json({ error: 'Daily workout not found' });
+      return;
+    }
+
+    if (existing.status === 'completed') {
+      res.status(409).json({ error: 'Daily workout already completed' });
+      return;
+    }
+
+    const targetMuscleGroups: MuscleGroup[] =
+      (existing.targetMuscleGroups as MuscleGroup[] | undefined)?.length
+        ? (existing.targetMuscleGroups as MuscleGroup[])
+        : musclesForLocalDate(localDate);
+
+    const durationMinutes = Math.max(
+      15,
+      existing.workout?.targetDurationMinutes || settings.defaultDurationMinutes || 60,
+    );
+    const goal = existing.workout?.goal || settings.goal;
+    const excludeExerciseIds = (existing.workout?.exercises ?? []).map(
+      (e: { exerciseId: string }) => e.exerciseId,
+    );
+
+    const request: GenerateWorkoutRequest = {
+      durationMinutes,
+      goal,
+      targetMuscleGroups,
+      excludeExerciseIds,
+      includeWarmup: settings.includeWarmup ?? true,
+      allowSupersets: settings.allowSupersets ?? true,
+    };
+
+    const { exercises: ruleExercises, warmup } = await generateWorkout({
+      settings,
+      recentWorkouts,
+      request,
+    });
+    const exercises = await enhanceWorkoutWithClaude(ruleExercises, settings, recentWorkouts, {
+      durationMinutes,
+      goal,
+    });
+
+    const workout = {
+      id: uuidv4(),
+      date: localDate,
+      createdAt: new Date().toISOString(),
+      status: 'generated' as const,
+      exercises,
+      warmup,
+      warmupStatus: warmup.length > 0 ? ('pending' as const) : undefined,
+      targetDurationMinutes: durationMinutes,
+      goal,
+    };
+
+    const daily = {
+      localDate: existing.localDate,
+      targetMuscleGroups,
+      workout,
+      createdAt: new Date().toISOString(),
+      status: 'available' as const,
+    };
+
+    await saveDailyWorkout(sub, daily);
+    res.json({ daily });
+  } catch (err: any) {
+    console.error('Daily regenerate error:', err);
+    res.status(500).json({ error: 'Failed to regenerate daily workout', details: err.message });
+  }
+});
+
+// ---------------------------------------------------------------------------
 // POST /api/engine/daily/complete  { date: YYYY-MM-DD }
 // Mark today's daily plan done so it leaves the Dashboard.
 // ---------------------------------------------------------------------------

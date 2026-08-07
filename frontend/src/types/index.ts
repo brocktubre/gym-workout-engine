@@ -140,6 +140,11 @@ export interface UserSettings {
   includeWarmup?: boolean;
   /** Allow superset pairings in generated workouts */
   allowSupersets?: boolean;
+  /**
+   * When true, Dashboard shows a control to regenerate today’s daily workout.
+   * Default off — daily plan stays fixed once created.
+   */
+  allowDailyRegenerate?: boolean;
   /** Speak workout cues via Amazon Polly (warmup, sets, rest, etc.) */
   voiceCoachingEnabled?: boolean;
   /** Biological sex — used to scale suggested loads */

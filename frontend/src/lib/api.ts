@@ -198,6 +198,22 @@ export const api = {
     });
   },
 
+  async regenerateDailyWorkout(localDate: string): Promise<{
+    daily: {
+      localDate: string;
+      status: 'available' | 'completed';
+      targetMuscleGroups: string[];
+      workout: Workout;
+      createdAt: string;
+      completedAt?: string;
+    };
+  }> {
+    return request('/engine/daily/regenerate', {
+      method: 'POST',
+      body: JSON.stringify({ date: localDate }),
+    });
+  },
+
   // ── Workouts ────────────────────────────────────────────────────────────────
   async createWorkout(workout: Omit<Workout, 'id'>): Promise<Workout> {
     const res = await request<{ workout: Workout }>('/workouts', {

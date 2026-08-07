@@ -95,6 +95,7 @@ const DEFAULT_SETTINGS: UserSettings = {
   preferCompound: true,
   includeWarmup: true,
   allowSupersets: true,
+  allowDailyRegenerate: false,
   voiceCoachingEnabled: true,
 };
 
@@ -834,6 +835,27 @@ export default function Settings() {
             <Switch
               checked={form.allowSupersets ?? true}
               onCheckedChange={(v) => update('allowSupersets', v)}
+            />
+          </div>
+        </motion.section>
+
+        {/* Allow Daily Regenerate */}
+        <motion.section
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.33 }}
+          className="bg-[#1c1c1e] rounded-2xl border border-[#38383A] p-4"
+        >
+          <div className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold text-white">Allow Daily Regenerate</h3>
+              <p className="text-xs text-[#8E8E93] mt-0.5">
+                Show a regenerate button on today’s Daily Workout so you can swap it for a new plan
+              </p>
+            </div>
+            <Switch
+              checked={form.allowDailyRegenerate ?? false}
+              onCheckedChange={(v) => update('allowDailyRegenerate', v)}
             />
           </div>
         </motion.section>

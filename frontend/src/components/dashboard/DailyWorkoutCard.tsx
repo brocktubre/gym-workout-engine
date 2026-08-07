@@ -8,6 +8,8 @@ import { MuscleGroupBadge } from '@/components/workout/MuscleGroupBadge';
 import { useCreateWorkout } from '@/hooks/useWorkouts';
 import { useActiveWorkout } from '@/hooks/useWorkoutEngine';
 import { useTTS } from '@/hooks/useTTS';
+import { useSettings } from '@/hooks/useSettings';
+import { useRegenerateDailyWorkout } from '@/hooks/useDailyWorkout';
 import { toast } from '@/components/ui/use-toast';
 import { cn, formatDuration, getTodayDate } from '@/lib/utils';
 import { getWarmupAnnouncement } from '@/lib/warmup';
@@ -177,9 +179,19 @@ interface DailyWorkoutCardProps {
 export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
   const navigate = useNavigate();
   const createWorkoutMutation = useCreateWorkout();
+  const regenerateMutation = useRegenerateDailyWorkout();
+  const { data: settings } = useSettings();
   const { startWorkout, hasActiveWorkout } = useActiveWorkout();
   const { speak } = useTTS();
   const [starting, setStarting] = useState(false);
+
+  const allowRegenerate = settings?.allowDailyRegenerate === true;
+  const regenerating = regenerateMutation.isPending;
+  const busy = starting || createWorkoutMutation.isPending || regenerating || hasActiveWorkout;
+  const circuits = useMemo(
+    () => toBlocks(daily.workout?.exercises ?? []),
+    [daily.workout?.exercises],
+  );
 
   if (isLoading) {
     return <Skeleton className="h-48 rounded-2xl" />;
@@ -189,7 +201,6 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
 
   const { workout } = daily;
   const muscles = daily.targetMuscleGroups.slice(0, 4);
-  const circuits = useMemo(() => toBlocks(workout.exercises), [workout.exercises]);
   const circuitCount = circuits.length;
 
   const handleStart = async () => {
@@ -257,6 +268,32 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
     });
   };
 
+  const handleRegenerate = async () => {
+    if (hasActiveWorkout) {
+      toast({
+        title: 'Finish or cancel your current workout first',
+        variant: 'error',
+        duration: 3000,
+      });
+      return;
+    }
+
+    try {
+      await regenerateMutation.mutateAsync(daily.localDate);
+      toast({
+        title: 'Daily workout regenerated',
+        variant: 'success',
+        duration: 2500,
+      });
+    } catch (err) {
+      toast({
+        title: 'Could not regenerate workout',
+        description: err instanceof Error ? err.message : undefined,
+        variant: 'error',
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -297,7 +334,7 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
           <Button
             className="h-11"
             onClick={handleStart}
-            disabled={starting || createWorkoutMutation.isPending || hasActiveWorkout}
+            disabled={busy}
           >
             {starting || createWorkoutMutation.isPending ? (
               <>
@@ -315,12 +352,32 @@ export function DailyWorkoutCard({ daily, isLoading }: DailyWorkoutCardProps) {
             className="h-11"
             variant="secondary"
             onClick={handleEdit}
-            disabled={starting || createWorkoutMutation.isPending || hasActiveWorkout}
+            disabled={busy}
           >
             <Pencil className="h-4 w-4 mr-1.5" />
             Edit Workout
           </Button>
         </div>
+        {allowRegenerate && (
+          <Button
+            className="w-full h-11"
+            variant="secondary"
+            onClick={handleRegenerate}
+            disabled={busy}
+          >
+            {regenerating ? (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1.5 animate-spin" />
+                Regenerating…
+              </>
+            ) : (
+              <>
+                <RefreshCw className="h-4 w-4 mr-1.5" />
+                Regenerate Workout
+              </>
+            )}
+          </Button>
+        )}
         {hasActiveWorkout && (
           <p className="text-[10px] text-[#8E8E93] text-center">
             Finish or pause your current session to start or edit today’s workout
