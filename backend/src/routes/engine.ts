@@ -168,16 +168,14 @@ router.post('/daily/regenerate', requireAuth, async (req: Request, res: Response
       return;
     }
 
+    // Keep today's muscle focus; everything else comes from current user settings
     const targetMuscleGroups: MuscleGroup[] =
       (existing.targetMuscleGroups as MuscleGroup[] | undefined)?.length
         ? (existing.targetMuscleGroups as MuscleGroup[])
         : musclesForLocalDate(localDate);
 
-    const durationMinutes = Math.max(
-      15,
-      existing.workout?.targetDurationMinutes || settings.defaultDurationMinutes || 60,
-    );
-    const goal = existing.workout?.goal || settings.goal;
+    const durationMinutes = Math.max(15, settings.defaultDurationMinutes || 60);
+    const goal = settings.goal;
     const excludeExerciseIds = (existing.workout?.exercises ?? []).map(
       (e: { exerciseId: string }) => e.exerciseId,
     );
