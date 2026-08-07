@@ -7,6 +7,7 @@ import type { WorkoutSet } from '@/types';
 const NO_WEIGHT_EQUIPMENT = new Set([
   'bodyweight', 'rings', 'pull-up-bar', 'battle-rope',
   'echo-bike', 'rower', 'ski-erg', 'plyometric-box',
+  'parallettes',
 ]);
 
 interface SetRowProps {

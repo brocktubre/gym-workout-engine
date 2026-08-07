@@ -332,5 +332,44 @@
       "Zone 2",
       "Upper Body Conditioning"
     ]
+  },
+  {
+    "id": "parallettes",
+    "name": "Parallettes",
+    "category": "Bodyweight",
+    "enabled": true,
+    "tags": [
+      "calisthenics",
+      "gymnastics",
+      "shoulders",
+      "core",
+      "push"
+    ],
+    "exerciseTypes": [
+      "Calisthenics",
+      "Skill",
+      "Strength"
+    ],
+    "notes": "Low or high parallettes for push-ups, L-sits, handstand work"
+  },
+  {
+    "id": "monkey-feet",
+    "name": "MonkeyFeet",
+    "category": "Accessories",
+    "enabled": true,
+    "tags": [
+      "legs",
+      "isolation",
+      "hamstrings",
+      "quads",
+      "calves",
+      "glutes"
+    ],
+    "exerciseTypes": [
+      "Isolation",
+      "Hypertrophy",
+      "Rehab"
+    ],
+    "notes": "Foot attachment that clamps a dumbbell for leg curls, extensions, kickbacks, calf raises"
   }
 ]

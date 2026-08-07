@@ -32,7 +32,9 @@ export type Equipment =
   | 'machine'
   | 'cable'
   | 'ez-bar'
-  | 'plate';
+  | 'plate'
+  | 'parallettes'
+  | 'monkey-feet';
 
 export type MovementType = 'push' | 'pull' | 'legs' | 'hinge' | 'core' | 'cardio' | 'mobility';
 export type Difficulty = 'beginner' | 'intermediate' | 'advanced';

@@ -46,6 +46,8 @@ const equipmentIcons: Record<string, IconDefinition> = {
   rower: faPersonSwimming,
   'ski-erg': faPersonSkiing,
   plate: faCircle,
+  parallettes: faCube,
+  'monkey-feet': faPersonWalking,
 };
 
 const MUSCLE_FILTERS: { value: MuscleGroup | 'all'; label: string }[] = [

@@ -42,6 +42,8 @@ const EQUIPMENT_OPTIONS: { value: Equipment; label: string; icon: React.ReactNod
   { value: 'bodyweight', label: 'Bodyweight', icon: <FontAwesomeIcon icon={faPersonWalking} />, category: 'Bodyweight' },
   { value: 'rings', label: 'Gymnastics Rings', icon: <FontAwesomeIcon icon={faRing} />, category: 'Bodyweight' },
   { value: 'pull-up-bar', label: 'Pull-Up Bar', icon: <FontAwesomeIcon icon={faArrowUp} />, category: 'Bodyweight' },
+  { value: 'parallettes', label: 'Parallettes', icon: <FontAwesomeIcon icon={faCube} />, category: 'Bodyweight' },
+  { value: 'monkey-feet', label: 'MonkeyFeet', icon: <FontAwesomeIcon icon={faPersonWalking} />, category: 'Bodyweight' },
   // Functional
 
   { value: 'battle-rope', label: 'Battle Rope', icon: <FontAwesomeIcon icon={faWater} />, category: 'Functional' },
