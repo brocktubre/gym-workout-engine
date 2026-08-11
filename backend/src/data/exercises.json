@@ -7217,7 +7217,7 @@
     ],
     "tips": [
       "Hold a wall lightly for balance if needed",
-      "High reps (12\u201320+) work well for calves",
+      "High reps (12–20+) work well for calves",
       "Do both legs evenly"
     ]
   },
@@ -7605,6 +7605,815 @@
       "Hits hip flexors hard — useful for runners and core work",
       "Keep the torso upright",
       "Program as accessory, not a max-effort lift"
+    ]
+  },
+  {
+    "id": "ex_eagle_arms_stretch",
+    "name": "Eagle Arms Stretch",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand or sit tall with spine neutral",
+      "Extend arms forward at shoulder height, palms facing up",
+      "Cross one arm under the other at the elbows",
+      "Wrap the forearms and try to press palms together",
+      "Lift elbows to shoulder height and hold 20-30 seconds",
+      "Switch arm positions and repeat"
+    ],
+    "tips": [
+      "If palms don't meet, press the backs of the hands together instead",
+      "Lifting the elbows increases the stretch across the upper back and rhomboids",
+      "A great posterior shoulder stretch — often neglected in pressing-heavy programs"
+    ]
+  },
+  {
+    "id": "ex_eagle_pose",
+    "name": "Eagle Pose",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "back",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Stand on one leg and slightly bend the standing knee",
+      "Cross the opposite leg over the standing thigh, hooking the foot behind the standing calf if possible",
+      "Simultaneously cross arms at shoulder height — opposite arm on top — and wrap forearms to press palms together",
+      "Sink hips down as if sitting in a chair, keeping spine tall",
+      "Hold 20-30 seconds, then switch sides"
+    ],
+    "tips": [
+      "Press the top knee down and away to deepen the outer hip stretch",
+      "The leg wrap targets IT band, outer hips, and glutes simultaneously",
+      "Use a wall for balance assistance when learning — also known as Garudasana in yoga"
+    ]
+  },
+  {
+    "id": "ex_doorway_chest_stretch",
+    "name": "Doorway Chest Stretch",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand in a doorway and place forearms vertically on each side of the frame",
+      "Step one foot forward and lean bodyweight gently through the doorway",
+      "Keep chest tall and shoulders back — do not shrug",
+      "Hold 20-30 seconds, feeling the stretch across the chest and front of the shoulders"
+    ],
+    "tips": [
+      "Adjust elbow height to target different pec fibres: high elbows hit lower chest, shoulder-height hits mid chest",
+      "Do not lean so far forward that posture breaks down — controlled stretch only",
+      "Excellent counter-stretch after any heavy pressing session"
+    ]
+  },
+  {
+    "id": "ex_thread_the_needle",
+    "name": "Thread the Needle",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start on all fours with wrists under shoulders and knees under hips",
+      "Slide one arm along the floor underneath the opposite arm, threading through",
+      "Lower that shoulder to the floor and rest the side of your head on the ground",
+      "The top arm can stay on the floor or press into the ground to increase rotation",
+      "Hold 20-30 seconds and switch sides"
+    ],
+    "tips": [
+      "Targets thoracic rotation — essential for anyone with limited upper back mobility",
+      "Keep hips square and elevated — let the shoulder do the rotating",
+      "Great between-set mobility drill on pulling days"
+    ]
+  },
+  {
+    "id": "ex_rear_delt_stretch",
+    "name": "Rear Deltoid Stretch",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand or sit tall and bring one arm horizontally across the chest",
+      "Reach the opposite hand behind the upper arm — not at the elbow joint — and pull gently",
+      "Keep the stretched shoulder pressed down, not shrugged",
+      "Hold 20-30 seconds each side"
+    ],
+    "tips": [
+      "Targets posterior deltoid and rhomboids — commonly tight in heavy pressing athletes",
+      "Pulling behind the elbow reduces joint stress compared to pulling at the elbow",
+      "Pairs well with chest opener stretch for a complete upper body mobility sequence"
+    ]
+  },
+  {
+    "id": "ex_seated_forward_fold",
+    "name": "Seated Forward Fold",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "back",
+      "calves"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit on the floor with legs extended straight in front of you",
+      "Flex feet so toes point toward the ceiling",
+      "Inhale to sit tall, then exhale and fold forward from the hips — not the waist",
+      "Reach hands toward feet or shins as far as comfortable",
+      "Hold 30-45 seconds, maintaining a long spine"
+    ],
+    "tips": [
+      "Lead the fold with the chest, not the forehead — prevents excessive rounding",
+      "Place a folded blanket under hips if hamstrings are very tight to tilt the pelvis forward",
+      "Do not bounce — relax deeper into the stretch with each exhale"
+    ]
+  },
+  {
+    "id": "ex_seated_wide_leg_fold",
+    "name": "Seated Wide-Leg Forward Fold",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "back",
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Sit on the floor and open legs into a wide V shape — about 90-120 degrees",
+      "Flex both feet and sit tall before folding",
+      "Walk hands forward between the legs, hinging from the hips",
+      "Try to keep the spine long rather than rounding the back excessively",
+      "Hold 30-45 seconds"
+    ],
+    "tips": [
+      "The wider the stance, the more inner thigh and groin involvement",
+      "Place a folded blanket under the hips if you round significantly",
+      "Hinge toward each leg individually to stretch one hamstring more intensely at a time"
+    ]
+  },
+  {
+    "id": "ex_seated_piriformis_stretch",
+    "name": "Seated Piriformis Stretch",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit in a chair or on the floor with both feet flat",
+      "Cross one ankle over the opposite knee, forming a figure-4 shape",
+      "Keeping back straight, lean forward from the hips until you feel a stretch in the outer hip and glute",
+      "Hold 30-45 seconds each side"
+    ],
+    "tips": [
+      "Targets the piriformis — a common source of sciatic-like hip and lower back pain",
+      "The more you lean forward, the deeper the stretch — progress gradually",
+      "A desk-friendly version of the supine figure-four stretch"
+    ]
+  },
+  {
+    "id": "ex_seated_ankle_to_knee",
+    "name": "Seated Ankle-to-Knee (Firelog Pose)",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Sit on the floor with legs in front of you",
+      "Bend one knee and place that foot flat on the floor",
+      "Stack the opposite ankle directly on top of that knee, shin roughly parallel to the floor",
+      "Sit tall and gently press down on the top knee with your hand",
+      "For more depth, fold forward from the hips over the stacked legs",
+      "Hold 30-45 seconds each side"
+    ],
+    "tips": [
+      "More intense than figure-four — requires significant hip external rotation",
+      "If the top knee is very elevated, build up with figure-four first",
+      "One of the deepest hip openers available without equipment"
+    ]
+  },
+  {
+    "id": "ex_sumo_squat_hold",
+    "name": "Sumo Squat Hold",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "quads",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet wider than shoulder-width, toes angled out 45 degrees",
+      "Lower into a deep squat, keeping chest tall and knees tracking over toes",
+      "Place elbows on inner knees and gently press knees outward",
+      "Keep heels flat on the floor throughout",
+      "Hold 30-60 seconds"
+    ],
+    "tips": [
+      "Also known as Malasana or Garland Pose in yoga",
+      "Elevate heels slightly on plates or a wedge if ankles are tight",
+      "Elbows pushing out on the knees actively deepens the groin and hip stretch"
+    ]
+  },
+  {
+    "id": "ex_side_lunge_groin_stretch",
+    "name": "Side Lunge Groin Stretch",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet wide, both toes pointing forward",
+      "Shift body weight to one side, bending that knee while keeping the other leg straight",
+      "Keep the straight leg grounded through the full foot — no heel lift",
+      "Hold chest tall and press inner thighs open",
+      "Hold 20-30 seconds each side"
+    ],
+    "tips": [
+      "Targets the adductors of the straight leg primarily",
+      "Rock side-to-side dynamically first to warm up, then hold for the static version",
+      "At deeper depth this becomes a Cossack Squat — an advanced hip mobility benchmark"
+    ]
+  },
+  {
+    "id": "ex_reclined_bound_angle",
+    "name": "Reclined Bound Angle",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie on your back and bring the soles of your feet together, letting knees fall open to the sides",
+      "Place hands on your belly or extend arms out to sides",
+      "Relax completely and let gravity open the hips",
+      "Hold 1-3 minutes, breathing slowly and deeply"
+    ],
+    "tips": [
+      "Known as Supta Baddha Konasana — a deeply restorative groin opener",
+      "Place pillows or blocks under knees if the stretch is initially too intense",
+      "Best used at the end of a workout or as a dedicated cool-down stretch"
+    ]
+  },
+  {
+    "id": "ex_lizard_pose",
+    "name": "Lizard Pose",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "glutes",
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start in a high plank position",
+      "Step one foot to the outside of the same-side hand",
+      "Lower the back knee to the floor for support",
+      "Press the front foot flat and sink the hips down and forward",
+      "Hold 30-45 seconds, then switch sides"
+    ],
+    "tips": [
+      "A deeper progression of the hip flexor lunge — targets hip flexors, groin, and inner thigh simultaneously",
+      "To deepen: lower forearms to the floor inside the front foot",
+      "Keep the back foot flexed to engage the back leg and protect the knee"
+    ]
+  },
+  {
+    "id": "ex_pigeon_pose",
+    "name": "Pigeon Pose",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "From a plank position, bring one knee forward toward the same-side wrist",
+      "The shin can be angled or more parallel to the front edge depending on flexibility",
+      "Extend the opposite leg straight back, top of the foot on the floor",
+      "Square hips as much as possible toward the floor",
+      "Fold forward over the front shin or stay upright on hands",
+      "Hold 45-60 seconds each side"
+    ],
+    "tips": [
+      "One of the most effective deep hip openers — targets piriformis and external hip rotators",
+      "Use a yoga block or folded blanket under the front hip if it doesn't reach the floor",
+      "Never force the front knee — switch to figure-four or 90/90 if you feel any knee pain"
+    ]
+  },
+  {
+    "id": "ex_90_90_hip_stretch",
+    "name": "90/90 Hip Stretch",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings",
+      "quads"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Sit on the floor with both knees bent at roughly 90 degrees — one leg in front, one to the side",
+      "The front leg is externally rotated; the back leg is internally rotated",
+      "Sit tall through both sitting bones with a neutral spine",
+      "To deepen: lean forward over the front shin",
+      "Hold 30-45 seconds, then switch leg positions"
+    ],
+    "tips": [
+      "Targets both internal and external hip rotation — often the missing link in hip mobility work",
+      "Do not let the hips lift off the floor when switching sides",
+      "Can be used dynamically — rotate between sides in a flowing drill"
+    ]
+  },
+  {
+    "id": "ex_supine_knees_to_chest",
+    "name": "Supine Knees to Chest",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "glutes",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie flat on your back",
+      "Bring both knees up toward the chest simultaneously",
+      "Wrap arms around shins and gently pull knees closer to the chest",
+      "Hold 30-45 seconds, breathing slowly",
+      "Optionally rock gently side to side to massage the lower back"
+    ],
+    "tips": [
+      "One of the safest and most effective lower back decompression stretches",
+      "The rocking variation provides a gentle spinal massage against the floor",
+      "Great as a first movement in the morning to release overnight stiffness"
+    ]
+  },
+  {
+    "id": "ex_sphinx_pose",
+    "name": "Sphinx Pose",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "core",
+      "chest"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie face down on the floor with legs extended",
+      "Place forearms on the ground with elbows directly below the shoulder joint",
+      "Press forearms into the floor to lift the chest — lower back gently extends",
+      "Keep pelvis and legs relaxed and in contact with the floor",
+      "Hold 30-60 seconds, breathing slowly"
+    ],
+    "tips": [
+      "A gentle lumbar extension stretch — the entry point before cobra or seal pose",
+      "If you feel pinching in the lower back, reduce the height slightly",
+      "Used in rehabilitation for disc-related lower back issues — consult a physio if in pain"
+    ]
+  },
+  {
+    "id": "ex_seal_pose",
+    "name": "Seal Pose",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "core",
+      "chest"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "advanced",
+    "instructions": [
+      "Lie face down with palms flat on the floor directly under the shoulders",
+      "Press through the hands to fully extend the arms, lifting the chest and arching the back",
+      "Let the lower back extend as much as is comfortable — pelvis stays on the floor",
+      "Turn toes out and let heels relax toward the floor",
+      "Hold 30-60 seconds"
+    ],
+    "tips": [
+      "A deeper progression of sphinx and cobra — significant lumbar extension",
+      "Contraindicated for those with lumbar stenosis or disc herniations — check with a physio",
+      "A common Yin Yoga target for the thoracolumbar fascia and hip flexors"
+    ]
+  },
+  {
+    "id": "ex_childs_pose_side_reach",
+    "name": "Child's Pose with Side Reach",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start in Child's Pose — knees wide, arms extended forward, forehead on the floor",
+      "Walk both hands to one side, creating a bow shape with your body",
+      "Press the opposite hip down and reach hands further to deepen the lateral stretch",
+      "Hold 20-30 seconds each side"
+    ],
+    "tips": [
+      "Directly targets the quadratus lumborum (QL) — a deep lower back muscle often overlooked",
+      "The QL is a major contributor to chronic lower back tightness",
+      "Breathe into the stretching side — range opens with each exhale"
+    ]
+  },
+  {
+    "id": "ex_low_lunge_spinal_twist",
+    "name": "Low Lunge with Spinal Twist",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "chest",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start in a low lunge with the right foot forward, left knee on the floor",
+      "Place the left hand on the floor inside the right foot for support",
+      "Rotate the torso open to the right, reaching the right arm toward the ceiling",
+      "Stack shoulders vertically and look up toward the raised hand",
+      "Hold 20-30 seconds, then switch sides"
+    ],
+    "tips": [
+      "Combines hip flexor stretch with thoracic rotation — a full-spine mobility combination",
+      "Sink the hips deeper for more hip flexor stretch; focus upward rotation for more thoracic benefit",
+      "Progress to a flow: inhale to twist open, exhale to lower, repeat 5-6 times per side"
+    ]
+  },
+  {
+    "id": "ex_standing_forward_fold",
+    "name": "Standing Forward Fold",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "back",
+      "calves"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet hip-width apart, slight softness in the knees",
+      "Hinge from the hips and fold forward, allowing the head and arms to hang heavy",
+      "Gradually straighten the knees as flexibility allows",
+      "Hold 30-45 seconds, nodding head gently to release neck tension"
+    ],
+    "tips": [
+      "Known as Ragdoll pose — let gravity do the work, never force the stretch",
+      "Bending the knees removes hamstring tension and allows the lower back to release more fully",
+      "Slowly roll up one vertebra at a time to return to standing"
+    ]
+  },
+  {
+    "id": "ex_prone_quad_stretch",
+    "name": "Prone Quadriceps Stretch",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Lie face down on the floor with legs extended",
+      "Bend one knee and reach back with the same-side hand to grasp the ankle or foot",
+      "Gently pull the heel toward the glute while keeping the hip pressed into the floor",
+      "Hold 20-30 seconds each side"
+    ],
+    "tips": [
+      "Keep the knee of the stretching leg pointed down — do not let it flare outward",
+      "Pressing the hip into the floor increases the hip flexor component of the stretch",
+      "A good alternative to standing quad stretch if balance is a limiting factor"
+    ]
+  },
+  {
+    "id": "ex_leg_swings_front_back",
+    "name": "Leg Swings (Front to Back)",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "glutes",
+      "quads"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand beside a wall or support, hand resting on it for balance",
+      "Swing the outside leg forward and back in a controlled pendulum motion",
+      "Start with a small range and progressively increase amplitude over 10-15 swings",
+      "Perform 15-20 swings per leg"
+    ],
+    "tips": [
+      "Do not force the swing — momentum carries the leg, not muscular effort",
+      "Maintain an upright torso; do not lean into the swing direction",
+      "Excellent pre-run or pre-leg-day hip flexor and hamstring warm-up"
+    ]
+  },
+  {
+    "id": "ex_leg_swings_side_to_side",
+    "name": "Leg Swings (Side to Side)",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings",
+      "quads"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Face a wall with hands resting on it for support",
+      "Swing one leg side to side across the body in a controlled pendulum motion",
+      "Allow the leg to cross midline and swing out to the side, increasing range gradually",
+      "Perform 15-20 swings per leg"
+    ],
+    "tips": [
+      "Targets hip abductors on the outward swing and adductors/groin on the cross swing",
+      "Keep the standing leg soft and the torso stable — only the hip joint moves",
+      "A foundational dynamic warm-up for any lower body training or running session"
+    ]
+  },
+  {
+    "id": "ex_arm_circles",
+    "name": "Arm Circles",
+    "primaryMuscle": "shoulders",
+    "secondaryMuscles": [
+      "chest",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet shoulder-width apart and extend arms out to the sides at shoulder height",
+      "Begin making small circles forward, gradually increasing circle size",
+      "Perform 15-20 reps forward, then reverse direction for another 15-20 reps"
+    ],
+    "tips": [
+      "Start small to warm the joint before using full range of motion",
+      "Keep shoulders depressed — resist the urge to shrug as circles get larger",
+      "Essential shoulder warm-up before any overhead pressing or throwing movements"
+    ]
+  },
+  {
+    "id": "ex_hip_circles",
+    "name": "Hip Circles",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "core",
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet shoulder-width apart and hands on hips",
+      "Move hips in a large circle — forward, out to the side, back, and around",
+      "Perform 10 full circles in each direction",
+      "Make circles as large and controlled as possible"
+    ],
+    "tips": [
+      "Targets hip joint mobility and lumbar mobility simultaneously",
+      "Keep the upper body relatively still — isolate the movement to the hips",
+      "A great desk break movement to relieve accumulated lower back stiffness"
+    ]
+  },
+  {
+    "id": "ex_worlds_greatest_stretch",
+    "name": "World's Greatest Stretch",
+    "primaryMuscle": "quads",
+    "secondaryMuscles": [
+      "hamstrings",
+      "back",
+      "chest",
+      "shoulders"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Start in a high plank position",
+      "Step one foot to the outside of the same-side hand (lizard position)",
+      "Drop the back knee to the floor, then rotate the front-side arm toward the ceiling, following with your gaze",
+      "Return hand to the floor, then straighten the front leg and fold forward over it to stretch the hamstring",
+      "Return to plank and repeat on the other side",
+      "Perform 5-8 reps per side in a continuous flowing sequence"
+    ],
+    "tips": [
+      "Earns its name — this single sequence targets hip flexors, hamstrings, thoracic spine, and shoulders",
+      "Move slowly and deliberately — this is a mobility drill, not a speed exercise",
+      "A staple warm-up in elite athletic and physiotherapy programs worldwide"
+    ]
+  },
+  {
+    "id": "ex_inchworm",
+    "name": "Inchworm",
+    "primaryMuscle": "hamstrings",
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet hip-width apart",
+      "Hinge at hips and place hands on the floor in front of feet",
+      "Walk hands forward until in a high plank position, keeping core engaged",
+      "Pause briefly in plank, then walk feet toward hands in small steps",
+      "Return to standing and repeat for 8-10 reps"
+    ],
+    "tips": [
+      "The forward hand-walk stretches the hamstrings; the plank phase loads shoulders and core",
+      "Keep legs as straight as possible when walking hands out and back",
+      "Add a push-up in the plank position for an integrated strength component"
+    ]
+  },
+  {
+    "id": "ex_thoracic_rotation",
+    "name": "Quadruped Thoracic Rotation",
+    "primaryMuscle": "back",
+    "secondaryMuscles": [
+      "shoulders",
+      "core"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Start on all fours with a neutral spine",
+      "Place one hand behind your head, elbow pointing out to the side",
+      "Rotate that elbow down toward the opposite hand, then open it toward the ceiling",
+      "Follow the elbow with your eyes to encourage full spinal rotation",
+      "Perform 10-12 controlled reps per side"
+    ],
+    "tips": [
+      "One of the most effective thoracic spine mobility drills available",
+      "Keep hips as still as possible — isolate the rotation to the upper back",
+      "Widely used in shoulder rehab and golf, tennis, and baseball performance programs"
+    ]
+  },
+  {
+    "id": "ex_scorpion_stretch",
+    "name": "Scorpion Stretch",
+    "primaryMuscle": "core",
+    "secondaryMuscles": [
+      "back",
+      "chest",
+      "glutes"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "intermediate",
+    "instructions": [
+      "Lie face down with arms extended out to the sides in a T position",
+      "Bend one knee and swing that foot up and across the body toward the opposite hand",
+      "Allow the hip and lower back to rotate naturally with the movement",
+      "Return to start and repeat on the other side",
+      "Perform 8-10 controlled reps per side"
+    ],
+    "tips": [
+      "Targets hip flexors, thoracic rotation, and chest simultaneously in one dynamic movement",
+      "Do not force the foot to reach the hand — range will improve progressively over time",
+      "Keep the arms and chest pressed into the floor as an anchor throughout the movement"
+    ]
+  },
+  {
+    "id": "ex_walking_knee_hugs",
+    "name": "Walking Knee Hugs",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "hamstrings",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand tall and step forward with one foot",
+      "As you plant the foot, lift the opposite knee toward the chest and wrap both arms around the shin",
+      "Pull the knee close to the chest and hold for 1-2 seconds",
+      "Release and step forward, repeating with the opposite leg",
+      "Continue walking for 10-12 steps per leg"
+    ],
+    "tips": [
+      "Rise up on the toes of the standing leg to add balance challenge and calf activation",
+      "Keep chest tall — do not lean backward when pulling the knee",
+      "A classic walking warm-up drill for glutes, hip flexors, and lower back"
+    ]
+  },
+  {
+    "id": "ex_dynamic_chest_opener",
+    "name": "Dynamic Chest Opener",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [
+      "shoulders",
+      "back"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet shoulder-width apart and arms extended forward at shoulder height, palms together",
+      "In one sweeping motion, open the arms wide to the sides while pinching shoulder blades together",
+      "Return arms to front and repeat in a controlled, rhythmic fashion",
+      "Perform 12-15 reps"
+    ],
+    "tips": [
+      "Squeeze the shoulder blades at full open position for maximum pec stretch",
+      "Keep arms at shoulder height — do not let them drift up or down",
+      "Add a slight upper body lean back as arms open to increase the stretch range"
+    ]
+  },
+  {
+    "id": "ex_lateral_lunge_sweep",
+    "name": "Lateral Lunge Sweep",
+    "primaryMuscle": "glutes",
+    "secondaryMuscles": [
+      "quads",
+      "hamstrings"
+    ],
+    "equipment": "bodyweight",
+    "category": "mobility",
+    "movementType": "mobility",
+    "difficulty": "beginner",
+    "instructions": [
+      "Stand with feet together",
+      "Step wide to one side, bending that knee into a side lunge while keeping the opposite leg straight",
+      "Touch the floor or shin with both hands at the bottom",
+      "Push off the bent leg to return to start and immediately lunge to the other side",
+      "Alternate sides for 10-12 reps each"
+    ],
+    "tips": [
+      "Dynamically targets the groin, adductors, and outer glutes in a single movement",
+      "Keep the foot of the lunging leg flat — do not let the heel rise",
+      "Great warm-up for lateral movements, court sports, and lower body training days"
     ]
   }
 ]
